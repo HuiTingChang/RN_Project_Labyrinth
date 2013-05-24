@@ -25,7 +25,7 @@ public class MazeComMessageFactory {
 		mc.setMcType(MazeComType.ERROR);
 		mc.setId(playerID);
 		mc.setErrorMessage(of.createErrorMessageType());
-		mc.getErrorMessage().setError(et);
+		mc.getErrorMessage().setErrorCode(et);
 		return mc;
 	}
 

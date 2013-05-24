@@ -199,7 +199,7 @@
 	
 	<xs:complexType name="ErrorMessageType">
 		<xs:sequence>
-			<xs:element name="Error" type="ErrorType" minOccurs="1"
+			<xs:element name="errorCode" type="ErrorType" minOccurs="1"
 				maxOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
