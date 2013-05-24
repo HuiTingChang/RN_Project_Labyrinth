@@ -22,7 +22,7 @@ public class MazeComMessageFactory {
 
 	public MazeCom createErrorMessage(int playerID, ErrorType et) {
 		MazeCom mc = of.createMazeCom();
-		mc.setMcType(MazeComType.LOGINREPLY);
+		mc.setMcType(MazeComType.ERROR);
 		mc.setId(playerID);
 		mc.setErrorMessage(of.createErrorMessageType());
 		mc.getErrorMessage().setError(et);
