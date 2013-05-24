@@ -14,19 +14,31 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 
 import server.Board;
 import server.Player;
 
 public class Connection {
 
-	Socket socket;
-	XmlInStream inFromClient;
-	XmlOutStream outToClient;
-	MazeComMessageFaktory mcmf;
+	// TODO ID aus dem Player holen => ID löschen bzw. Namen
+	private int playerID = -1;
+	private Player p;
+	private Socket socket;
+	private XmlInStream inFromClient;
+	private XmlOutStream outToClient;
+	private MazeComMessageFactory mcmf;
+	private String playerName;
 
+	/**
+	 * Speicherung des Sockets und oeffnen der Streams
+	 * 
+	 * @param s
+	 *            Socket der Verbindung
+	 */
 	public Connection(Socket s) {
-		// TODO TCP-Verbindungsaufbau und erzeugen der Streams
 		this.socket = s;
 		try {
 			this.inFromClient = new XmlInStream(this.socket.getInputStream());
@@ -40,7 +52,7 @@ public class Connection {
 			System.err
 					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
 		}
-		this.mcmf = new MazeComMessageFaktory();
+		this.mcmf = new MazeComMessageFactory();
 	}
 
 	/**
@@ -67,19 +79,22 @@ public class Connection {
 	 * @return Neuer Player, bei einem Fehler jedoch null
 	 */
 	public Player login(int newId) {
-		MazeCom loginMes = this.inFromClient.readMazeCom();
-		
-		Player p = null;
+		MazeCom loginMes = this.receiveMessage();
+
+		this.p = null;
 		// Test ob es sich um eine LoginNachricht handelt
 		if (loginMes.getMcType() == MazeComType.LOGIN) {
-			//sende Reply
-			this.outToClient.write(this.mcmf.createLoginReply(newId));
-			//TODO Spieler anlegen!
+			// sende Reply
+			this.playerID = newId;
+			this.playerName = loginMes.getLoginMessage().getName();
+			this.sendMessage(this.mcmf.createLoginReplyMessage(this.playerID));
+			// TODO Spieler anlegen! Daten setzten
 			return p;
 		} else {
-			//Sende Fehler
-			this.outToClient.write(this.mcmf.createError(-1, ErrorType.WRONGMESSAGE));
-			return null;
+			// Sende Fehler
+			this.sendMessage(this.mcmf.createErrorMessage(-1,
+					ErrorType.WRONGLOGIN));
+			return this.p;
 		}
 	}
 
@@ -88,39 +103,15 @@ public class Connection {
 		return null;
 	}
 
-	public void sendWin(int winnerId, String name) {
-		// TODO sende Ergebnis raus
+	public void sendWin(int winnerId, String name, Board b) {
+		// this.sendMessage(this.mcmf.createWinMessage(this.playerID,winnerId,name,b));
 	}
 
+	/**
+	 * Senden, dass Spieler diconnected wurde
+	 * */
 	public void disconnect() {
-		// TODO Erronachricht generieren und Verbindung abbrechen
+		this.sendMessage(this.mcmf.createDisconnectMessage(this.playerID,
+				this.playerName));
 	}
-
-	private MazeCom generateMazeCom(MazeComType msgType, Object[] parameter) {
-		MazeCom result = null;
-		switch (msgType) {
-		// Erstellen einer Loginnachricht
-		case LOGIN:
-			break;
-		// Erstellen einer Loginantwortnachricht
-		case LOGINREPLY:
-			break;
-		case AWAITMOVE:
-			break;
-		case ACCEPT:
-			break;
-		case WIN:
-			break;
-		case MOVE:
-			break;
-		case DISCONNECT:
-			break;
-		case ERROR:
-			break;
-		default:
-			break;
-		}
-		return result;
-	}
-
 }

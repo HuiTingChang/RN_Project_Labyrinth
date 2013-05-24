@@ -28,7 +28,7 @@ public class XmlOutStream extends DataOutputStream {
 					Boolean.TRUE);
 
 			this.marshaller = jc.createMarshaller();
-				} catch (JAXBException e) {
+		} catch (JAXBException e) {
 			System.err
 					.println("[ERROR]: Fehler beim Initialisieren der JAXB-Komponenten");
 		}
@@ -40,20 +40,20 @@ public class XmlOutStream extends DataOutputStream {
 	 * @param mc
 	 */
 	public void write(MazeCom mc) {
-		ByteArrayOutputStream wa = new ByteArrayOutputStream();
 		// gernerierung des fertigen XML
 		try {
-			this.marshaller.marshal(mc, wa);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			this.marshaller.marshal(mc, baos);
+			// TODO entferne Ausgabe
+			System.out.println("Geschrieben");
+			System.out.println(new String(baos.toByteArray()));
+			// Versenden des XML
+			this.writeUTF(new String(baos.toByteArray()));
+		} catch (IOException e) {
+			System.err.println("[ERROR]: Fehler beim versendern der Nachricht");
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		String toSend = new String(wa.toByteArray());
-		// Versenden des XML
-		try {
-			this.writeUTF(toSend);
-		} catch (IOException e) {
-			System.err.println("[ERROR]: Fehler beim versendern der Nachricht");
 		}
 	}
 

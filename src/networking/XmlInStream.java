@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 public class XmlInStream extends DataInputStream {
@@ -35,16 +36,21 @@ public class XmlInStream extends DataInputStream {
 		byte[] bytes = null;
 		MazeCom result = null;
 		try {
-			bytes = this.readUTF().getBytes();
+			String xml = this.readUTF();
+			// TODO entfernen
+			System.out.println("Empfangen");
+			System.out.println(xml);
+			bytes = xml.getBytes();
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 
-			try {
-				result = (MazeCom) this.unmarshaller.unmarshal(bais);
-			} catch (JAXBException e) {
-				System.err
-						.println("[ERROR]: Fehler beim unmarshallen der Nachricht");
-			}
+			result = (MazeCom) this.unmarshaller.unmarshal(bais);
+			// TODO entferne Aufgabe
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			System.err
+					.println("[ERROR]: Fehler beim unmarshallen der Nachricht");
 		} catch (IOException e1) {
+			e1.printStackTrace();
 			System.err.println("[ERROR]: Fehler beim lesen der Nachricht");
 		} catch (NullPointerException e) {
 			System.err
