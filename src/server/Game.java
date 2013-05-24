@@ -1,6 +1,13 @@
 package server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
+
+import networking.Connection;
+import Timeouts.TimeOutManager;
 
 public class Game {
 
@@ -8,10 +15,56 @@ public class Game {
 	 * beinhaltet die Spieler, die mit dem Server verbunden sind und die durch die ID zugreifbar sind
 	 */
 	private HashMap<Integer, Player> spieler;
+	private ServerSocket s;
+	private TimeOutManager timeOutMan;
 	
+	public Game() {
+		spieler=new HashMap<Integer, Player>();
+		timeOutMan=new TimeOutManager(this);
+		try {
+			s=new ServerSocket(config.Settings.port);
+		} catch (IOException e) {
+			System.err.println("Port bereits belegt, bitte schließen Sie alle Serverinstanzen");
+		}
+	}
+	
+	/**
+	 * Auf TCP Verbindungen warten und 
+	 * den Spielern die Verbindung ermöglichen
+	 */
 	public void init(){
+		try {
+			int i=1;
+			boolean accepting=true;
+			while(accepting && i<=4){
+				try{
+					timeOutMan.startLoginTimeOut();
+					System.out.println("Waiting for another Player ("+i+")");
+					Socket mazeClient=s.accept();
+					Connection c=new Connection(mazeClient);
+					spieler.put(i, c.login(i));
+				}catch(SocketException e){
+					System.out.println("...Waiting for Player timed out!");
+				}
+			}
+			
+		} catch (IOException e) {
+			System.err.println("Fehler beim Verbindungsaufbau (game.init()):");
+			System.err.println(e.getMessage());
+			//e.printStackTrace();
+		}
 		
 	}
+	
+	public void stopLogin(){
+		try {
+			s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void singleTurn(){
 		
 	}
@@ -28,6 +81,8 @@ public class Game {
 	}
 	
 	public static void main(String[] args) {
+		Game currentGame=new Game();
+		currentGame.init();
 		
 	}
 	
