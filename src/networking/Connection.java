@@ -3,13 +3,17 @@
  */
 package networking;
 
+import generated.ErrorType;
 import generated.MazeCom;
 import generated.MazeComType;
 import generated.MoveMessageType;
+import generated.ObjectFactory;
 import generated.WinMessageType;
 
 import java.io.IOException;
 import java.net.Socket;
+
+import javax.xml.bind.JAXBContext;
 
 import server.Board;
 import server.Player;
@@ -19,6 +23,7 @@ public class Connection {
 	Socket socket;
 	XmlInStream inFromClient;
 	XmlOutStream outToClient;
+	MazeComMessageFaktory mcmf;
 
 	public Connection(Socket s) {
 		// TODO TCP-Verbindungsaufbau und erzeugen der Streams
@@ -35,7 +40,7 @@ public class Connection {
 			System.err
 					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
 		}
-
+		this.mcmf = new MazeComMessageFaktory();
 	}
 
 	/**
@@ -59,23 +64,21 @@ public class Connection {
 	 * Allgemeines erwarten eines Login
 	 * 
 	 * @param newId
-	 * @return
+	 * @return Neuer Player, bei einem Fehler jedoch null
 	 */
 	public Player login(int newId) {
 		MazeCom loginMes = this.inFromClient.readMazeCom();
+		
 		Player p = null;
 		// Test ob es sich um eine LoginNachricht handelt
 		if (loginMes.getMcType() == MazeComType.LOGIN) {
-			// receiveMessage -> ersten Login bekommen => Ueberpruefen ob
-			// korrekte
-			// Nachricht
-			// Aufbau ergebnisNachricht
-			// sende Ergebnis => mit neuer ID
-			// TODO sende Message vom Type LoginReplyMessageType mit neuer
-			// SpielerID
+			//sende Reply
+			this.outToClient.write(this.mcmf.createLoginReply(newId));
+			//TODO Spieler anlegen!
 			return p;
 		} else {
-			this.generateMazeCom(MazeComType.ERROR);
+			//Sende Fehler
+			this.outToClient.write(this.mcmf.createError(-1, ErrorType.WRONGMESSAGE));
 			return null;
 		}
 	}
@@ -93,7 +96,7 @@ public class Connection {
 		// TODO Erronachricht generieren und Verbindung abbrechen
 	}
 
-	private MazeCom generateMazeCom(MazeComType msgType) {
+	private MazeCom generateMazeCom(MazeComType msgType, Object[] parameter) {
 		MazeCom result = null;
 		switch (msgType) {
 		// Erstellen einer Loginnachricht
@@ -111,6 +114,8 @@ public class Connection {
 		case MOVE:
 			break;
 		case DISCONNECT:
+			break;
+		case ERROR:
 			break;
 		default:
 			break;

@@ -49,6 +49,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NOERROR" />
 			<xs:enumeration value="ERROR" />
+			<xs:enumeration value="WRONGMESSAGE" />
 		</xs:restriction>
 	</xs:simpleType>
 
