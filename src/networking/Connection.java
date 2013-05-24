@@ -24,13 +24,11 @@ import server.Player;
 public class Connection {
 
 	// TODO ID aus dem Player holen => ID löschen bzw. Namen
-	private int playerID = -1;
-	private Player p;
 	private Socket socket;
+	private Player p;
 	private XmlInStream inFromClient;
 	private XmlOutStream outToClient;
 	private MazeComMessageFactory mcmf;
-	private String playerName;
 
 	/**
 	 * Speicherung des Sockets und oeffnen der Streams
@@ -79,39 +77,60 @@ public class Connection {
 	 * @return Neuer Player, bei einem Fehler jedoch null
 	 */
 	public Player login(int newId) {
-		MazeCom loginMes = this.receiveMessage();
+		this.p = new Player(newId, this);
+		LoginThread lt = new LoginThread(this.inFromClient, this, this.p, newId);
+		lt.start();
+		return this.p;
+	}
 
-		this.p = null;
-		// Test ob es sich um eine LoginNachricht handelt
-		if (loginMes.getMcType() == MazeComType.LOGIN) {
-			// sende Reply
-			this.playerID = newId;
-			this.playerName = loginMes.getLoginMessage().getName();
-			this.sendMessage(this.mcmf.createLoginReplyMessage(this.playerID));
-			// TODO Spieler anlegen! Daten setzten
-			return p;
+	// TODO rausfiltern
+	public MoveMessageType awaitMove(Board brett) {
+		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p.getID(), brett));
+		MazeCom result = this.receiveMessage();
+		if (result.getMcType() == MazeComType.MOVE) {
+			// TODO Check ob Inhalt ok
+			return result.getMoveMessage();
 		} else {
-			// Sende Fehler
-			this.sendMessage(this.mcmf.createErrorMessage(-1,
-					ErrorType.WRONGLOGIN));
-			return this.p;
+			this.sendMessage(this.mcmf.createErrorMessage(this.p.getID(),
+					ErrorType.AWAIT_MOVE));
+			return null;
 		}
 	}
 
-	public MoveMessageType awaitMove(Board brett) {
-		// TODO sende Ihm das neue Brett
-		return null;
-	}
-
+	/**
+	 * sendet dem Spieler den Namen des Gewinners sowie dessen ID und das
+	 * Schlussbrett
+	 * 
+	 * @param winnerId
+	 * @param name
+	 * @param b
+	 */
 	public void sendWin(int winnerId, String name, Board b) {
-		// this.sendMessage(this.mcmf.createWinMessage(this.playerID,winnerId,name,b));
+		this.sendMessage(this.mcmf.createWinMessage(this.p.getID(), winnerId,
+				name, b));
+		try {
+			this.inFromClient.close();
+			this.outToClient.close();
+			this.socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Senden, dass Spieler diconnected wurde
 	 * */
 	public void disconnect() {
-		this.sendMessage(this.mcmf.createDisconnectMessage(this.playerID,
-				this.playerName));
+		this.sendMessage(this.mcmf.createDisconnectMessage(this.p.getID(),
+				this.p.getName()));
+		try {
+			this.inFromClient.close();
+			this.outToClient.close();
+			this.socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

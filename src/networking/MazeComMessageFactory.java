@@ -1,6 +1,7 @@
 package networking;
 
 import server.Board;
+import generated.BoardType;
 import generated.ErrorType;
 import generated.MazeCom;
 import generated.MazeComType;
@@ -58,6 +59,17 @@ public class MazeComMessageFactory {
 		mc.setId(99);
 		mc.setLoginMessage(of.createLoginMessageType());
 		mc.getLoginMessage().setName(name);
+		return mc;
+	}
+
+	public MazeCom createAwaitMoveMessage(int playerId, Board brett) {
+		MazeCom mc = of.createMazeCom();
+		mc.setMcType(MazeComType.AWAITMOVE);
+		mc.setId(playerId);
+		mc.setAwaitMoveMessage(of.createAwaitMoveMessageType());
+		BoardType b = of.createBoardType();
+		//TODO Brett erstellen und übergeben
+		mc.getAwaitMoveMessage().setBoard(b);
 		return mc;
 	}
 }

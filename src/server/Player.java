@@ -13,7 +13,7 @@ public class Player {
 	/*
 	 * Player darf nicht selber generiert werden nur vom Login erzeugt!
 	 */
-	protected Player(int id, Connection c) {
+	public Player(int id, Connection c) {
 		ID = id;
 		this.name = "Player0" + ID;
 		conToClient = c;
