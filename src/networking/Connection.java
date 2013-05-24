@@ -4,9 +4,11 @@
 package networking;
 
 import generated.MazeCom;
+import generated.MazeComType;
 import generated.MoveMessageType;
 import generated.WinMessageType;
 
+import java.io.IOException;
 import java.net.Socket;
 
 import server.Board;
@@ -14,46 +16,106 @@ import server.Player;
 
 public class Connection {
 
-	Socket curCon;
+	Socket socket;
 	XmlInStream inFromClient;
 	XmlOutStream outToClient;
 
 	public Connection(Socket s) {
 		// TODO TCP-Verbindungsaufbau und erzeugen der Streams
+		this.socket = s;
+		try {
+			this.inFromClient = new XmlInStream(this.socket.getInputStream());
+		} catch (IOException e) {
+			System.err
+					.println("[ERROR]: Inputstream konnte nicht geoeffnet werden");
+		}
+		try {
+			this.outToClient = new XmlOutStream(this.socket.getOutputStream());
+		} catch (IOException e) {
+			System.err
+					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
+		}
+
 	}
 
+	/**
+	 * Allgemeines senden einer fertigen MazeCom-Instanz
+	 */
 	public void sendMessage(MazeCom mc) {
-		// TODO senden einer Nachricht
-		// XmlOutStream.write ...
+		this.outToClient.write(mc);
 	}
 
+	/**
+	 * Allgemeines empfangen einer MazeCom-Instanz
+	 * 
+	 * @return
+	 */
 	public MazeCom receiveMessage() {
-		// TODO empfangen einer Nachricht
-		// XmlInStream.read ...
-		// MazeCom zurueck geben
-		return null;
+		MazeCom result = this.inFromClient.readMazeCom();
+		return result;
 	}
 
+	/**
+	 * Allgemeines erwarten eines Login
+	 * 
+	 * @param newId
+	 * @return
+	 */
 	public Player login(int newId) {
-		// receiveMessage -> ersten Login bekommen => Ueberpruefen ob korrekte
-		// Nachricht
-		// Aufbau ergebnisNachricht
-		// sende Ergebnis => mit neuer ID
-		// TODO sende Message vom Type LoginReplyMessageType mit neuer SpielerID
-		return null;
+		MazeCom loginMes = this.inFromClient.readMazeCom();
+		Player p = null;
+		// Test ob es sich um eine LoginNachricht handelt
+		if (loginMes.getMcType() == MazeComType.LOGIN) {
+			// receiveMessage -> ersten Login bekommen => Ueberpruefen ob
+			// korrekte
+			// Nachricht
+			// Aufbau ergebnisNachricht
+			// sende Ergebnis => mit neuer ID
+			// TODO sende Message vom Type LoginReplyMessageType mit neuer
+			// SpielerID
+			return p;
+		} else {
+			this.generateMazeCom(MazeComType.ERROR);
+			return null;
+		}
 	}
 
 	public MoveMessageType awaitMove(Board brett) {
 		// TODO sende Ihm das neue Brett
 		return null;
 	}
-	
-	public void sendWin(int winnerId, String name){
-		//TODO sende Ergebnis raus
+
+	public void sendWin(int winnerId, String name) {
+		// TODO sende Ergebnis raus
 	}
 
 	public void disconnect() {
 		// TODO Erronachricht generieren und Verbindung abbrechen
+	}
+
+	private MazeCom generateMazeCom(MazeComType msgType) {
+		MazeCom result = null;
+		switch (msgType) {
+		// Erstellen einer Loginnachricht
+		case LOGIN:
+			break;
+		// Erstellen einer Loginantwortnachricht
+		case LOGINREPLY:
+			break;
+		case AWAITMOVE:
+			break;
+		case ACCEPT:
+			break;
+		case WIN:
+			break;
+		case MOVE:
+			break;
+		case DISCONNECT:
+			break;
+		default:
+			break;
+		}
+		return result;
 	}
 
 }

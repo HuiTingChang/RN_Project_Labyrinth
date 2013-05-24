@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for AwaitMoveMessageType complex type.
+ * <p>Java class for ErrorMessageType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="AwaitMoveMessageType">
+ * &lt;complexType name="ErrorMessageType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="board" type="{}boardType"/>
+ *         &lt;element name="Error" type="{}ErrorType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,36 +34,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AwaitMoveMessageType", propOrder = {
-    "board"
+@XmlType(name = "ErrorMessageType", propOrder = {
+    "error"
 })
-public class AwaitMoveMessageType {
+public class ErrorMessageType {
 
-    @XmlElement(required = true)
-    protected BoardType board;
+    @XmlElement(name = "Error", required = true)
+    protected ErrorType error;
 
     /**
-     * Gets the value of the board property.
+     * Gets the value of the error property.
      * 
      * @return
      *     possible object is
-     *     {@link BoardType }
+     *     {@link ErrorType }
      *     
      */
-    public BoardType getBoard() {
-        return board;
+    public ErrorType getError() {
+        return error;
     }
 
     /**
-     * Sets the value of the board property.
+     * Sets the value of the error property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BoardType }
+     *     {@link ErrorType }
      *     
      */
-    public void setBoard(BoardType value) {
-        this.board = value;
+    public void setError(ErrorType value) {
+        this.error = value;
     }
 
 }

@@ -12,6 +12,7 @@
 			<xs:enumeration value="ACCEPT" />
 			<xs:enumeration value="WIN" />
 			<xs:enumeration value="DISCONNECT" />
+			<xs:enumeration value="ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -119,6 +120,7 @@
 				<xs:element name="AcceptMessage" type="AcceptMessageType" />
 				<xs:element name="WinMessage" type="WinMessageType" />
 				<xs:element name="DisconnectMessage" type="DisconnectMessageType" />
+				<xs:element name="ErrorMessage" type="ErrorMessageType" />
 			</xs:choice>
 			<xs:attribute name="mcType" type="mazeComType" use="required" />
 			<xs:attribute name="id" type="xs:int" use="required" />
@@ -189,6 +191,13 @@
 			<xs:element name="name" type="xs:string" minOccurs="1"
 				maxOccurs="1" />
 			<xs:element name="erroCode" type="ErrorType" minOccurs="1"
+				maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ErrorMessageType">
+		<xs:sequence>
+			<xs:element name="Error" type="ErrorType" minOccurs="1"
 				maxOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
