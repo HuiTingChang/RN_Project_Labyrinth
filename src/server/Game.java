@@ -1,10 +1,15 @@
 package server;
 
+import generated.MoveMessageType;
+import generated.TreasureType;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
+
+import config.Settings;
 
 import networking.Connection;
 import Timeouts.TimeOutManager;
@@ -17,6 +22,7 @@ public class Game {
 	private HashMap<Integer, Player> spieler;
 	private ServerSocket s;
 	private TimeOutManager timeOutMan;
+	private Board spielBrett;
 	
 	public Game() {
 		spieler=new HashMap<Integer, Player>();
@@ -48,6 +54,7 @@ public class Game {
 					System.out.println("...Waiting for Player timed out!");
 				}
 			}
+			spielBrett=new Board();
 			
 		} catch (IOException e) {
 			System.err.println("Fehler beim Verbindungsaufbau (game.init()):");
@@ -66,15 +73,26 @@ public class Game {
 		}
 	}
 	
-	public void singleTurn(){
+	public void singleTurn(Integer currPlayer){
 		//TODO
 		/**
 		 * Connection.awaitMove
 		 * checken
 		 * ->Bei Fehler illegalMove->liefert neuen Zug
 		 */
-		
-		
+		TreasureType t=spieler.get(currPlayer).getCurrentTreasure();
+		spielBrett.setTreasure(t);
+		MoveMessageType move=spieler.get(currPlayer).getConToClient().awaitMove(this.spielBrett);
+		if(spielBrett.validateTransition(move)){
+			return;
+		}else{
+			int i=1;
+			while(i++<Settings.MOVETRIALS && !spielBrett.validateTransition(move)){
+				move=spieler.get(currPlayer).getConToClient().illigalMove(this.spielBrett);
+			}
+		}
+		spielBrett.proceedTurn(move);
+
 	}
 	/**
 	 * Aufraeumen nach einem Spiel
@@ -91,7 +109,19 @@ public class Game {
 	public static void main(String[] args) {
 		Game currentGame=new Game();
 		currentGame.init();
-		
+		Integer currPlayer=1;
+		while(!currentGame.someBodyWon()){
+			currentGame.singleTurn(currPlayer);
+			currPlayer=currentGame.nextPlayer(currPlayer);
+		}
+	}
+
+	private Integer nextPlayer(Integer currPlayer) {
+		// TODO Auto-generated method stub
+		//Soll Verhindern, das bereits vom Spiel 
+		//ausgeschlossene Spieler nach an die Reihe kommen
+		//(noch zu implementieren)
+		return ++currPlayer;
 	}
 	
 	
