@@ -68,6 +68,7 @@ public class MazeComMessageFactory {
 		mc.setId(playerId);
 		mc.setAwaitMoveMessage(of.createAwaitMoveMessageType());
 		BoardType b = of.createBoardType();
+		b.setShiftCard(of.createCardType());
 		//TODO Brett erstellen und übergeben
 		mc.getAwaitMoveMessage().setBoard(b);
 		return mc;

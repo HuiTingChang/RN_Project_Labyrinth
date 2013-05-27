@@ -1,7 +1,6 @@
 package networking;
 
 import generated.MazeCom;
-import generated.ObjectFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -11,8 +10,6 @@ import java.io.OutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
 
 public class XmlOutStream extends DataOutputStream {
 

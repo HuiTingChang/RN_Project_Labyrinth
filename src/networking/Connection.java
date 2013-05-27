@@ -7,23 +7,15 @@ import generated.ErrorType;
 import generated.MazeCom;
 import generated.MazeComType;
 import generated.MoveMessageType;
-import generated.ObjectFactory;
-import generated.WinMessageType;
 
 import java.io.IOException;
 import java.net.Socket;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 
 import server.Board;
 import server.Player;
 
 public class Connection {
 
-	// TODO ID aus dem Player holen => ID löschen bzw. Namen
 	private Socket socket;
 	private Player p;
 	private XmlInStream inFromClient;
@@ -83,18 +75,37 @@ public class Connection {
 		return this.p;
 	}
 
-	// TODO rausfiltern
+	/**
+	 * Anfrage eines Zuges beim Spieler
+	 * 
+	 * @param brett
+	 *            aktuelles Spielbrett
+	 * @return Zug des Spielers
+	 */
 	public MoveMessageType awaitMove(Board brett) {
 		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p.getID(), brett));
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
-			// TODO Check ob Inhalt ok
 			return result.getMoveMessage();
 		} else {
 			this.sendMessage(this.mcmf.createErrorMessage(this.p.getID(),
 					ErrorType.AWAIT_MOVE));
 			return null;
 		}
+	}
+
+	/**
+	 * Erhaltener Move ist falsch gewesen => Fehler senden und neuen AwaitMove
+	 * sende!
+	 * 
+	 * @param brett
+	 *            aktuelles Spielbrett
+	 * @return Zug des Spielers
+	 */
+	public MoveMessageType illigalMove(Board brett) {
+		this.sendMessage(this.mcmf.createErrorMessage(this.p.getID(),
+				ErrorType.ILLEGAL_MOVE));
+		return this.awaitMove(brett);
 	}
 
 	/**
@@ -113,7 +124,6 @@ public class Connection {
 			this.outToClient.close();
 			this.socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -129,7 +139,6 @@ public class Connection {
 			this.outToClient.close();
 			this.socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

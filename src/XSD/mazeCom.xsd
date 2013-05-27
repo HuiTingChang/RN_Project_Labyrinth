@@ -50,7 +50,8 @@
 			<xs:enumeration value="NOERROR" />
 			<xs:enumeration value="ERROR" />
 			<xs:enumeration value="AWAIT_LOGIN" />			
-			<xs:enumeration value="AWAIT_MOVE" />
+			<xs:enumeration value="AWAIT_MOVE" />			
+			<xs:enumeration value="ILLEGAL_MOVE" />
 			<xs:enumeration value="DISCONNECT" />
 		</xs:restriction>
 	</xs:simpleType>
