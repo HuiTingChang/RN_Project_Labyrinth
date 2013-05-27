@@ -38,6 +38,7 @@ public class Game {
 			boolean accepting=true;
 			while(accepting && i<=4){
 				try{
+					//TODO Was wenn ein Spieler beim Login rausfliegt
 					timeOutMan.startLoginTimeOut();
 					System.out.println("Waiting for another Player ("+i+")");
 					Socket mazeClient=s.accept();
@@ -66,6 +67,13 @@ public class Game {
 	}
 	
 	public void singleTurn(){
+		//TODO
+		/**
+		 * Connection.awaitMove
+		 * checken
+		 * ->Bei Fehler illegalMove->liefert neuen Zug
+		 */
+		
 		
 	}
 	/**
