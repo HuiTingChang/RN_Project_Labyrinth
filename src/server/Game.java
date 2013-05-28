@@ -78,7 +78,7 @@ public class Game {
 	}
 
 	public void singleTurn(Integer currPlayer) {
-		// TODO
+		// TODO Test
 		/**
 		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
 		 * Zug
