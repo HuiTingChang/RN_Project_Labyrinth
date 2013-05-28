@@ -8,7 +8,8 @@ import server.Game;
 
 public class TimeOutManager extends Timer {
 	
-	Game currentGame;
+	private Game currentGame;
+	private LoginTimeOut lto;
 	
 	public TimeOutManager(Game currentGame) {
 		super("TimeOuts",true);
@@ -16,6 +17,10 @@ public class TimeOutManager extends Timer {
 	}
 
 	public void startLoginTimeOut(){
-		this.schedule(new LoginTimeOut(currentGame), Settings.LOGINTIMEOUT);
+		lto=new LoginTimeOut(currentGame);
+		this.schedule(lto, Settings.LOGINTIMEOUT);
+	}
+	public void stopLoginTimeOut(){
+		lto.cancel();
 	}
 }

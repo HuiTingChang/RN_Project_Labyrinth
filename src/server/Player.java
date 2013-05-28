@@ -20,7 +20,6 @@ public class Player {
 		this.name = "Player0" + ID;
 		conToClient = c;
 		currentTreasure = null;
-		pos= null;
 		initialized=false;
 	}
 
@@ -52,9 +51,8 @@ public class Player {
 		conToClient.disconnect();
 	}
 
-	public void init(String name,PositionType pos) {
+	public void init(String name) {
 		this.name=name;
-		this.pos=pos;
 		initialized=true;
 	}
 

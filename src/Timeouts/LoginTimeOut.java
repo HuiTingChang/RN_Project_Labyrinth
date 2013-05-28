@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import server.Game;
 
 public class LoginTimeOut extends TimerTask {
-	Game currentGame;
+	private Game currentGame;
 
 	public LoginTimeOut(Game currentGame) {
 		super();
@@ -16,5 +16,6 @@ public class LoginTimeOut extends TimerTask {
 	public void run() {
 		currentGame.stopLogin();
 	}
+	
 
 }

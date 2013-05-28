@@ -42,10 +42,10 @@ public class Game {
 		try {
 			int i=1;
 			boolean accepting=true;
+			timeOutMan.startLoginTimeOut();
 			while(accepting && i<=4){
 				try{
 					//TODO Was wenn ein Spieler beim Login rausfliegt
-					timeOutMan.startLoginTimeOut();
 					System.out.println("Waiting for another Player ("+i+")");
 					Socket mazeClient=s.accept();
 					Connection c=new Connection(mazeClient);
@@ -54,6 +54,8 @@ public class Game {
 					System.out.println("...Waiting for Player timed out!");
 				}
 			}
+			timeOutMan.stopLoginTimeOut();
+			
 			spielBrett=new Board();
 			
 		} catch (IOException e) {
