@@ -12,7 +12,7 @@ public class LoginThread extends Thread {
 	private Connection con;
 	private Player p;
 	private MazeComMessageFactory mcmf;
-	
+
 	public LoginThread(XmlInStream inFromClient, Connection c, Player p,
 			int newId) {
 		this.in = new XmlInStream(inFromClient);
@@ -31,16 +31,18 @@ public class LoginThread extends Thread {
 				// sende Reply
 				this.con.sendMessage(this.mcmf.createLoginReplyMessage(this.p
 						.getID()));
-				this.p.setName(loginMes.getLoginMessage().getName());
-				break;
+				this.p.init(loginMes.getLoginMessage().getName());
+				return;// verlassen des Threads
 			} else {
 				// Sende Fehler
-				this.con.sendMessage(this.mcmf.createErrorMessage(-1,
+				this.con.sendMessage(this.mcmf.createAcceptMessage(-1,
 						ErrorType.AWAIT_LOGIN));
 				failCounter++;
 				// nach einem Fehler auf den nächsten Versuch warten
 				loginMes = this.in.readMazeCom();
 			}
 		}
+		// Verlassen mit schwerem Fehlerfall
+		this.con.disconnect(ErrorType.TOO_MANY_TRIES);
 	}
 }

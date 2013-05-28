@@ -1,6 +1,7 @@
 package server;
 
 import generated.BoardType;
+
 import generated.CardType;
 import generated.CardType.Openings;
 import generated.CardType.Pin;
@@ -28,7 +29,6 @@ public class Board extends BoardType {
 		}
 		generateInitialBoard();
 		// TODO Auto-generated method stub
-
 	}
 
 	private void generateInitialBoard() {

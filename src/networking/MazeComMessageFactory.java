@@ -21,12 +21,13 @@ public class MazeComMessageFactory {
 		return mc;
 	}
 
-	public MazeCom createErrorMessage(int playerID, ErrorType et) {
+	public MazeCom createAcceptMessage(int playerID, ErrorType et) {
 		MazeCom mc = of.createMazeCom();
 		mc.setMcType(MazeComType.ERROR);
 		mc.setId(playerID);
-		mc.setErrorMessage(of.createErrorMessageType());
-		mc.getErrorMessage().setErrorCode(et);
+		mc.setAcceptMessage(of.createAcceptMessageType());
+		mc.getAcceptMessage().setErrorCode(et);
+		mc.getAcceptMessage().setAccept(et == ErrorType.NOERROR);
 		return mc;
 	}
 
@@ -43,12 +44,12 @@ public class MazeComMessageFactory {
 		return mc;
 	}
 
-	public MazeCom createDisconnectMessage(int playerID, String name) {
+	public MazeCom createDisconnectMessage(int playerID, String name, ErrorType et) {
 		MazeCom mc = of.createMazeCom();
 		mc.setMcType(MazeComType.DISCONNECT);
 		mc.setId(playerID);
 		mc.setDisconnectMessage(of.createDisconnectMessageType());
-		mc.getDisconnectMessage().setErroCode(ErrorType.DISCONNECT);
+		mc.getDisconnectMessage().setErroCode(et);
 		mc.getDisconnectMessage().setName(name);
 		return mc;
 	}
@@ -69,7 +70,7 @@ public class MazeComMessageFactory {
 		mc.setAwaitMoveMessage(of.createAwaitMoveMessageType());
 		BoardType b = of.createBoardType();
 		b.setShiftCard(of.createCardType());
-		//TODO Brett erstellen und übergeben
+		// TODO Brett erstellen und übergeben
 		mc.getAwaitMoveMessage().setBoard(b);
 		return mc;
 	}

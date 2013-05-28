@@ -49,10 +49,11 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NOERROR" />
 			<xs:enumeration value="ERROR" />
-			<xs:enumeration value="AWAIT_LOGIN" />			
-			<xs:enumeration value="AWAIT_MOVE" />			
+			<xs:enumeration value="AWAIT_LOGIN" />
+			<xs:enumeration value="AWAIT_MOVE" />
 			<xs:enumeration value="ILLEGAL_MOVE" />
-			<xs:enumeration value="DISCONNECT" />
+			<xs:enumeration value="TIMEOUT" />			
+			<xs:enumeration value="TOO_MANY_TRIES" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -124,7 +125,6 @@
 				<xs:element name="AcceptMessage" type="AcceptMessageType" />
 				<xs:element name="WinMessage" type="WinMessageType" />
 				<xs:element name="DisconnectMessage" type="DisconnectMessageType" />
-				<xs:element name="ErrorMessage" type="ErrorMessageType" />
 			</xs:choice>
 			<xs:attribute name="mcType" type="mazeComType" use="required" />
 			<xs:attribute name="id" type="xs:int" use="required" />
@@ -171,7 +171,7 @@
 	<xs:complexType name="AcceptMessageType">
 		<xs:sequence>
 			<xs:element name="accept" type="xs:boolean" />
-			<xs:element name="errorcode" type="ErrorType" />
+			<xs:element name="errorCode" type="ErrorType" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -198,11 +198,5 @@
 				maxOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
-	
-	<xs:complexType name="ErrorMessageType">
-		<xs:sequence>
-			<xs:element name="errorCode" type="ErrorType" minOccurs="1"
-				maxOccurs="1" />
-		</xs:sequence>
-	</xs:complexType>
+
 </xs:schema>

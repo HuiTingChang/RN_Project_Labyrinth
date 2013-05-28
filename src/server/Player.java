@@ -1,6 +1,7 @@
 package server;
 
 import networking.Connection;
+import generated.ErrorType;
 import generated.PositionType;
 import generated.TreasureType;
 
@@ -12,6 +13,7 @@ public class Player {
 	private Connection conToClient;
 	private PositionType pos;
 	private boolean initialized;
+
 	/*
 	 * Player darf nicht selber generiert werden nur vom Login erzeugt!
 	 */
@@ -20,7 +22,7 @@ public class Player {
 		this.name = "Player0" + ID;
 		conToClient = c;
 		currentTreasure = null;
-		initialized=false;
+		initialized = false;
 	}
 
 	public TreasureType getCurrentTreasure() {
@@ -39,31 +41,23 @@ public class Player {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Connection getConToClient() {
 		return conToClient;
 	}
 
-	public void disconnect() {
-		conToClient.disconnect();
+	public void disconnect(ErrorType et) {
+		conToClient.disconnect(et);
 	}
 
 	public void init(String name) {
-		this.name=name;
-		initialized=true;
-	}
-
-	public PositionType getPos() {
-		return pos;
+		if (!initialized) {
+			this.name = name;
+			initialized = true;
+		}
 	}
 
 	public boolean isInitialized() {
 		return initialized;
 	}
-	
-	
-	
+
 }

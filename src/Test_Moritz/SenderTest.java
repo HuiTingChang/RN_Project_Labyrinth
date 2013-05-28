@@ -15,7 +15,7 @@ public class SenderTest {
 	public static void main(String[] args) {
 		try {
 			MazeComMessageFactory mcmf = new MazeComMessageFactory();
-			Socket c = new Socket("localhost", 5001);
+			Socket c = new Socket("localhost", 5002);
 			Connection con = new Connection(c);
 			System.out.println("========================================");
 			System.out.println("Sende Login");

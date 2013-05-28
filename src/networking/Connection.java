@@ -11,6 +11,8 @@ import generated.MoveMessageType;
 import java.io.IOException;
 import java.net.Socket;
 
+import Timeouts.TimeOutManager;
+
 import server.Board;
 import server.Player;
 
@@ -21,6 +23,7 @@ public class Connection {
 	private XmlInStream inFromClient;
 	private XmlOutStream outToClient;
 	private MazeComMessageFactory mcmf;
+	private TimeOutManager tom;
 
 	/**
 	 * Speicherung des Sockets und oeffnen der Streams
@@ -43,12 +46,16 @@ public class Connection {
 					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
 		}
 		this.mcmf = new MazeComMessageFactory();
+		this.tom = new TimeOutManager(null);
 	}
 
 	/**
 	 * Allgemeines senden einer fertigen MazeCom-Instanz
 	 */
 	public void sendMessage(MazeCom mc) {
+		// Timer starten, der beim lesen beendet wird
+		// Ablauf Timer = Problem User
+		this.tom.startSendMessageTimeOut(this.p.getID(),this);
 		this.outToClient.write(mc);
 	}
 
@@ -59,6 +66,7 @@ public class Connection {
 	 */
 	public MazeCom receiveMessage() {
 		MazeCom result = this.inFromClient.readMazeCom();
+		this.tom.stopSendMessageTimeOut(this.p.getID());
 		return result;
 	}
 
@@ -86,9 +94,12 @@ public class Connection {
 		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p.getID(), brett));
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
+			// Antwort mit NOERROR
+			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
+					ErrorType.NOERROR));
 			return result.getMoveMessage();
 		} else {
-			this.sendMessage(this.mcmf.createErrorMessage(this.p.getID(),
+			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 					ErrorType.AWAIT_MOVE));
 			return null;
 		}
@@ -103,7 +114,7 @@ public class Connection {
 	 * @return Zug des Spielers
 	 */
 	public MoveMessageType illigalMove(Board brett) {
-		this.sendMessage(this.mcmf.createErrorMessage(this.p.getID(),
+		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 				ErrorType.ILLEGAL_MOVE));
 		return this.awaitMove(brett);
 	}
@@ -131,9 +142,10 @@ public class Connection {
 	/**
 	 * Senden, dass Spieler diconnected wurde
 	 * */
-	public void disconnect() {
+	public void disconnect(ErrorType et) {
 		this.sendMessage(this.mcmf.createDisconnectMessage(this.p.getID(),
-				this.p.getName()));
+				this.p.getName(), et));
+		// TODO Game informieren, dass Player raus ist
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();
