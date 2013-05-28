@@ -2,13 +2,15 @@ package server;
 
 import generated.BoardType;
 import generated.CardType;
+import generated.CardType.Openings;
+import generated.CardType.Pin;
 import generated.MoveMessageType;
 import generated.PositionType;
 import generated.TreasureType;
-import generated.CardType.Pin;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import server.Card.CardShape;
@@ -135,7 +137,7 @@ public class Board extends BoardType {
 
 	}
 
-	public boolean validateTransition(MoveMessageType move,Integer playerID) {
+	public boolean validateTransition(MoveMessageType move, Integer playerID) {
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() == 0 || sm.getCol() == 6) {
 			if (sm.getRow() % 2 == 2) {
@@ -154,34 +156,112 @@ public class Board extends BoardType {
 			return false;
 		}
 		// TODO Test PINPosition
-		if(pathpossible(findPlayer(playerID),move.getNewPinPos())){
+		if (pathpossible(findPlayer(playerID), move.getNewPinPos())) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean pathpossible(PositionType oldPos, PositionType newPos) {
-		// TODO Auto-generated method stub
-		return false;
+		if (oldPos == null || newPos == null)
+			return false;
+		return getAlleEreichbarenNachbarn(oldPos).contains(newPos);
 	}
 
-	public PositionType findPlayer(Integer PlayerID){
+	private List<PositionType> getAlleEreichbarenNachbarn(PositionType position) {
+		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
+		int[][] erreichbar = new int[7][7];
+		erreichbar[position.getRow()][position.getCol()] = 1;
+		erreichbar = getAlleErreichbarenNachbarnMatrix(position, erreichbar);
+		for (int i = 0; i < erreichbar.length; i++) {
+			for (int j = 0; j < erreichbar[0].length; j++) {
+				if (erreichbar[i][j] == 1) {
+					PositionType positionType = new PositionType();
+					positionType.setRow(i);
+					positionType.setCol(j);
+					erreichbarePositionen.add(positionType);
+				}
+			}
+		}
+		return erreichbarePositionen;
+	}
+
+	private int[][] getAlleErreichbarenNachbarnMatrix(PositionType position,
+			int[][] erreichbar) {
+		for (PositionType p1 : getDirektErreichbareNachbarn(position)) {
+			if (erreichbar[p1.getRow()][p1.getCol()] == 0) {
+				erreichbar[p1.getRow()][p1.getCol()] = 1;
+				getAlleErreichbarenNachbarnMatrix(p1, erreichbar);
+			}
+		}
+		return erreichbar;
+	}
+
+	private List<PositionType> getDirektErreichbareNachbarn(
+			PositionType position) {
+		List<PositionType> positionen = new ArrayList<PositionType>();
+		CardType k = this.getCard(position.getRow(), position.getCol());
+		Openings openings = k.getOpenings();
+		if (openings.isLeft()) {
+			if (position.getCol() - 1 >= 0
+					&& getCard(position.getRow(), position.getCol() - 1)
+							.getOpenings().isRight()) {
+				PositionType positionType = new PositionType();
+				positionType.setRow(position.getRow());
+				positionType.setCol(position.getCol() - 1);
+				positionen.add(positionType);
+			}
+		}
+		if (openings.isTop()) {
+			if (position.getRow() - 1 >= 0
+					&& getCard(position.getRow() - 1, position.getCol())
+							.getOpenings().isBottom()) {
+				PositionType positionType = new PositionType();
+				positionType.setRow(position.getRow() - 1);
+				positionType.setCol(position.getCol());
+				positionen.add(positionType);
+			}
+		}
+		if (openings.isRight()) {
+			if (position.getCol() + 1 <= 6
+					&& getCard(position.getRow(), position.getCol() + 1)
+							.getOpenings().isLeft()) {
+				PositionType positionType = new PositionType();
+				positionType.setRow(position.getRow());
+				positionType.setCol(position.getCol() + 1);
+				positionen.add(positionType);
+			}
+		}
+		if (openings.isBottom()) {
+			if (position.getRow() + 1 <= 6
+					&& getCard(position.getRow() + 1, position.getCol())
+							.getOpenings().isTop()) {
+				PositionType positionType = new PositionType();
+				positionType.setRow(position.getRow() + 1);
+				positionType.setCol(position.getCol());
+				positionen.add(positionType);
+			}
+		}
+		return positionen;
+	}
+
+	public PositionType findPlayer(Integer PlayerID) {
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 7; j++) {
-				Pin pinsOnCard=getCard(i, j).getPin();
+				Pin pinsOnCard = getCard(i, j).getPin();
 				for (Integer pin : pinsOnCard.getPlayerID()) {
-					if(pin==PlayerID){
-						PositionType pos=new PositionType();
+					if (pin == PlayerID) {
+						PositionType pos = new PositionType();
 						pos.setCol(j);
 						pos.setRow(i);
 						return pos;
 					}
 				}
 			}
-			
+
 		}
-		//Pin nicht gefunden
+		// Pin nicht gefunden
 		return null;
 	}
 }
