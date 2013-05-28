@@ -130,7 +130,45 @@ public class Board extends BoardType {
 	}
 
 	public void proceedTurn(MoveMessageType move) {
+		// TODO Move Durchfuehren
+		PositionType sm = move.getShiftPosition();
+		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
+			if (sm.getRow() % 2 == 2) {
+				// horizontal schieben
+				int col = sm.getCol();
 
+				int start = (sm.getCol() + 6) % 12; // Karte die rausgenommen
+													// wird
+				setShiftCard(getCard(col, start));
+				if (start == 6) {
+					for (int i = 6; i > 0; --i) {
+						setCard(i, col, new Card(getCard(i - 1, col)));
+					}
+				} else {// Start==0
+					for (int i = 0; i < 6; ++i) {
+						setCard(i, col, new Card(getCard(i + 1, col)));
+					}
+				}
+			}
+		} else if (sm.getRow() % 6 == 0) {
+			if (sm.getCol() % 2 == 2) {
+				// vertikal schieben
+				int row = sm.getRow();
+
+				int start = (sm.getRow() + 6) % 12; // Karte die rausgenommen
+													// wird
+				setShiftCard(getCard(row,start));
+				if (start == 6) {
+					for (int i = 6; i > 0; --i) {
+						setCard(row, i, new Card(getCard(row, i - 1)));
+					}
+				} else {// Start==0
+					for (int i = 0; i < 6; ++i) {
+						setCard(row, i, new Card(getCard(row, i + 1)));
+					}
+				}
+			}
+		}
 	}
 
 	public void validate() {
@@ -177,7 +215,7 @@ public class Board extends BoardType {
 		for (int i = 0; i < erreichbar.length; i++) {
 			for (int j = 0; j < erreichbar[0].length; j++) {
 				if (erreichbar[i][j] == 1) {
-					erreichbarePositionen.add(new Position(i,j));
+					erreichbarePositionen.add(new Position(i, j));
 				}
 			}
 		}
