@@ -23,7 +23,7 @@ public class MazeComMessageFactory {
 
 	public MazeCom createAcceptMessage(int playerID, ErrorType et) {
 		MazeCom mc = of.createMazeCom();
-		mc.setMcType(MazeComType.ERROR);
+		mc.setMcType(MazeComType.ACCEPT);
 		mc.setId(playerID);
 		mc.setAcceptMessage(of.createAcceptMessageType());
 		mc.getAcceptMessage().setErrorCode(et);
@@ -53,7 +53,7 @@ public class MazeComMessageFactory {
 		mc.getDisconnectMessage().setName(name);
 		return mc;
 	}
-
+//TODO entfernen
 	public MazeCom createLoginMessage(String name) {
 		MazeCom mc = of.createMazeCom();
 		mc.setMcType(MazeComType.LOGIN);

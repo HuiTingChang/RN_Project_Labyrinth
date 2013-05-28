@@ -3,7 +3,7 @@
 	xmlns:tns="http://www.example.org/mazeCom" attributeFormDefault="unqualified"
 	elementFormDefault="qualified">
 
-	<xs:simpleType name="mazeComType" final="restriction">
+	<xs:simpleType name="MazeComType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="LOGIN" />
 			<xs:enumeration value="LOGINREPLY" />
@@ -12,7 +12,6 @@
 			<xs:enumeration value="ACCEPT" />
 			<xs:enumeration value="WIN" />
 			<xs:enumeration value="DISCONNECT" />
-			<xs:enumeration value="ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -115,7 +114,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:element name="mazeCom">
+	<xs:element name="MazeCom">
 		<xs:complexType>
 			<xs:choice>
 				<xs:element name="LoginMessage" type="LoginMessageType" />
@@ -126,7 +125,7 @@
 				<xs:element name="WinMessage" type="WinMessageType" />
 				<xs:element name="DisconnectMessage" type="DisconnectMessageType" />
 			</xs:choice>
-			<xs:attribute name="mcType" type="mazeComType" use="required" />
+			<xs:attribute name="mcType" type="MazeComType" use="required" />
 			<xs:attribute name="id" type="xs:int" use="required" />
 			<!-- <xs:attribute name="text" type="xs:string" /> -->
 		</xs:complexType>

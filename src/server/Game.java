@@ -48,7 +48,7 @@ public class Game {
 					//TODO Was wenn ein Spieler beim Login rausfliegt
 					System.out.println("Waiting for another Player ("+i+")");
 					Socket mazeClient=s.accept();
-					Connection c=new Connection(mazeClient);
+					Connection c=new Connection(mazeClient,this);
 					spieler.put(i, c.login(i));
 				}catch(SocketException e){
 					System.out.println("...Waiting for Player timed out!");
@@ -84,12 +84,12 @@ public class Game {
 		 */
 		TreasureType t=spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
-		MoveMessageType move=spieler.get(currPlayer).getConToClient().awaitMove(this.spielBrett);
+		MoveMessageType move=spieler.get(currPlayer).getConToClient().awaitMove(this.spielBrett,0);
 		if(spielBrett.validateTransition(move,currPlayer)){
 			return;
 		}else{
 			int i=1;
-			while(i++<Settings.MOVETRIALS && !spielBrett.validateTransition(move,currPlayer)){
+			while(i++<Settings.MOVETRIES && !spielBrett.validateTransition(move,currPlayer)){
 				move=spieler.get(currPlayer).getConToClient().illigalMove(this.spielBrett);
 			}
 		}
@@ -124,6 +124,10 @@ public class Game {
 		//ausgeschlossene Spieler nach an die Reihe kommen
 		//(noch zu implementieren)
 		return ++currPlayer;
+	}
+
+	public void removePlayer(int id) {
+		this.spieler.remove(id);		
 	}
 	
 	

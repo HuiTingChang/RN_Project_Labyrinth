@@ -25,7 +25,7 @@ public class LoginThread extends Thread {
 		MazeCom loginMes = this.in.readMazeCom();
 		int failCounter = 0;
 		// TODO FailCounter auf Settings anpassen
-		while (failCounter < Settings.LOGINTRIALS) {
+		while (failCounter < Settings.LOGINTRIES) {
 			// Test ob es sich um eine LoginNachricht handelt
 			if (loginMes.getMcType() == MazeComType.LOGIN) {
 				// sende Reply

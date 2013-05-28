@@ -46,6 +46,7 @@ public class XmlOutStream extends DataOutputStream {
 			System.out.println(new String(baos.toByteArray()));
 			// Versenden des XML
 			this.writeUTF(new String(baos.toByteArray()));
+			this.flush();
 		} catch (IOException e) {
 			System.err.println("[ERROR]: Fehler beim versendern der Nachricht");
 		} catch (JAXBException e1) {

@@ -11,9 +11,12 @@ import generated.MoveMessageType;
 import java.io.IOException;
 import java.net.Socket;
 
+import config.Settings;
+
 import Timeouts.TimeOutManager;
 
 import server.Board;
+import server.Game;
 import server.Player;
 
 public class Connection {
@@ -24,6 +27,7 @@ public class Connection {
 	private XmlOutStream outToClient;
 	private MazeComMessageFactory mcmf;
 	private TimeOutManager tom;
+	private Game currentGame;
 
 	/**
 	 * Speicherung des Sockets und oeffnen der Streams
@@ -31,8 +35,11 @@ public class Connection {
 	 * @param s
 	 *            Socket der Verbindung
 	 */
-	public Connection(Socket s) {
+	public Connection(Socket s, Game g) {
+		// TODO entfernen => nur fuer Test
+		this.p = new Player(-1, this);
 		this.socket = s;
+		this.currentGame = g;
 		try {
 			this.inFromClient = new XmlInStream(this.socket.getInputStream());
 		} catch (IOException e) {
@@ -55,7 +62,7 @@ public class Connection {
 	public void sendMessage(MazeCom mc) {
 		// Timer starten, der beim lesen beendet wird
 		// Ablauf Timer = Problem User
-		this.tom.startSendMessageTimeOut(this.p.getID(),this);
+		this.tom.startSendMessageTimeOut(this.p.getID(), this);
 		this.outToClient.write(mc);
 	}
 
@@ -90,7 +97,7 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Zug des Spielers
 	 */
-	public MoveMessageType awaitMove(Board brett) {
+	public MoveMessageType awaitMove(Board brett, int tries) {
 		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p.getID(), brett));
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
@@ -101,6 +108,11 @@ public class Connection {
 		} else {
 			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 					ErrorType.AWAIT_MOVE));
+			if (Settings.MOVETRIES > tries)
+				return awaitMove(brett, tries++);
+			else {
+				disconnect(ErrorType.TOO_MANY_TRIES);
+			}
 			return null;
 		}
 	}
@@ -113,10 +125,15 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Zug des Spielers
 	 */
-	public MoveMessageType illigalMove(Board brett) {
+	public MoveMessageType illigalMove(Board brett, int tries) {
 		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 				ErrorType.ILLEGAL_MOVE));
-		return this.awaitMove(brett);
+		if (tries < Settings.MOVETRIES)
+			return this.awaitMove(brett, tries);
+		else {
+			disconnect(ErrorType.TOO_MANY_TRIES);
+			return null;
+		}
 	}
 
 	/**
@@ -145,7 +162,6 @@ public class Connection {
 	public void disconnect(ErrorType et) {
 		this.sendMessage(this.mcmf.createDisconnectMessage(this.p.getID(),
 				this.p.getName(), et));
-		// TODO Game informieren, dass Player raus ist
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();
@@ -153,5 +169,7 @@ public class Connection {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		// TODO Game informieren, dass Player raus ist
+		this.currentGame.removePlayer(this.p.getID());
 	}
 }

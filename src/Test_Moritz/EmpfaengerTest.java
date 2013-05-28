@@ -23,16 +23,12 @@ public class EmpfaengerTest {
 			MazeComMessageFactory mcmf = new MazeComMessageFactory();
 			ServerSocket s = new ServerSocket(5002);
 			Socket c = s.accept();
-			Connection con = new Connection(c);
+			Connection con = new Connection(c,null);
 
 			System.out.println("========================================");
 			System.out.println("Empfange Login und sende Reply");
 			con.login(1);
-			System.out.println("========================================");
-			System.out.println("Sende Win");
-			con.sendMessage(mcmf.createWinMessage(1, 99, "TestWinner",
-					new Board()));
-			System.out.println("========================================");
+						System.out.println("========================================");
 			System.out.println("Sende Error");
 			con.sendMessage(mcmf.createAcceptMessage(1, ErrorType.ERROR));
 			System.out.println("========================================");
@@ -41,7 +37,7 @@ public class EmpfaengerTest {
 					ErrorType.ERROR));
 
 			Board b = new Board();
-			con.awaitMove(b);
+			con.awaitMove(b,0);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
