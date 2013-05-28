@@ -3,7 +3,6 @@ package networking;
 import generated.MazeCom;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -11,7 +10,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-public class XmlOutStream extends DataOutputStream {
+public class XmlOutStream extends UTFOutputStream{
 
 	private Marshaller marshaller;
 
@@ -45,7 +44,7 @@ public class XmlOutStream extends DataOutputStream {
 			System.out.println("Geschrieben");
 			System.out.println(new String(baos.toByteArray()));
 			// Versenden des XML
-			this.writeUTF(new String(baos.toByteArray()));
+			this.writeUTF8(new String(baos.toByteArray()));
 			this.flush();
 		} catch (IOException e) {
 			System.err.println("[ERROR]: Fehler beim versendern der Nachricht");
@@ -54,5 +53,6 @@ public class XmlOutStream extends DataOutputStream {
 			e1.printStackTrace();
 		}
 	}
+	
 
 }

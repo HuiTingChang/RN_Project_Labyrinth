@@ -17,6 +17,10 @@
 
 	<xs:simpleType name="treasureType" final="restriction">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="Start01" />
+			<xs:enumeration value="Start02" />
+			<xs:enumeration value="Start03" />
+			<xs:enumeration value="Start04" />
 			<xs:enumeration value="sym01" />
 			<xs:enumeration value="sym02" />
 			<xs:enumeration value="sym03" />

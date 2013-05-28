@@ -3,7 +3,6 @@ package networking;
 import generated.MazeCom;
 
 import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,13 +10,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class XmlInStream extends DataInputStream {
+public class XmlInStream extends UTFInputStream {
 
 	private Unmarshaller unmarshaller;
 
 	public XmlInStream(InputStream in) {
 		super(in);
-		try {
+		try {			
 			JAXBContext jc = JAXBContext.newInstance(MazeCom.class);
 			this.unmarshaller = jc.createUnmarshaller();
 		} catch (JAXBException e) {
@@ -35,7 +34,7 @@ public class XmlInStream extends DataInputStream {
 		byte[] bytes = null;
 		MazeCom result = null;
 		try {
-			String xml = this.readUTF();
+			String xml = this.readUTF8();
 			// TODO entfernen
 			System.out.println("Empfangen");
 			System.out.println(xml);
@@ -57,4 +56,5 @@ public class XmlInStream extends DataInputStream {
 		}
 		return result;
 	}
+
 }

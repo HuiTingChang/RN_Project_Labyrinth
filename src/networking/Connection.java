@@ -95,21 +95,31 @@ public class Connection {
 	 * 
 	 * @param brett
 	 *            aktuelles Spielbrett
-	 * @return Zug des Spielers
+	 * @return Valieder Zug des Spielers oder NULL
 	 */
 	public MoveMessageType awaitMove(Board brett, int tries) {
 		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p.getID(), brett));
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
-			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-					ErrorType.NOERROR));
-			return result.getMoveMessage();
+
+			if (this.currentGame.getBoard().validateTransition(
+					result.getMoveMessage(), this.p.getID())) {
+				this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
+						ErrorType.NOERROR));
+				return result.getMoveMessage();
+			} else if (tries < Settings.MOVETRIES)
+				return illigalMove(brett, ++tries);
+			else {
+				disconnect(ErrorType.TOO_MANY_TRIES);
+				return null;
+			}
+
 		} else {
 			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 					ErrorType.AWAIT_MOVE));
-			if (Settings.MOVETRIES > tries)
-				return awaitMove(brett, tries++);
+			if (tries < Settings.MOVETRIES)
+				return awaitMove(brett, ++tries);
 			else {
 				disconnect(ErrorType.TOO_MANY_TRIES);
 			}
@@ -169,7 +179,7 @@ public class Connection {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// TODO Game informieren, dass Player raus ist
+		//entfernen des Spielers
 		this.currentGame.removePlayer(this.p.getID());
 	}
 }

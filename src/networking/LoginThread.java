@@ -15,7 +15,7 @@ public class LoginThread extends Thread {
 
 	public LoginThread(XmlInStream inFromClient, Connection c, Player p,
 			int newId) {
-		this.in = new XmlInStream(inFromClient);
+		this.in = inFromClient;
 		this.p = p;
 		this.con = c;
 		this.mcmf = new MazeComMessageFactory();
