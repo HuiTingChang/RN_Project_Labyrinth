@@ -88,7 +88,7 @@ public class Game {
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(this.spielBrett, 0);
 		if (move != null) {
-			spielBrett.proceedTurn(move);
+			spielBrett.proceedTurn(move,currPlayer);
 		}
 	}
 

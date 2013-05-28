@@ -19,8 +19,11 @@ import server.Card.Orientation;
 
 public class Board extends BoardType {
 
+	private PositionType forbidden;
+
 	public Board() {
 		super();
+		forbidden = null;
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < i; j++) {
 				this.getRow().get(i).getCol().get(j);
@@ -129,7 +132,7 @@ public class Board extends BoardType {
 		return this.getRow().get(row).getCol().get(col);
 	}
 
-	public void proceedTurn(MoveMessageType move) {
+	public void proceedTurn(MoveMessageType move,Integer currPlayer) {
 		// TODO Move Durchfuehren
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
@@ -139,7 +142,8 @@ public class Board extends BoardType {
 
 				int start = (sm.getCol() + 6) % 12; // Karte die rausgenommen
 													// wird
-				setShiftCard(getCard(col, start));
+				setShiftCard(getCard(start, col));
+				forbidden = new Position(start, col);
 				if (start == 6) {
 					for (int i = 6; i > 0; --i) {
 						setCard(i, col, new Card(getCard(i - 1, col)));
@@ -157,7 +161,9 @@ public class Board extends BoardType {
 
 				int start = (sm.getRow() + 6) % 12; // Karte die rausgenommen
 													// wird
-				setShiftCard(getCard(row,start));
+				setShiftCard(getCard(row, start));
+				forbidden = new Position(row, start);
+
 				if (start == 6) {
 					for (int i = 6; i > 0; --i) {
 						setCard(row, i, new Card(getCard(row, i - 1)));
@@ -169,6 +175,19 @@ public class Board extends BoardType {
 				}
 			}
 		}
+
+		if (!shiftCard.getPin().getPlayerID().isEmpty()) {
+			Pin temp = shiftCard.getPin();
+			CardType c = move.getShiftCard();
+			c.setPin(temp);
+			setCard(sm.getRow(), sm.getCol(), new Card(c));
+		}
+		movePlayer(findPlayer(currPlayer), move.getNewPinPos(), currPlayer);
+	}
+
+	private void movePlayer(PositionType oldPos, PositionType newPos, Integer playerID){
+		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID().remove(playerID);
+		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID().add(playerID);
 	}
 
 	public void validate() {
@@ -194,6 +213,7 @@ public class Board extends BoardType {
 			return false;
 		}
 		// TODO Test PINPosition
+		// Funktioniert noch nicht wenn der Spieler sich rausschiebt
 		if (pathpossible(findPlayer(playerID), move.getNewPinPos())) {
 			return true;
 		} else {
