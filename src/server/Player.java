@@ -48,15 +48,8 @@ public class Player {
 		return conToClient;
 	}
 
-	/**
-	 * Bewegung Karte + Pin
-	 */
-	public void makeTurn() {
-
-	}
-
 	public void disconnect() {
-
+		conToClient.disconnect();
 	}
 
 	public void init(String name,PositionType pos) {
@@ -64,4 +57,15 @@ public class Player {
 		this.pos=pos;
 		initialized=true;
 	}
+
+	public PositionType getPos() {
+		return pos;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
+	}
+	
+	
+	
 }

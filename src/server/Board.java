@@ -5,6 +5,7 @@ import generated.CardType;
 import generated.MoveMessageType;
 import generated.PositionType;
 import generated.TreasureType;
+import generated.CardType.Pin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +135,7 @@ public class Board extends BoardType {
 
 	}
 
-	public boolean validateTransition(MoveMessageType move) {
+	public boolean validateTransition(MoveMessageType move,Integer playerID) {
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() == 0 || sm.getCol() == 6) {
 			if (sm.getRow() % 2 == 2) {
@@ -153,9 +154,34 @@ public class Board extends BoardType {
 			return false;
 		}
 		// TODO Test PINPosition
-		//if(pathpossible()){
-		//
-		//
-		return true;
+		if(pathpossible(findPlayer(playerID),move.getNewPinPos())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean pathpossible(PositionType oldPos, PositionType newPos) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public PositionType findPlayer(Integer PlayerID){
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 7; j++) {
+				Pin pinsOnCard=getCard(i, j).getPin();
+				for (Integer pin : pinsOnCard.getPlayerID()) {
+					if(pin==PlayerID){
+						PositionType pos=new PositionType();
+						pos.setCol(j);
+						pos.setRow(i);
+						return pos;
+					}
+				}
+			}
+			
+		}
+		//Pin nicht gefunden
+		return null;
 	}
 }

@@ -83,11 +83,11 @@ public class Game {
 		TreasureType t=spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 		MoveMessageType move=spieler.get(currPlayer).getConToClient().awaitMove(this.spielBrett);
-		if(spielBrett.validateTransition(move)){
+		if(spielBrett.validateTransition(move,currPlayer)){
 			return;
 		}else{
 			int i=1;
-			while(i++<Settings.MOVETRIALS && !spielBrett.validateTransition(move)){
+			while(i++<Settings.MOVETRIALS && !spielBrett.validateTransition(move,currPlayer)){
 				move=spieler.get(currPlayer).getConToClient().illigalMove(this.spielBrett);
 			}
 		}
