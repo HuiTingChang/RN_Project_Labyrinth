@@ -177,10 +177,7 @@ public class Board extends BoardType {
 		for (int i = 0; i < erreichbar.length; i++) {
 			for (int j = 0; j < erreichbar[0].length; j++) {
 				if (erreichbar[i][j] == 1) {
-					PositionType positionType = new PositionType();
-					positionType.setRow(i);
-					positionType.setCol(j);
-					erreichbarePositionen.add(positionType);
+					erreichbarePositionen.add(new Position(i,j));
 				}
 			}
 		}
@@ -207,40 +204,32 @@ public class Board extends BoardType {
 			if (position.getCol() - 1 >= 0
 					&& getCard(position.getRow(), position.getCol() - 1)
 							.getOpenings().isRight()) {
-				PositionType positionType = new PositionType();
-				positionType.setRow(position.getRow());
-				positionType.setCol(position.getCol() - 1);
-				positionen.add(positionType);
+				positionen.add(new Position(position.getRow(), position
+						.getCol() - 1));
 			}
 		}
 		if (openings.isTop()) {
 			if (position.getRow() - 1 >= 0
 					&& getCard(position.getRow() - 1, position.getCol())
 							.getOpenings().isBottom()) {
-				PositionType positionType = new PositionType();
-				positionType.setRow(position.getRow() - 1);
-				positionType.setCol(position.getCol());
-				positionen.add(positionType);
+				positionen.add(new Position(position.getRow() - 1, position
+						.getCol()));
 			}
 		}
 		if (openings.isRight()) {
 			if (position.getCol() + 1 <= 6
 					&& getCard(position.getRow(), position.getCol() + 1)
 							.getOpenings().isLeft()) {
-				PositionType positionType = new PositionType();
-				positionType.setRow(position.getRow());
-				positionType.setCol(position.getCol() + 1);
-				positionen.add(positionType);
+				positionen.add(new Position(position.getRow(), position
+						.getCol() + 1));
 			}
 		}
 		if (openings.isBottom()) {
 			if (position.getRow() + 1 <= 6
 					&& getCard(position.getRow() + 1, position.getCol())
 							.getOpenings().isTop()) {
-				PositionType positionType = new PositionType();
-				positionType.setRow(position.getRow() + 1);
-				positionType.setCol(position.getCol());
-				positionen.add(positionType);
+				positionen.add(new Position(position.getRow() + 1, position
+						.getCol()));
 			}
 		}
 		return positionen;
