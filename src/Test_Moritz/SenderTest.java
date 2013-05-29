@@ -20,7 +20,7 @@ public class SenderTest {
 			Connection con = new Connection(c, null);
 			System.out.println("========================================");
 			System.out.println("Sende Login");
-			con.sendMessage(mcmf.createLoginMessage("Test"));
+//			con.sendMessage(mcmf.createLoginMessage("Test"));
 			System.out.println("========================================");
 			System.out.println("Empfange Reply");
 			con.receiveMessage();

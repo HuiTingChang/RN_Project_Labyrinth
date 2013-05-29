@@ -53,15 +53,7 @@ public class MazeComMessageFactory {
 		mc.getDisconnectMessage().setName(name);
 		return mc;
 	}
-//TODO entfernen
-	public MazeCom createLoginMessage(String name) {
-		MazeCom mc = of.createMazeCom();
-		mc.setMcType(MazeComType.LOGIN);
-		mc.setId(99);
-		mc.setLoginMessage(of.createLoginMessageType());
-		mc.getLoginMessage().setName(name);
-		return mc;
-	}
+
 
 	public MazeCom createAwaitMoveMessage(int playerId, Board brett) {
 		MazeCom mc = of.createMazeCom();
