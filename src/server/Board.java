@@ -184,11 +184,15 @@ public class Board extends BoardType {
 		}
 		setCard(sm.getRow(), sm.getCol(), c);
 	}
-	
-	public void proceedTurn(MoveMessageType move,Integer currPlayer) {
+	//gibt zurück ob mit dem Zug der aktuelle Schatz erreicht wurde
+	public boolean proceedTurn(MoveMessageType move,Integer currPlayer) {
 		// TODO ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
 		this.proceedShift(move);
-		movePlayer(findPlayer(currPlayer), move.getNewPinPos(), currPlayer);
+		Position target=new Position(move.getNewPinPos());
+		movePlayer(findPlayer(currPlayer),target , currPlayer);
+		Card c=new Card(getCard(target.getRow(), target.getCol()));
+		return (c.getTreasure()==treasure);
+		
 	}
 
 	private void movePlayer(PositionType oldPos, PositionType newPos, Integer playerID){

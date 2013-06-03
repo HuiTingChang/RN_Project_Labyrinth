@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import config.Settings;
 
@@ -24,8 +25,10 @@ public class Game {
 	private ServerSocket s;
 	private TimeOutManager timeOutMan;
 	private Board spielBrett;
+	private boolean playing;
 
 	public Game() {
+		playing=true;
 		spieler = new HashMap<Integer, Player>();
 		timeOutMan = new TimeOutManager(this);
 		try {
@@ -60,6 +63,8 @@ public class Game {
 
 			spielBrett = new Board();
 
+			//TODO TreasureCards verteilen
+			
 		} catch (IOException e) {
 			System.err.println("Fehler beim Verbindungsaufbau (game.init()):");
 			System.err.println(e.getMessage());
@@ -78,17 +83,23 @@ public class Game {
 	}
 
 	public void singleTurn(Integer currPlayer) {
-		// TODO Test
 		/**
 		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
 		 * Zug
 		 */
+		
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(this.spielBrett, 0);
 		if (move != null) {
-			spielBrett.proceedTurn(move,currPlayer);
+			if(spielBrett.proceedTurn(move,currPlayer)){
+				//foundTreasure gibt zurück wieviele 
+				//Schätze noch zu finden sind
+				if(spieler.get(currPlayer).foundTreasure()==0){
+					playing=false;
+				}
+			}
 		}
 	}
 
@@ -100,12 +111,13 @@ public class Game {
 	 * Aufraeumen nach einem Spiel
 	 */
 	public void cleanUp() {
+		// TODO mitteilung an alle Clients, dass einer Gewonnen hat
 
 	}
 
 	public boolean someBodyWon() {
-		return false;
-		// TODO mitteilung an alle Clients, dass einer Gewonnen hat
+		return !playing;
+		
 	}
 
 	public static void main(String[] args) {
@@ -116,14 +128,25 @@ public class Game {
 			currentGame.singleTurn(currPlayer);
 			currPlayer = currentGame.nextPlayer(currPlayer);
 		}
+		currentGame.cleanUp();
 	}
 
 	private Integer nextPlayer(Integer currPlayer) {
-		// TODO Auto-generated method stub
 		// Soll Verhindern, das bereits vom Spiel
 		// ausgeschlossene Spieler nach an die Reihe kommen
-		// (noch zu implementieren)
-		return ++currPlayer;
+		Iterator<Integer> iDIterator=spieler.keySet().iterator();
+		
+		while(iDIterator.hasNext()){
+			if(iDIterator.next()==currPlayer){
+				break;
+			}
+		}
+		if(iDIterator.hasNext()){
+			return iDIterator.next();
+		}else{
+			//Erste ID zurückgeben,
+			return spieler.keySet().iterator().next();
+		}
 	}
 
 	public void removePlayer(int id) {

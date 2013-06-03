@@ -1,5 +1,9 @@
 package server;
 
+import java.util.Collection;
+import java.util.EmptyStackException;
+import java.util.Stack;
+
 import networking.Connection;
 import generated.ErrorType;
 import generated.PositionType;
@@ -9,7 +13,7 @@ public class Player {
 	final int ID;
 	private String name;
 	private TreasureType currentTreasure;
-
+	private Stack<TreasureType> treasures;
 	private Connection conToClient;
 	private PositionType pos;
 	private boolean initialized;
@@ -29,10 +33,22 @@ public class Player {
 		return currentTreasure;
 	}
 
-	public void setCurrentTreasure(TreasureType currentTreasure) {
-		this.currentTreasure = currentTreasure;
+	//returns remaing treasures
+	public int foundTreasure(){
+		try{
+			currentTreasure=treasures.pop();
+		}catch(EmptyStackException e){
+			return 0;
+		}
+		return treasures.size()+1;
+	
 	}
-
+	public int treausresToGo(){
+		return treasures.size()+1;
+	}
+	public void setTreasure(Collection<? extends TreasureType> c) {
+		this.treasures.addAll(c);
+	}
 	public int getID() {
 		return ID;
 	}
