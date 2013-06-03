@@ -19,7 +19,7 @@ import server.Card.Orientation;
 
 public class Board extends BoardType {
 
-	private PositionType forbidden;
+	private Position forbidden;
 
 	public Board() {
 		super();
@@ -31,7 +31,6 @@ public class Board extends BoardType {
 
 		}
 		generateInitialBoard();
-		// TODO Auto-generated method stub
 	}
 
 	private void generateInitialBoard() {
@@ -132,11 +131,11 @@ public class Board extends BoardType {
 		return this.getRow().get(row).getCol().get(col);
 	}
 
-	public void proceedTurn(MoveMessageType move,Integer currPlayer) {
-		// TODO Move Durchfuehren
+	//Führt nur das herreinschieben der Karte aus!!!
+	private void proceedShift(MoveMessageType move){
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
-			if (sm.getRow() % 2 == 2) {
+			if (sm.getRow() % 2 == 1) {
 				// horizontal schieben
 				int col = sm.getCol();
 
@@ -155,7 +154,7 @@ public class Board extends BoardType {
 				}
 			}
 		} else if (sm.getRow() % 6 == 0) {
-			if (sm.getCol() % 2 == 2) {
+			if (sm.getCol() % 2 == 1) {
 				// vertikal schieben
 				int row = sm.getRow();
 
@@ -175,13 +174,20 @@ public class Board extends BoardType {
 				}
 			}
 		}
-
+		Card c=null;
+		c = new Card(move.getShiftCard());
+		// Wenn Spielfigur auf neuer shiftcard
+		// muss dieser wieder aufs Brett gesetzt werden
 		if (!shiftCard.getPin().getPlayerID().isEmpty()) {
 			Pin temp = shiftCard.getPin();
-			CardType c = move.getShiftCard();
 			c.setPin(temp);
-			setCard(sm.getRow(), sm.getCol(), new Card(c));
 		}
+		setCard(sm.getRow(), sm.getCol(), c);
+	}
+	
+	public void proceedTurn(MoveMessageType move,Integer currPlayer) {
+		// TODO ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
+		this.proceedShift(move);
 		movePlayer(findPlayer(currPlayer), move.getNewPinPos(), currPlayer);
 	}
 
@@ -190,31 +196,42 @@ public class Board extends BoardType {
 		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID().add(playerID);
 	}
 
-	public void validate() {
-
+	private Board fakeShift(MoveMessageType move) {
+		Board fake=(Board) this.clone();
+		fake.proceedShift(move);
+		return fake;
 	}
+	
+	@Override
+	public Object clone(){
+			Board clone=new Board();
+			clone.forbidden=new Position(this.forbidden);
+			clone.shiftCard=new Card(this.shiftCard);
+			clone.treasure=this.treasure;
+			for (int i = 0; i < 7; i++) {
+				for (int j = 0; j < 7; j++) {
+					clone.setCard(i, j, new Card(this.getCard(i, j)));
+				}
 
+			}
+			return clone;
+	}
+	
 	public boolean validateTransition(MoveMessageType move, Integer playerID) {
-		PositionType sm = move.getShiftPosition();
-		if (sm.getCol() == 0 || sm.getCol() == 6) {
-			if (sm.getRow() % 2 == 2) {
-				return false;
-			}
-		} else if (sm.getRow() == 0 || sm.getRow() == 6) {
-			if (sm.getCol() % 2 == 2) {
-				return false;
-			}
-		} else {
+		//Überprüfen ob das Reinschieben der Karte gültig ist
+		
+		Position sm = new Position(move.getShiftPosition());
+		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
 			return false;
 		}
-
 		Card sc = new Card(move.getShiftCard());
 		if (!sc.equals(shiftCard)) {
 			return false;
-		}
-		// TODO Test PINPosition
-		// Funktioniert noch nicht wenn der Spieler sich rausschiebt
-		if (pathpossible(findPlayer(playerID), move.getNewPinPos())) {
+		}		
+		// Überprüfen ob der Spielzug gültig ist
+		Board fake=this.fakeShift(move);		
+		Position playerPosition= new Position(fake.findPlayer(playerID));
+		if ( fake.pathpossible(playerPosition , move.getNewPinPos())) {
 			return true;
 		} else {
 			return false;
