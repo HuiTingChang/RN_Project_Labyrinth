@@ -41,6 +41,7 @@ public class XmlOutStream extends UTFOutputStream{
 			// TODO entferne Ausgabe
 			System.out.println("Geschrieben");
 			System.out.println(new String(baos.toByteArray()));
+			// TODO bis hier
 			// Versenden des XML
 			this.writeUTF8(new String(baos.toByteArray()));
 			this.flush();

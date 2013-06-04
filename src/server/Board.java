@@ -125,6 +125,12 @@ private TreasureType currentTreasure;
 		getCard(0, 6).getPin().getPlayerID().add(2);
 		getCard(6, 0).getPin().getPlayerID().add(3);
 		getCard(6, 6).getPin().getPlayerID().add(4);
+		
+		//Start als Schatz hinterlegen
+		getCard(0, 0).setTreasure(TreasureType.START_01);
+		getCard(0, 6).setTreasure(TreasureType.START_02);
+		getCard(6, 0).setTreasure(TreasureType.START_03);
+		getCard(6, 6).setTreasure(TreasureType.START_04);
 
 	}
 

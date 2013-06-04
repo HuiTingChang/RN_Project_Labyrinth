@@ -103,7 +103,6 @@ public class Connection {
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
-
 			if (this.currentGame.getBoard().validateTransition(
 					result.getMoveMessage(), this.p.getID())) {
 				this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),

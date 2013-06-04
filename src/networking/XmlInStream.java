@@ -38,11 +38,11 @@ public class XmlInStream extends UTFInputStream {
 			// TODO entfernen
 			System.out.println("Empfangen");
 			System.out.println(xml);
+			// TODO bis hier
 			bytes = xml.getBytes();
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 
 			result = (MazeCom) this.unmarshaller.unmarshal(bais);
-			// TODO entferne Aufgabe
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			System.err
