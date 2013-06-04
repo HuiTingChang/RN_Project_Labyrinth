@@ -1,6 +1,5 @@
 package config;
 
-import java.util.Date;
 
 public class Settings {
 	// TODO falls alles nur Static => Konstruktor private machen

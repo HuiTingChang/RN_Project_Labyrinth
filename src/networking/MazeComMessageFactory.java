@@ -1,12 +1,11 @@
 package networking;
 
-import server.Board;
-import generated.BoardType;
 import generated.ErrorType;
 import generated.MazeCom;
 import generated.MazeComType;
 import generated.ObjectFactory;
 import generated.WinMessageType.Winner;
+import server.Board;
 
 public class MazeComMessageFactory {
 

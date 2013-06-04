@@ -1,13 +1,7 @@
 package Test_Moritz;
 
-import generated.ErrorType;
-
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-
-import server.Board;
-import server.Game;
 
 import networking.Connection;
 import networking.MazeComMessageFactory;
@@ -30,7 +24,7 @@ public class SenderTest {
 			System.out.println("========================================");
 			System.out.println("Empfange Disconnect");
 			con.receiveMessage();
-
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

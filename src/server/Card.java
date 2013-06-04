@@ -44,6 +44,9 @@ public class Card extends CardType {
 
 	public Card(CardShape shape, Orientation o, TreasureType t) {
 		super();
+		this.setOpenings(new Openings());
+		this.setPin(new Pin());
+		this.pin.getPlayerID();
 		switch (shape) {
 		case I:
 			switch (o) {

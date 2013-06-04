@@ -27,7 +27,8 @@ public class Board extends BoardType {
 		this.getRow();
 		for (int i = 0; i < 7; i++) {
 			this.getRow().add(i,new Row());
-			for (int j = 0; j < i; j++) {
+			//this.getRow().get(i).getCol();
+			for (int j = 0; j < 7; j++) {
 				this.getRow().get(i).getCol().add(new CardType());
 			}
 

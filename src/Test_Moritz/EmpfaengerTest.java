@@ -1,17 +1,14 @@
 package Test_Moritz;
 
 import generated.ErrorType;
-import generated.MazeCom;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import server.Board;
-import server.Game;
-
 import networking.Connection;
 import networking.MazeComMessageFactory;
+import server.Board;
 
 public class EmpfaengerTest {
 
@@ -38,7 +35,7 @@ public class EmpfaengerTest {
 
 			Board b = new Board();
 			con.awaitMove(b,0);
-
+			s.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
