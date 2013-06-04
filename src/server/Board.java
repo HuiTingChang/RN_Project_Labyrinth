@@ -24,9 +24,11 @@ public class Board extends BoardType {
 	public Board() {
 		super();
 		forbidden = null;
+		this.getRow();
 		for (int i = 0; i < 7; i++) {
+			this.getRow().add(i,new Row());
 			for (int j = 0; j < i; j++) {
-				this.getRow().get(i).getCol().get(j);
+				this.getRow().get(i).getCol().add(new CardType());
 			}
 
 		}
@@ -116,10 +118,10 @@ public class Board extends BoardType {
 
 		}
 		this.setShiftCard(freeCards.get(k));
-		getCard(0, 0).getPin().getPlayerID().add(0);
-		getCard(0, 6).getPin().getPlayerID().add(1);
-		getCard(6, 0).getPin().getPlayerID().add(2);
-		getCard(6, 6).getPin().getPlayerID().add(3);
+		getCard(0, 0).getPin().getPlayerID().add(1);
+		getCard(0, 6).getPin().getPlayerID().add(2);
+		getCard(6, 0).getPin().getPlayerID().add(3);
+		getCard(6, 6).getPin().getPlayerID().add(4);
 
 	}
 
