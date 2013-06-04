@@ -23,7 +23,7 @@ public class EmpfaengerTest {
 			MazeComMessageFactory mcmf = new MazeComMessageFactory();
 			ServerSocket s = new ServerSocket(5002);
 			Socket c = s.accept();
-			Connection con = new Connection(c,null);
+			Connection con = new Connection(c,null,1);
 
 			System.out.println("========================================");
 			System.out.println("Empfange Login und sende Reply");

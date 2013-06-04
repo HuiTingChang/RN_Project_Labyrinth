@@ -53,7 +53,7 @@ public class Game {
 					System.out
 							.println("Waiting for another Player (" + i + ")");
 					Socket mazeClient = s.accept();
-					Connection c = new Connection(mazeClient, this);
+					Connection c = new Connection(mazeClient, this,i);
 					spieler.put(i, c.login(i));
 				} catch (SocketException e) {
 					System.out.println("...Waiting for Player timed out!");

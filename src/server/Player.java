@@ -26,32 +26,35 @@ public class Player {
 		conToClient = c;
 		currentTreasure = null;
 		initialized = false;
-		treasures= new Stack<TreasureType>();
-		//Hinzufügen des Starts als letzter zu holender Schatz
-		//z.B.: TreasureType.START_01
-		treasures.push(TreasureType.fromValue("Start0"+id));
+		treasures = new Stack<TreasureType>();
+		// Hinzufügen des Starts als letzter zu holender Schatz
+		// z.B.: TreasureType.START_01
+		treasures.push(TreasureType.fromValue("Start0" + id));
 	}
 
 	public TreasureType getCurrentTreasure() {
 		return currentTreasure;
 	}
 
-	//returns remaing treasures
-	public int foundTreasure(){
-		try{
-			currentTreasure=treasures.pop();
-		}catch(EmptyStackException e){
+	// returns remaing treasures
+	public int foundTreasure() {
+		try {
+			currentTreasure = treasures.pop();
+		} catch (EmptyStackException e) {
 			return 0;
 		}
-		return treasures.size()+1;
-	
+		return treasures.size() + 1;
+
 	}
-	public int treausresToGo(){
-		return treasures.size()+1;
+
+	public int treausresToGo() {
+		return treasures.size() + 1;
 	}
+
 	public void setTreasure(Collection<? extends TreasureType> c) {
 		this.treasures.addAll(c);
 	}
+
 	public int getID() {
 		return ID;
 	}

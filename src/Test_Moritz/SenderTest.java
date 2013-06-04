@@ -17,10 +17,10 @@ public class SenderTest {
 		try {
 			MazeComMessageFactory mcmf = new MazeComMessageFactory();
 			Socket c = new Socket("localhost", 5002);
-			Connection con = new Connection(c, null);
+			Connection con = new Connection(c, null,1);
 			System.out.println("========================================");
 			System.out.println("Sende Login");
-//			con.sendMessage(mcmf.createLoginMessage("Test"));
+			con.sendMessage(mcmf.createLoginMessage("Test"));
 			System.out.println("========================================");
 			System.out.println("Empfange Reply");
 			con.receiveMessage();

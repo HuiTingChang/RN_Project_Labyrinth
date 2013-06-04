@@ -35,7 +35,7 @@ public class Connection {
 	 * @param s
 	 *            Socket der Verbindung
 	 */
-	public Connection(Socket s, Game g) {
+	public Connection(Socket s, Game g, int newId) {
 		// TODO entfernen => nur fuer Test
 		this.socket = s;
 		this.currentGame = g;
@@ -51,8 +51,10 @@ public class Connection {
 			System.err
 					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
 		}
+		this.p = new Player(newId, this);
 		this.mcmf = new MazeComMessageFactory();
 		this.tom = new TimeOutManager();
+		
 	}
 
 	/**
@@ -84,7 +86,7 @@ public class Connection {
 	 */
 	public Player login(int newId) {
 		this.p = new Player(newId, this);
-		LoginThread lt = new LoginThread(this.inFromClient, this, this.p, newId);
+		LoginThread lt = new LoginThread(this.inFromClient, this, this.p);
 		lt.start();
 		return this.p;
 	}

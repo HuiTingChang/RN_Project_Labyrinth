@@ -66,4 +66,13 @@ public class MazeComMessageFactory {
 	
 		return mc;
 	}
+
+	public MazeCom createLoginMessage(String string) {
+		MazeCom mc = of.createMazeCom();
+		mc.setMcType(MazeComType.LOGIN);
+		mc.setId(-1);
+		mc.setLoginMessage(of.createLoginMessageType());
+		mc.getLoginMessage().setName(string);
+		return mc;
+	}
 }
