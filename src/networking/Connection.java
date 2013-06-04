@@ -53,7 +53,7 @@ public class Connection {
 					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
 		}
 		this.mcmf = new MazeComMessageFactory();
-		this.tom = new TimeOutManager(null);
+		this.tom = new TimeOutManager();
 	}
 
 	/**

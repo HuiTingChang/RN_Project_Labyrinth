@@ -1,28 +1,23 @@
 package Timeouts;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 
 import networking.Connection;
-
-import config.Settings;
-
 import server.Game;
+import config.Settings;
 
 public class TimeOutManager extends Timer {
 
-	private Game currentGame;
 	private LoginTimeOut lto;
 	private HashMap<Integer, SendMessageTimeout> smt;
 
-	public TimeOutManager(Game currentGame) {
+	public TimeOutManager() {
 		super("TimeOuts", true);
-		this.currentGame = currentGame;
 		this.smt = new HashMap<Integer, SendMessageTimeout>();
 	}
 
-	public void startLoginTimeOut() {
+	public void startLoginTimeOut(Game currentGame) {
 		lto = new LoginTimeOut(currentGame);
 		this.schedule(lto, Settings.LOGINTIMEOUT);
 	}

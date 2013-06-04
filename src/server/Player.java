@@ -1,13 +1,13 @@
 package server;
 
+import generated.ErrorType;
+import generated.TreasureType;
+
 import java.util.Collection;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
 import networking.Connection;
-import generated.ErrorType;
-import generated.PositionType;
-import generated.TreasureType;
 
 public class Player {
 	final int ID;
@@ -15,7 +15,6 @@ public class Player {
 	private TreasureType currentTreasure;
 	private Stack<TreasureType> treasures;
 	private Connection conToClient;
-	private PositionType pos;
 	private boolean initialized;
 
 	/*
@@ -27,6 +26,10 @@ public class Player {
 		conToClient = c;
 		currentTreasure = null;
 		initialized = false;
+		treasures= new Stack<TreasureType>();
+		//Hinzufügen des Starts als letzter zu holender Schatz
+		//z.B.: TreasureType.START_01
+		treasures.push(TreasureType.fromValue("START_0"+id));
 	}
 
 	public TreasureType getCurrentTreasure() {

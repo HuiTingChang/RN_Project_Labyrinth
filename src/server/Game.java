@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import config.Settings;
 
 import networking.Connection;
 import Timeouts.TimeOutManager;
@@ -25,12 +25,12 @@ public class Game {
 	private ServerSocket s;
 	private TimeOutManager timeOutMan;
 	private Board spielBrett;
-	private boolean playing;
+	private Integer winner=-1;//Default wert -1 solange kein Gewinner feststeht
 
 	public Game() {
-		playing=true;
+		winner=-1;
 		spieler = new HashMap<Integer, Player>();
-		timeOutMan = new TimeOutManager(this);
+		timeOutMan = new TimeOutManager();
 		try {
 			s = new ServerSocket(config.Settings.port);
 		} catch (IOException e) {
@@ -46,7 +46,7 @@ public class Game {
 		try {
 			int i = 1;
 			boolean accepting = true;
-			timeOutMan.startLoginTimeOut();
+			timeOutMan.startLoginTimeOut(this);
 			while (accepting && i <= 4) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
@@ -58,13 +58,48 @@ public class Game {
 				} catch (SocketException e) {
 					System.out.println("...Waiting for Player timed out!");
 				}
+				++i;
 			}
 			timeOutMan.stopLoginTimeOut();
 
 			spielBrett = new Board();
-
-			//TODO TreasureCards verteilen
-			
+			//TODO Wartezeit einbauen bis Login abgeschlossen ist!
+			ArrayList<TreasureType> tcp=new ArrayList<>();
+			tcp.add(TreasureType.SYM_01);
+			tcp.add(TreasureType.SYM_02);			
+			tcp.add(TreasureType.SYM_03);			
+			tcp.add(TreasureType.SYM_04);			
+			tcp.add(TreasureType.SYM_05);			
+			tcp.add(TreasureType.SYM_06);			
+			tcp.add(TreasureType.SYM_07);			
+			tcp.add(TreasureType.SYM_08);			
+			tcp.add(TreasureType.SYM_09);			
+			tcp.add(TreasureType.SYM_10);			
+			tcp.add(TreasureType.SYM_11);			
+			tcp.add(TreasureType.SYM_12);			
+			tcp.add(TreasureType.SYM_13);			
+			tcp.add(TreasureType.SYM_14);
+			tcp.add(TreasureType.SYM_15);			
+			tcp.add(TreasureType.SYM_16);			
+			tcp.add(TreasureType.SYM_17);			
+			tcp.add(TreasureType.SYM_18);			
+			tcp.add(TreasureType.SYM_19);			
+			tcp.add(TreasureType.SYM_20);			
+			tcp.add(TreasureType.SYM_21);			
+			tcp.add(TreasureType.SYM_22);			
+			tcp.add(TreasureType.SYM_23);			
+			tcp.add(TreasureType.SYM_24);		
+			Collections.shuffle(tcp);
+			int anzCards=tcp.size()/spieler.size();
+			i=0;
+			for (Integer player : spieler.keySet()) {
+				ArrayList<TreasureType> cardsPerPlayer=new ArrayList<TreasureType>();
+				for (int j = i*anzCards; j < (i+1)*anzCards; j++) {
+					cardsPerPlayer.add(tcp.get(j));
+				}
+				spieler.get(player).setTreasure(cardsPerPlayer);
+				++i;
+			}
 		} catch (IOException e) {
 			System.err.println("Fehler beim Verbindungsaufbau (game.init()):");
 			System.err.println(e.getMessage());
@@ -97,7 +132,7 @@ public class Game {
 				//foundTreasure gibt zurück wieviele 
 				//Schätze noch zu finden sind
 				if(spieler.get(currPlayer).foundTreasure()==0){
-					playing=false;
+					winner=currPlayer;
 				}
 			}
 		}
@@ -111,12 +146,15 @@ public class Game {
 	 * Aufraeumen nach einem Spiel
 	 */
 	public void cleanUp() {
-		// TODO mitteilung an alle Clients, dass einer Gewonnen hat
-
+		for (Integer playerID : spieler.keySet()) {
+			Player s=spieler.get(playerID);
+			s.getConToClient().sendWin(winner, spieler.get(winner).getName(),spielBrett );
+		}
+		// TODO muss sonst noch was gemacht werden??
 	}
 
 	public boolean someBodyWon() {
-		return !playing;
+		return winner!=-1;
 		
 	}
 
