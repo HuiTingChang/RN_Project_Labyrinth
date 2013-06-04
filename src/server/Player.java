@@ -29,7 +29,7 @@ public class Player {
 		treasures= new Stack<TreasureType>();
 		//Hinzufügen des Starts als letzter zu holender Schatz
 		//z.B.: TreasureType.START_01
-		treasures.push(TreasureType.fromValue("START_0"+id));
+		treasures.push(TreasureType.fromValue("Start0"+id));
 	}
 
 	public TreasureType getCurrentTreasure() {

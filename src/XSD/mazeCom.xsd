@@ -55,7 +55,7 @@
 			<xs:enumeration value="AWAIT_LOGIN" />
 			<xs:enumeration value="AWAIT_MOVE" />
 			<xs:enumeration value="ILLEGAL_MOVE" />
-			<xs:enumeration value="TIMEOUT" />			
+			<xs:enumeration value="TIMEOUT" />
 			<xs:enumeration value="TOO_MANY_TRIES" />
 		</xs:restriction>
 	</xs:simpleType>
@@ -106,7 +106,9 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="shiftCard" type="cardType" />
-			<xs:element name="treasure" type="treasureType" />
+			<xs:element name="treasure" type="treasureType" />			
+			<xs:element name="forbidden" type="positionType" />			
+			<xs:element name="treausresToGo" type="xs:int" />
 		</xs:sequence>
 	</xs:complexType>
 

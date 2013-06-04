@@ -32,9 +32,9 @@ public class EmpfaengerTest {
 			System.out.println("Sende Error");
 			con.sendMessage(mcmf.createAcceptMessage(1, ErrorType.ERROR));
 			System.out.println("========================================");
-			System.out.println("Sende Disconnect");
-			con.sendMessage(mcmf.createDisconnectMessage(1, "Test",
-					ErrorType.ERROR));
+			System.out.println("Sende AwaitMove");
+//			con.sendMessage(mcmf.createDisconnectMessage(1, "Test",
+//					ErrorType.ERROR));
 
 			Board b = new Board();
 			con.awaitMove(b,0);

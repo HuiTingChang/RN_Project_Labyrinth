@@ -19,7 +19,7 @@ import server.Card.Orientation;
 
 public class Board extends BoardType {
 
-	private Position forbidden;
+//	private Position forbidden;
 
 	public Board() {
 		super();

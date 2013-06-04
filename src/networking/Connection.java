@@ -37,7 +37,6 @@ public class Connection {
 	 */
 	public Connection(Socket s, Game g) {
 		// TODO entfernen => nur fuer Test
-		this.p = new Player(-1, this);
 		this.socket = s;
 		this.currentGame = g;
 		try {
