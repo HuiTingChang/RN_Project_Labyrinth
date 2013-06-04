@@ -106,9 +106,7 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="shiftCard" type="cardType" />
-			<xs:element name="treasure" type="treasureType" />			
-			<xs:element name="forbidden" type="positionType" />			
-			<xs:element name="treausresToGo" type="xs:int" />
+			<xs:element name="forbidden" type="positionType" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -154,6 +152,8 @@
 	<xs:complexType name="AwaitMoveMessageType">
 		<xs:sequence>
 			<xs:element name="board" type="boardType" />
+			<xs:element name="treausresToGo" type="xs:int" />
+			<xs:element name="treasure" type="treasureType" />
 		</xs:sequence>
 	</xs:complexType>
 

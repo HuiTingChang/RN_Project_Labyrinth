@@ -1,11 +1,13 @@
 package networking;
 
+
 import generated.ErrorType;
 import generated.MazeCom;
 import generated.MazeComType;
 import generated.ObjectFactory;
 import generated.WinMessageType.Winner;
 import server.Board;
+import server.Player;
 
 public class MazeComMessageFactory {
 
@@ -54,14 +56,16 @@ public class MazeComMessageFactory {
 	}
 
 
-	public MazeCom createAwaitMoveMessage(int playerId, Board brett) {
+	public MazeCom createAwaitMoveMessage(Player curPlayer, Board brett) {
 		MazeCom mc = of.createMazeCom();
 		mc.setMcType(MazeComType.AWAITMOVE);
-		mc.setId(playerId);
+		mc.setId(curPlayer.getID());
 		mc.setAwaitMoveMessage(of.createAwaitMoveMessageType());
-		
-		// TODO Brett erstellen und übergeben
+	
+		//  Brett  übergeben
 		mc.getAwaitMoveMessage().setBoard(brett);
+		mc.getAwaitMoveMessage().setTreasure(curPlayer.getCurrentTreasure());
+		mc.getAwaitMoveMessage().setTreausresToGo(curPlayer.treausresToGo());
 	
 		return mc;
 	}

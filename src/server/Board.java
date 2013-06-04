@@ -19,6 +19,8 @@ import server.Card.Orientation;
 
 public class Board extends BoardType {
 
+private TreasureType currentTreasure;
+
 //	private Position forbidden;
 
 	public Board() {
@@ -194,7 +196,7 @@ public class Board extends BoardType {
 		Position target=new Position(move.getNewPinPos());
 		movePlayer(findPlayer(currPlayer),target , currPlayer);
 		Card c=new Card(getCard(target.getRow(), target.getCol()));
-		return (c.getTreasure()==treasure);
+		return (c.getTreasure()==currentTreasure);
 		
 	}
 
@@ -214,7 +216,7 @@ public class Board extends BoardType {
 			Board clone=new Board();
 			clone.forbidden=new Position(this.forbidden);
 			clone.shiftCard=new Card(this.shiftCard);
-			clone.treasure=this.treasure;
+			clone.currentTreasure=this.currentTreasure;
 			for (int i = 0; i < 7; i++) {
 				for (int j = 0; j < 7; j++) {
 					clone.setCard(i, j, new Card(this.getCard(i, j)));
@@ -334,5 +336,9 @@ public class Board extends BoardType {
 		}
 		// Pin nicht gefunden
 		return null;
+	}
+
+	public void setTreasure(TreasureType t) {
+		currentTreasure=t;		
 	}
 }

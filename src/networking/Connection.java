@@ -99,7 +99,7 @@ public class Connection {
 	 * @return Valieder Zug des Spielers oder NULL
 	 */
 	public MoveMessageType awaitMove(Board brett, int tries) {
-		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p.getID(), brett));
+		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p, brett));
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
