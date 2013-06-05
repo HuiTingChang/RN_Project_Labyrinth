@@ -50,7 +50,7 @@ public class MazeComMessageFactory {
 		mc.setMcType(MazeComType.DISCONNECT);
 		mc.setId(playerID);
 		mc.setDisconnectMessage(of.createDisconnectMessageType());
-		mc.getDisconnectMessage().setErroCode(et);
+		mc.getDisconnectMessage().setErrorCode(et);
 		mc.getDisconnectMessage().setName(name);
 		return mc;
 	}
@@ -65,7 +65,7 @@ public class MazeComMessageFactory {
 		//  Brett  übergeben
 		mc.getAwaitMoveMessage().setBoard(brett);
 		mc.getAwaitMoveMessage().setTreasure(curPlayer.getCurrentTreasure());
-		mc.getAwaitMoveMessage().setTreausresToGo(curPlayer.treausresToGo());
+		mc.getAwaitMoveMessage().setTreasuresToGo(curPlayer.treausresToGo());
 	
 		return mc;
 	}
