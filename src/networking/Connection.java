@@ -60,10 +60,11 @@ public class Connection {
 	/**
 	 * Allgemeines senden einer fertigen MazeCom-Instanz
 	 */
-	public void sendMessage(MazeCom mc) {
+	public void sendMessage(MazeCom mc, boolean withTimer) {
 		// Timer starten, der beim lesen beendet wird
 		// Ablauf Timer = Problem User
-		this.tom.startSendMessageTimeOut(this.p.getID(), this);
+		if (withTimer)
+			this.tom.startSendMessageTimeOut(this.p.getID(), this);
 		this.outToClient.write(mc);
 	}
 
@@ -99,14 +100,14 @@ public class Connection {
 	 * @return Valieder Zug des Spielers oder NULL
 	 */
 	public MoveMessageType awaitMove(Board brett, int tries) {
-		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p, brett));
+		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p, brett),true);
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
 			if (this.currentGame.getBoard().validateTransition(
 					result.getMoveMessage(), this.p.getID())) {
 				this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-						ErrorType.NOERROR));
+						ErrorType.NOERROR),true);
 				return result.getMoveMessage();
 			} else if (tries < Settings.MOVETRIES)
 				return illigalMove(brett, ++tries);
@@ -117,7 +118,7 @@ public class Connection {
 
 		} else {
 			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-					ErrorType.AWAIT_MOVE));
+					ErrorType.AWAIT_MOVE),true);
 			if (tries < Settings.MOVETRIES)
 				return awaitMove(brett, ++tries);
 			else {
@@ -137,7 +138,7 @@ public class Connection {
 	 */
 	public MoveMessageType illigalMove(Board brett, int tries) {
 		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-				ErrorType.ILLEGAL_MOVE));
+				ErrorType.ILLEGAL_MOVE),false);
 		if (tries < Settings.MOVETRIES)
 			return this.awaitMove(brett, tries);
 		else {
@@ -156,7 +157,7 @@ public class Connection {
 	 */
 	public void sendWin(int winnerId, String name, Board b) {
 		this.sendMessage(this.mcmf.createWinMessage(this.p.getID(), winnerId,
-				name, b));
+				name, b),false);
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();
@@ -171,7 +172,7 @@ public class Connection {
 	 * */
 	public void disconnect(ErrorType et) {
 		this.sendMessage(this.mcmf.createDisconnectMessage(this.p.getID(),
-				this.p.getName(), et));
+				this.p.getName(), et),false);
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();

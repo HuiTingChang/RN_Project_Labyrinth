@@ -14,7 +14,7 @@ public class SenderTest {
 			Connection con = new Connection(c, null,1);
 			System.out.println("========================================");
 			System.out.println("Sende Login");
-			con.sendMessage(mcmf.createLoginMessage("Test"));
+			con.sendMessage(mcmf.createLoginMessage("Test"),true);
 			System.out.println("========================================");
 			System.out.println("Empfange Reply");
 			con.receiveMessage();

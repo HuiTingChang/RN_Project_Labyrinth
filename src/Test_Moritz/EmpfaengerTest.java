@@ -27,7 +27,7 @@ public class EmpfaengerTest {
 			con.login(1);
 						System.out.println("========================================");
 			System.out.println("Sende Error");
-			con.sendMessage(mcmf.createAcceptMessage(1, ErrorType.ERROR));
+			con.sendMessage(mcmf.createAcceptMessage(1, ErrorType.ERROR),true);
 			System.out.println("========================================");
 			System.out.println("Sende AwaitMove");
 //			con.sendMessage(mcmf.createDisconnectMessage(1, "Test",

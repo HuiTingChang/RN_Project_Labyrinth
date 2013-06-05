@@ -27,13 +27,13 @@ public class LoginThread extends Thread {
 			if (loginMes.getMcType() == MazeComType.LOGIN) {
 				// sende Reply
 				this.con.sendMessage(this.mcmf.createLoginReplyMessage(this.p
-						.getID()));
+						.getID()),false);
 				this.p.init(loginMes.getLoginMessage().getName());
 				return;// verlassen des Threads
 			} else {
 				// Sende Fehler
 				this.con.sendMessage(this.mcmf.createAcceptMessage(-1,
-						ErrorType.AWAIT_LOGIN));
+						ErrorType.AWAIT_LOGIN),true);
 				failCounter++;
 				// nach einem Fehler auf den nächsten Versuch warten
 				loginMes = this.con.receiveMessage();
