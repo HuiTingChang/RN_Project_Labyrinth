@@ -32,6 +32,7 @@ public class TimeOutManager extends Timer {
 	}
 
 	public void stopSendMessageTimeOut(int playerId) {
-		smt.get(playerId).cancel();
+		if (smt.containsKey(playerId))
+			smt.get(playerId).cancel();
 	}
 }

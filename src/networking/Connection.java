@@ -54,7 +54,7 @@ public class Connection {
 		this.p = new Player(newId, this);
 		this.mcmf = new MazeComMessageFactory();
 		this.tom = new TimeOutManager();
-		
+
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Connection {
 	 */
 	public Player login(int newId) {
 		this.p = new Player(newId, this);
-		LoginThread lt = new LoginThread(this.inFromClient, this, this.p);
+		LoginThread lt = new LoginThread(this, this.p);
 		lt.start();
 		return this.p;
 	}
@@ -179,7 +179,7 @@ public class Connection {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//entfernen des Spielers
+		// entfernen des Spielers
 		this.currentGame.removePlayer(this.p.getID());
 	}
 }
