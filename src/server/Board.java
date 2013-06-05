@@ -197,7 +197,7 @@ private TreasureType currentTreasure;
 	}
 	//gibt zurück ob mit dem Zug der aktuelle Schatz erreicht wurde
 	public boolean proceedTurn(MoveMessageType move,Integer currPlayer) {
-		// TODO ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
+		//XXX ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
 		this.proceedShift(move);
 		Position target=new Position(move.getNewPinPos());
 		movePlayer(findPlayer(currPlayer),target , currPlayer);
