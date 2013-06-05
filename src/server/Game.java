@@ -64,7 +64,7 @@ public class Game {
 
 			spielBrett = new Board();
 			//TODO Wartezeit einbauen bis Login abgeschlossen ist!
-			ArrayList<TreasureType> tcp=new ArrayList<>();
+			ArrayList<TreasureType> tcp=new ArrayList<TreasureType>();
 			tcp.add(TreasureType.SYM_01);
 			tcp.add(TreasureType.SYM_02);			
 			tcp.add(TreasureType.SYM_03);			
