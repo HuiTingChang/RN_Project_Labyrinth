@@ -280,14 +280,17 @@ public class Board extends BoardType {
 	@Override
 	public Object clone() {
 		Board clone = new Board();
-		clone.forbidden = new Position(this.forbidden);
+		if (forbidden == null) {
+			clone.forbidden = null;
+		} else {
+			clone.forbidden = new Position(this.forbidden);
+		}
 		clone.shiftCard = new Card(this.shiftCard);
 		clone.currentTreasure = this.currentTreasure;
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 7; j++) {
 				clone.setCard(i, j, new Card(this.getCard(i, j)));
 			}
-
 		}
 		return clone;
 	}
