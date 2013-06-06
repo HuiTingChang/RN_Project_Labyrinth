@@ -21,12 +21,11 @@ public class Board extends BoardType {
 
 	private TreasureType currentTreasure;
 
-	// private Position forbidden;
-
 	public Board() {
 		super();
 		forbidden = null;
 		this.getRow();
+		//Erst werden alle Karten mit einer Standradkarte belegt
 		for (int i = 0; i < 7; i++) {
 			this.getRow().add(i, new Row());
 			this.getRow().get(i).getCol();
@@ -35,10 +34,43 @@ public class Board extends BoardType {
 			}
 
 		}
+		//Dann wird das Spielfeld Regelkonform aufgebaut
 		generateInitialBoard();
 	}
 
 	private void generateInitialBoard() {
+		// fixedCards:
+		//Die Festen unveränderbaren Karten auf dem Spielbrett
+		setCard(0, 0, new Card(CardShape.L, Orientation.D90, null));
+		setCard(0, 2,
+				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_13));
+		setCard(0, 4,
+				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_14));
+		setCard(0, 6, new Card(CardShape.L, Orientation.D180, null));
+		setCard(2, 0, new Card(CardShape.T, Orientation.D270,
+				TreasureType.SYM_15));
+		setCard(2, 2, new Card(CardShape.T, Orientation.D270,
+				TreasureType.SYM_16));
+		setCard(2, 4,
+				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_17));
+		setCard(2, 6, new Card(CardShape.T, Orientation.D90,
+				TreasureType.SYM_18));
+		setCard(4, 0, new Card(CardShape.T, Orientation.D270,
+				TreasureType.SYM_18));
+		setCard(4, 2, new Card(CardShape.T, Orientation.D180,
+				TreasureType.SYM_19));
+		setCard(4, 4, new Card(CardShape.T, Orientation.D90,
+				TreasureType.SYM_20));
+		setCard(4, 6, new Card(CardShape.T, Orientation.D90,
+				TreasureType.SYM_21));
+		setCard(6, 0, new Card(CardShape.L, Orientation.D0, null));
+		setCard(6, 2, new Card(CardShape.T, Orientation.D180,
+				TreasureType.SYM_22));
+		setCard(6, 4, new Card(CardShape.T, Orientation.D180,
+				TreasureType.SYM_23));
+		setCard(6, 6, new Card(CardShape.L, Orientation.D270, null));
+		
+		//die freien verschiebbaren Teile auf dem Spielbrett
 		ArrayList<Card> freeCards = new ArrayList<Card>();
 		Random rng = new Random();
 
@@ -83,35 +115,7 @@ public class Board extends BoardType {
 
 		Collections.shuffle(freeCards);
 
-		// fixedCards:
-		setCard(0, 0, new Card(CardShape.L, Orientation.D90, null));
-		setCard(0, 2,
-				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_13));
-		setCard(0, 4,
-				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_14));
-		setCard(0, 6, new Card(CardShape.L, Orientation.D180, null));
-		setCard(2, 0, new Card(CardShape.T, Orientation.D270,
-				TreasureType.SYM_15));
-		setCard(2, 2, new Card(CardShape.T, Orientation.D270,
-				TreasureType.SYM_16));
-		setCard(2, 4,
-				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_17));
-		setCard(2, 6, new Card(CardShape.T, Orientation.D90,
-				TreasureType.SYM_18));
-		setCard(4, 0, new Card(CardShape.T, Orientation.D270,
-				TreasureType.SYM_18));
-		setCard(4, 2, new Card(CardShape.T, Orientation.D180,
-				TreasureType.SYM_19));
-		setCard(4, 4, new Card(CardShape.T, Orientation.D90,
-				TreasureType.SYM_20));
-		setCard(4, 6, new Card(CardShape.T, Orientation.D90,
-				TreasureType.SYM_21));
-		setCard(6, 0, new Card(CardShape.L, Orientation.D0, null));
-		setCard(6, 2, new Card(CardShape.T, Orientation.D180,
-				TreasureType.SYM_22));
-		setCard(6, 4, new Card(CardShape.T, Orientation.D180,
-				TreasureType.SYM_23));
-		setCard(6, 6, new Card(CardShape.L, Orientation.D270, null));
+
 
 		int k = 0;
 		for (int i = 1; i < 7; i += 2) {
@@ -135,26 +139,28 @@ public class Board extends BoardType {
 		System.out.println(this.toString());
 	}
 
+	//Ausgabe des Spielbretts als AsciiArt
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Board [currentTreasure=" + currentTreasure + "]\n");
 		sb.append("SpielBrett:\n");
+		sb.append(" ------ ------ ------ ------ ------ ------ ------ \n");
 		for (int i = 0; i < getRow().size(); i++) {
-			StringBuilder line1 = new StringBuilder();
-			StringBuilder line2 = new StringBuilder();
-			StringBuilder line3 = new StringBuilder();
-			StringBuilder line4 = new StringBuilder();
-			StringBuilder line5 = new StringBuilder();
-			StringBuilder line6 = new StringBuilder();
+			StringBuilder line1 = new StringBuilder("|");
+			StringBuilder line2 = new StringBuilder("|");
+			StringBuilder line3 = new StringBuilder("|");
+			StringBuilder line4 = new StringBuilder("|");
+			StringBuilder line5 = new StringBuilder("|");
+			StringBuilder line6 = new StringBuilder("|");
 			for (int j = 0; j < getRow().get(i).getCol().size(); j++) {
 				Card c=new Card(getCard(i, j));
 				if(c.getOpenings().isTop()){
-					line1.append("##  ##");
-					line2.append("##  ##");
+					line1.append("##  ##|");
+					line2.append("##  ##|");
 				}else{
-					line1.append("######");
-					line2.append("######");
+					line1.append("######|");
+					line2.append("######|");
 				}
 				if(c.getOpenings().isLeft()){
 					line3.append("    ");
@@ -164,18 +170,18 @@ public class Board extends BoardType {
 					line4.append("##  ");
 				}
 				if(c.getOpenings().isRight()){
-					line3.append("  ");
-					line4.append("  ");
+					line3.append("  |");
+					line4.append("  |");
 				}else{
-					line3.append("##");
-					line4.append("##");
+					line3.append("##|");
+					line4.append("##|");
 				}
 				if(c.getOpenings().isBottom()){
-					line5.append("##  ##");
-					line6.append("##  ##");
+					line5.append("##  ##|");
+					line6.append("##  ##|");
 				}else{
-					line5.append("######");
-					line6.append("######");
+					line5.append("######|");
+					line6.append("######|");
 				}
 			}
 			sb.append(line1.toString()+"\n");
@@ -184,13 +190,16 @@ public class Board extends BoardType {
 			sb.append(line4.toString()+"\n");
 			sb.append(line5.toString()+"\n");
 			sb.append(line6.toString()+"\n");
+			sb.append(" ------ ------ ------ ------ ------ ------ ------ \n");
 		}
 
 		return sb.toString();
 	}
 
 	private void setCard(int row, int col, Card c) {
+		//Muss überschrieben werden, daher zuerst entfernen und dann...
 		this.getRow().get(row).getCol().remove(col);
+		//...hinzufügen
 		this.getRow().get(row).getCol().add(col, c);
 	}
 
