@@ -34,11 +34,15 @@ public class Card extends CardType {
 
 	public Card(CardType c) {
 		super();
-		this.openings.setBottom(c.getOpenings().isBottom());
-		this.openings.setLeft(c.getOpenings().isLeft());
-		this.openings.setRight(c.getOpenings().isRight());
-		this.openings.setTop(c.getOpenings().isTop());
-		this.treasure = c.getTreasure();
+		
+		this.setOpenings(new Openings());		
+		this.getOpenings().setBottom(c.getOpenings().isBottom());
+		this.getOpenings().setLeft(c.getOpenings().isLeft());
+		this.getOpenings().setRight(c.getOpenings().isRight());
+		this.getOpenings().setTop(c.getOpenings().isTop());
+		
+		this.setTreasure(c.getTreasure());
+		this.setPin(new Pin());
 		this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
 	}
 

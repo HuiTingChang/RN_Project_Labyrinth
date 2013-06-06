@@ -65,10 +65,27 @@ public class Game {
 				}
 				++i;
 			}
+			//Warten bis die Initialisierung durchgelaufen ist
+			boolean spielbereit=false;
+			while(!spielbereit){
+				spielbereit=true;
+				for(Integer id :spieler.keySet()){
+					Player p=spieler.get(id);
+					if(!p.isInitialized()){
+						spielbereit=false;
+					}
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			timeOutMan.stopLoginTimeOut();
+			//Spielbrett generieren
+			spielBrett = new Board();		
 
-			spielBrett = new Board();
-			//TODO Wartezeit einbauen bis Login abgeschlossen ist!
+			//Verteilen der Schatzkarten
 			ArrayList<TreasureType> tcp=new ArrayList<TreasureType>();
 			tcp.add(TreasureType.SYM_01);
 			tcp.add(TreasureType.SYM_02);			

@@ -12,6 +12,7 @@ public class Position extends PositionType {
 
 	public Position(PositionType p) {
 		super();
+		
 		row=p.getRow();
 		col=p.getCol();
 	}

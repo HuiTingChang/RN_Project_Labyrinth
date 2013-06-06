@@ -19,19 +19,19 @@ import server.Card.Orientation;
 
 public class Board extends BoardType {
 
-private TreasureType currentTreasure;
+	private TreasureType currentTreasure;
 
-//	private Position forbidden;
+	// private Position forbidden;
 
 	public Board() {
 		super();
 		forbidden = null;
 		this.getRow();
 		for (int i = 0; i < 7; i++) {
-			this.getRow().add(i,new Row());
-			//this.getRow().get(i).getCol();
+			this.getRow().add(i, new Row());
+			this.getRow().get(i).getCol();
 			for (int j = 0; j < 7; j++) {
-				this.getRow().get(i).getCol().add(new CardType());
+				this.getRow().get(i).getCol().add(j, new Card(CardShape.I, Orientation.D0, null));
 			}
 
 		}
@@ -125,16 +125,72 @@ private TreasureType currentTreasure;
 		getCard(0, 6).getPin().getPlayerID().add(2);
 		getCard(6, 0).getPin().getPlayerID().add(3);
 		getCard(6, 6).getPin().getPlayerID().add(4);
-		
-		//Start als Schatz hinterlegen
+
+		// Start als Schatz hinterlegen
 		getCard(0, 0).setTreasure(TreasureType.START_01);
 		getCard(0, 6).setTreasure(TreasureType.START_02);
 		getCard(6, 0).setTreasure(TreasureType.START_03);
 		getCard(6, 6).setTreasure(TreasureType.START_04);
 
+		System.out.println(this.toString());
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Board [currentTreasure=" + currentTreasure + "]\n");
+		sb.append("SpielBrett:\n");
+		for (int i = 0; i < getRow().size(); i++) {
+			StringBuilder line1 = new StringBuilder();
+			StringBuilder line2 = new StringBuilder();
+			StringBuilder line3 = new StringBuilder();
+			StringBuilder line4 = new StringBuilder();
+			StringBuilder line5 = new StringBuilder();
+			StringBuilder line6 = new StringBuilder();
+			for (int j = 0; j < getRow().get(i).getCol().size(); j++) {
+				Card c=new Card(getCard(i, j));
+				if(c.getOpenings().isTop()){
+					line1.append("##  ##");
+					line2.append("##  ##");
+				}else{
+					line1.append("######");
+					line2.append("######");
+				}
+				if(c.getOpenings().isLeft()){
+					line3.append("    ");
+					line4.append("    ");
+				}else{
+					line3.append("##  ");
+					line4.append("##  ");
+				}
+				if(c.getOpenings().isRight()){
+					line3.append("  ");
+					line4.append("  ");
+				}else{
+					line3.append("##");
+					line4.append("##");
+				}
+				if(c.getOpenings().isBottom()){
+					line5.append("##  ##");
+					line6.append("##  ##");
+				}else{
+					line5.append("######");
+					line6.append("######");
+				}
+			}
+			sb.append(line1.toString()+"\n");
+			sb.append(line2.toString()+"\n");
+			sb.append(line3.toString()+"\n");
+			sb.append(line4.toString()+"\n");
+			sb.append(line5.toString()+"\n");
+			sb.append(line6.toString()+"\n");
+		}
+
+		return sb.toString();
 	}
 
 	private void setCard(int row, int col, Card c) {
+		this.getRow().get(row).getCol().remove(col);
 		this.getRow().get(row).getCol().add(col, c);
 	}
 
@@ -142,8 +198,8 @@ private TreasureType currentTreasure;
 		return this.getRow().get(row).getCol().get(col);
 	}
 
-	//Führt nur das herreinschieben der Karte aus!!!
-	private void proceedShift(MoveMessageType move){
+	// Führt nur das herreinschieben der Karte aus!!!
+	private void proceedShift(MoveMessageType move) {
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
@@ -185,7 +241,7 @@ private TreasureType currentTreasure;
 				}
 			}
 		}
-		Card c=null;
+		Card c = null;
 		c = new Card(move.getShiftCard());
 		// Wenn Spielfigur auf neuer shiftcard
 		// muss dieser wieder aufs Brett gesetzt werden
@@ -195,46 +251,50 @@ private TreasureType currentTreasure;
 		}
 		setCard(sm.getRow(), sm.getCol(), c);
 	}
-	//gibt zurück ob mit dem Zug der aktuelle Schatz erreicht wurde
-	public boolean proceedTurn(MoveMessageType move,Integer currPlayer) {
-		//XXX ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
+
+	// gibt zurück ob mit dem Zug der aktuelle Schatz erreicht wurde
+	public boolean proceedTurn(MoveMessageType move, Integer currPlayer) {
+		// XXX ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
 		this.proceedShift(move);
-		Position target=new Position(move.getNewPinPos());
-		movePlayer(findPlayer(currPlayer),target , currPlayer);
-		Card c=new Card(getCard(target.getRow(), target.getCol()));
-		return (c.getTreasure()==currentTreasure);
-		
+		Position target = new Position(move.getNewPinPos());
+		movePlayer(findPlayer(currPlayer), target, currPlayer);
+		Card c = new Card(getCard(target.getRow(), target.getCol()));
+		return (c.getTreasure() == currentTreasure);
+
 	}
 
-	private void movePlayer(PositionType oldPos, PositionType newPos, Integer playerID){
-		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID().remove(playerID);
-		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID().add(playerID);
+	private void movePlayer(PositionType oldPos, PositionType newPos,
+			Integer playerID) {
+		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
+				.remove(playerID);
+		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
+				.add(playerID);
 	}
 
 	private Board fakeShift(MoveMessageType move) {
-		Board fake=(Board) this.clone();
+		Board fake = (Board) this.clone();
 		fake.proceedShift(move);
 		return fake;
 	}
-	
-	@Override
-	public Object clone(){
-			Board clone=new Board();
-			clone.forbidden=new Position(this.forbidden);
-			clone.shiftCard=new Card(this.shiftCard);
-			clone.currentTreasure=this.currentTreasure;
-			for (int i = 0; i < 7; i++) {
-				for (int j = 0; j < 7; j++) {
-					clone.setCard(i, j, new Card(this.getCard(i, j)));
-				}
 
+	@Override
+	public Object clone() {
+		Board clone = new Board();
+		clone.forbidden = new Position(this.forbidden);
+		clone.shiftCard = new Card(this.shiftCard);
+		clone.currentTreasure = this.currentTreasure;
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 7; j++) {
+				clone.setCard(i, j, new Card(this.getCard(i, j)));
 			}
-			return clone;
+
+		}
+		return clone;
 	}
-	
+
 	public boolean validateTransition(MoveMessageType move, Integer playerID) {
-		//Überprüfen ob das Reinschieben der Karte gültig ist
-		
+		// Überprüfen ob das Reinschieben der Karte gültig ist
+
 		Position sm = new Position(move.getShiftPosition());
 		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
 			return false;
@@ -242,11 +302,11 @@ private TreasureType currentTreasure;
 		Card sc = new Card(move.getShiftCard());
 		if (!sc.equals(shiftCard)) {
 			return false;
-		}		
+		}
 		// Überprüfen ob der Spielzug gültig ist
-		Board fake=this.fakeShift(move);		
-		Position playerPosition= new Position(fake.findPlayer(playerID));
-		if ( fake.pathpossible(playerPosition , move.getNewPinPos())) {
+		Board fake = this.fakeShift(move);
+		Position playerPosition = new Position(fake.findPlayer(playerID));
+		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
 			return true;
 		} else {
 			return false;
@@ -345,6 +405,6 @@ private TreasureType currentTreasure;
 	}
 
 	public void setTreasure(TreasureType t) {
-		currentTreasure=t;		
+		currentTreasure = t;
 	}
 }
