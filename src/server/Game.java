@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import config.Settings;
+
 import networking.Connection;
 import Timeouts.TimeOutManager;
 
@@ -47,7 +49,10 @@ public class Game {
 			int i = 1;
 			boolean accepting = true;
 			timeOutMan.startLoginTimeOut(this);
-			while (accepting && i <= 4) {
+			//Soll noch über Parameter anpassbar sein
+			int players=Settings.DEFAULT_PLAYERS;
+			
+			while (accepting && i <= players) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
 					System.out
