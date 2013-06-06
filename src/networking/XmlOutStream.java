@@ -39,8 +39,8 @@ public class XmlOutStream extends UTFOutputStream{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			this.marshaller.marshal(mc, baos);
 			// TODO entferne Ausgabe
-			System.out.println("Geschrieben");
-			System.out.println(new String(baos.toByteArray()));
+			//System.out.println("Geschrieben");
+			//System.out.println(new String(baos.toByteArray()));
 			// TODO bis hier
 			// Versenden des XML
 			this.writeUTF8(new String(baos.toByteArray()));
