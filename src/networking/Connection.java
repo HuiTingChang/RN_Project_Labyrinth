@@ -10,6 +10,7 @@ import generated.MoveMessageType;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 
 import config.Settings;
 
@@ -99,8 +100,8 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Valieder Zug des Spielers oder NULL
 	 */
-	public MoveMessageType awaitMove(Board brett, int tries) {
-		this.sendMessage(this.mcmf.createAwaitMoveMessage(this.p, brett),true);
+	public MoveMessageType awaitMove(HashMap<Integer, Player> spieler,Board brett, int tries) {
+		this.sendMessage(this.mcmf.createAwaitMoveMessage(spieler,this.p.getID(), brett),true);
 		MazeCom result = this.receiveMessage();
 		if (result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
@@ -110,7 +111,7 @@ public class Connection {
 						ErrorType.NOERROR),true);
 				return result.getMoveMessage();
 			} else if (tries < Settings.MOVETRIES)
-				return illigalMove(brett, ++tries);
+				return illigalMove(spieler,brett, ++tries);
 			else {
 				disconnect(ErrorType.TOO_MANY_TRIES);
 				return null;
@@ -120,7 +121,7 @@ public class Connection {
 			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 					ErrorType.AWAIT_MOVE),true);
 			if (tries < Settings.MOVETRIES)
-				return awaitMove(brett, ++tries);
+				return awaitMove(spieler,brett, ++tries);
 			else {
 				disconnect(ErrorType.TOO_MANY_TRIES);
 			}
@@ -136,11 +137,11 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Zug des Spielers
 	 */
-	public MoveMessageType illigalMove(Board brett, int tries) {
+	public MoveMessageType illigalMove(HashMap<Integer, Player> spieler,Board brett, int tries) {
 		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 				ErrorType.ILLEGAL_MOVE),false);
 		if (tries < Settings.MOVETRIES)
-			return this.awaitMove(brett, tries);
+			return this.awaitMove(spieler,brett, tries);
 		else {
 			disconnect(ErrorType.TOO_MANY_TRIES);
 			return null;

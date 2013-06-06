@@ -126,7 +126,7 @@ public class Game {
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
-				.awaitMove(this.spielBrett, 0);
+				.awaitMove(spieler,this.spielBrett, 0);
 		if (move != null) {
 			if(spielBrett.proceedTurn(move,currPlayer)){
 				//foundTreasure gibt zurück wieviele 
