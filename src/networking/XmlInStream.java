@@ -36,8 +36,8 @@ public class XmlInStream extends UTFInputStream {
 		try {
 			String xml = this.readUTF8();
 			// TODO entfernen
-			System.out.println("Empfangen");
-			System.out.println(xml);
+			//System.out.println("Empfangen");
+			//System.out.println(xml);
 			// TODO bis hier
 			bytes = xml.getBytes();
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);

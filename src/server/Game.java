@@ -147,6 +147,10 @@ public class Game {
 		
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
+		
+		System.out.println("Spielbrett vor Zug von Spieler "+currPlayer);
+		System.out.println(spielBrett);
+		
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler,this.spielBrett, 0);
 		if (move != null) {

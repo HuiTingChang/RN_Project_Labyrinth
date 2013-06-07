@@ -151,10 +151,13 @@ public class Card extends CardType {
 			return false;
 		CardType other = (CardType) obj;
 		if (this.treasure != other.getTreasure()) {
+			System.err.println("Schatz ungleich");
 			return false;
 		}
-		if (this.pin != other.getPin()) {
-			return false;
+		for (Integer ID: this.getPin().getPlayerID()) {
+			if(!other.getPin().getPlayerID().contains(ID))
+				System.err.println("Spieler ungleich");
+				return false;
 		}
 		// positions-check:
 		boolean[] op1 = new boolean[4];
@@ -183,12 +186,67 @@ public class Card extends CardType {
 			}
 		}
 		if (anzop1 != anzop2) {
+			System.err.println("Form ungleich");
 			return false;
 		}
 		if (indsum1 % 2 != indsum2 % 2) {
+			System.err.println("Form ungleich");
 			return false;
 		}
 		return true;
+	}
+	@Override
+	public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(" ------ \n");
+
+		StringBuilder line1 = new StringBuilder("|");
+		StringBuilder line2 = new StringBuilder("|");
+		StringBuilder line3 = new StringBuilder("|");
+		StringBuilder line4 = new StringBuilder("|");
+		StringBuilder line5 = new StringBuilder("|");
+		StringBuilder line6 = new StringBuilder("|");
+
+		if (this.getOpenings().isTop()) {
+			line1.append("##  ##|");
+			line2.append("##  ##|");
+		} else {
+			line1.append("######|");
+			line2.append("######|");
+		}
+		if (this.getOpenings().isLeft()) {
+			line3.append("    ");
+			line4.append("    ");
+		} else {
+			line3.append("##  ");
+			line4.append("##  ");
+		}
+		if (this.getOpenings().isRight()) {
+			line3.append("  |");
+			line4.append("  |");
+		} else {
+			line3.append("##|");
+			line4.append("##|");
+		}
+		if (this.getOpenings().isBottom()) {
+			line5.append("##  ##|");
+			line6.append("##  ##|");
+		} else {
+			line5.append("######|");
+			line6.append("######|");
+		}
+
+		sb.append(line1.toString() + "\n");
+		sb.append(line2.toString() + "\n");
+		sb.append(line3.toString() + "\n");
+		sb.append(line4.toString() + "\n");
+		sb.append(line5.toString() + "\n");
+		sb.append(line6.toString() + "\n");
+		sb.append(" ------ \n");
+
+		return sb.toString();
 	}
 
 }

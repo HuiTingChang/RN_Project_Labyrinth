@@ -136,7 +136,7 @@ public class Board extends BoardType {
 		getCard(6, 0).setTreasure(TreasureType.START_03);
 		getCard(6, 6).setTreasure(TreasureType.START_04);
 
-		System.out.println(this.toString());
+		//System.out.println(this.toString());
 	}
 
 	//Ausgabe des Spielbretts als AsciiArt
@@ -309,18 +309,23 @@ public class Board extends BoardType {
 
 		Position sm = new Position(move.getShiftPosition());
 		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
+			System.err.println("Warning: verbotene Position der Schiebekarte");
 			return false;
 		}
 		Card sc = new Card(move.getShiftCard());
 		if (!sc.equals(shiftCard)) {
+			System.err.println("Warning: Schiebekarte wurde illegal verändert");
 			return false;
 		}
 		// Überprüfen ob der Spielzug gültig ist
 		Board fake = this.fakeShift(move);
 		Position playerPosition = new Position(fake.findPlayer(playerID));
+		System.out.println("Spieler möchte von: ("+playerPosition.getRow()+":"+playerPosition.getCol()+")");
+		System.out.println("nach:               ("+move.getNewPinPos().getRow()+":"+move.getNewPinPos().getCol()+")");
 		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
 			return true;
 		} else {
+			System.err.println("Warning: Die Angegebene Position ist nicht erreichbar");
 			return false;
 		}
 	}
@@ -328,7 +333,9 @@ public class Board extends BoardType {
 	public boolean pathpossible(PositionType oldPos, PositionType newPos) {
 		if (oldPos == null || newPos == null)
 			return false;
-		return getAlleEreichbarenNachbarn(oldPos).contains(newPos);
+		Position oldP=new Position(oldPos);
+		Position newP=new Position(newPos);
+		return getAlleEreichbarenNachbarn(oldP).contains(newP);
 	}
 
 	private List<PositionType> getAlleEreichbarenNachbarn(PositionType position) {

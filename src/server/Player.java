@@ -47,12 +47,13 @@ public class Player {
 
 	}
 
-	public int treausresToGo() {
+	public int treasuresToGo() {
 		return treasures.size() + 1;
 	}
 
 	public void setTreasure(Collection<? extends TreasureType> c) {
 		this.treasures.addAll(c);
+		this.currentTreasure=treasures.pop();
 	}
 
 	public int getID() {

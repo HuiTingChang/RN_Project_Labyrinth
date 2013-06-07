@@ -70,7 +70,7 @@ public class MazeComMessageFactory {
 		for(Integer playerID : Player.keySet()){
 			TreasuresToGoType ttg=of.createTreasuresToGoType();
 			ttg.setPlayer(playerID);
-			ttg.setTreasures(Player.get(playerID).treausresToGo());
+			ttg.setTreasures(Player.get(playerID).treasuresToGo());
 			mc.getAwaitMoveMessage().getTreasuresToGo().add(ttg);
 		}
 	
