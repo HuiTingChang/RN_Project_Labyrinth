@@ -186,11 +186,19 @@ public class Card extends CardType {
 			}
 		}
 		if (anzop1 != anzop2) {
-			System.err.println("Form ungleich");
+			System.err.println("Form ungleich(Anzahl)");
+			System.out.println("From:");
+			System.out.println(this);
+			System.out.println("To:");
+			System.out.println(other);
 			return false;
 		}
 		if (indsum1 % 2 != indsum2 % 2) {
-			System.err.println("Form ungleich");
+			System.err.println("Form ungleich(Index)");
+			System.out.println("From:");
+			System.out.println(this);
+			System.out.println("To:");
+			System.out.println(other);
 			return false;
 		}
 		return true;

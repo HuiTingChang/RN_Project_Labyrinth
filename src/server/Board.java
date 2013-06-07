@@ -163,11 +163,21 @@ public class Board extends BoardType {
 					line2.append("######|");
 				}
 				if(c.getOpenings().isLeft()){
-					line3.append("    ");
-					line4.append("    ");
+					line3.append("  ");
+					line4.append("  ");
 				}else{
-					line3.append("##  ");
-					line4.append("##  ");
+					line3.append("##");
+					line4.append("##");
+				}
+				if(c.getPin().getPlayerID().size()!=0){
+					line3.append("sp");
+				}else{
+					line3.append("  ");
+				}
+				if(c.getTreasure()!=null){
+					line4.append("Tr");
+				}else{
+					line4.append("  ");
 				}
 				if(c.getOpenings().isRight()){
 					line3.append("  |");
@@ -213,28 +223,8 @@ public class Board extends BoardType {
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
 				// horizontal schieben
-				int col = sm.getCol();
-
-				int start = (sm.getCol() + 6) % 12; // Karte die rausgenommen
-													// wird
-				setShiftCard(getCard(start, col));
-				forbidden = new Position(start, col);
-				if (start == 6) {
-					for (int i = 6; i > 0; --i) {
-						setCard(i, col, new Card(getCard(i - 1, col)));
-					}
-				} else {// Start==0
-					for (int i = 0; i < 6; ++i) {
-						setCard(i, col, new Card(getCard(i + 1, col)));
-					}
-				}
-			}
-		} else if (sm.getRow() % 6 == 0) {
-			if (sm.getCol() % 2 == 1) {
-				// vertikal schieben
 				int row = sm.getRow();
-
-				int start = (sm.getRow() + 6) % 12; // Karte die rausgenommen
+				int start = (sm.getCol() + 6) % 12; // Karte die rausgenommen
 													// wird
 				setShiftCard(getCard(row, start));
 				forbidden = new Position(row, start);
@@ -248,6 +238,26 @@ public class Board extends BoardType {
 						setCard(row, i, new Card(getCard(row, i + 1)));
 					}
 				}
+			}
+		} else if (sm.getRow() % 6 == 0) {
+			if (sm.getCol() % 2 == 1) {
+				// vertikal schieben
+				int col = sm.getCol();
+				int start = (sm.getRow() + 6) % 12; // Karte die rausgenommen
+													// wird
+				setShiftCard(getCard(start, col));
+				forbidden = new Position(start, col);
+				if (start == 6) {
+					for (int i = 6; i > 0; --i) {
+						setCard(i, col, new Card(getCard(i - 1, col)));
+					}
+				} else {// Start==0
+					for (int i = 0; i < 6; ++i) {
+						setCard(i, col, new Card(getCard(i + 1, col)));
+					}
+				}
+				
+				
 			}
 		}
 		Card c = null;
