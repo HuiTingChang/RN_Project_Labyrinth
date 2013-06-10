@@ -34,7 +34,7 @@ public class Game {
 								// feststeht
 
 	public Game() {
-		Debug.addDebugger(System.out, DebugLevel.VERBOSE);
+		Debug.addDebugger(System.out, DebugLevel.DEBUG);
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutMan = new TimeOutManager();

@@ -16,7 +16,7 @@ public class Debug {
 		for (OutputStream out : liste.keySet()) {
 			DebugLevel streamLevel = liste.get(out);
 			try {
-				if (streamLevel.value() <= level.value())
+				if (streamLevel.value() >= level.value())
 					out.write(str.getBytes());
 			} catch (IOException e) {
 				e.printStackTrace();
