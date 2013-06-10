@@ -27,22 +27,23 @@ public class Board extends BoardType {
 		super();
 		forbidden = null;
 		this.getRow();
-		//Erst werden alle Karten mit einer Standradkarte belegt
+		// Erst werden alle Karten mit einer Standardkarte belegt
 		for (int i = 0; i < 7; i++) {
 			this.getRow().add(i, new Row());
 			this.getRow().get(i).getCol();
 			for (int j = 0; j < 7; j++) {
-				this.getRow().get(i).getCol().add(j, new Card(CardShape.I, Orientation.D0, null));
+				this.getRow().get(i).getCol()
+						.add(j, new Card(CardShape.I, Orientation.D0, null));
 			}
 
 		}
-		//Dann wird das Spielfeld Regelkonform aufgebaut
+		// Dann wird das Spielfeld regelkonform aufgebaut
 		generateInitialBoard();
 	}
 
 	private void generateInitialBoard() {
 		// fixedCards:
-		//Die Festen unveränderbaren Karten auf dem Spielbrett
+		// Die Festen unveraenderbaren Karten auf dem Spielbrett
 		setCard(0, 0, new Card(CardShape.L, Orientation.D90, null));
 		setCard(0, 2,
 				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_13));
@@ -71,8 +72,8 @@ public class Board extends BoardType {
 		setCard(6, 4, new Card(CardShape.T, Orientation.D180,
 				TreasureType.SYM_24));
 		setCard(6, 6, new Card(CardShape.L, Orientation.D270, null));
-		
-		//die freien verschiebbaren Teile auf dem Spielbrett
+
+		// die freien verschiebbaren Teile auf dem Spielbrett
 		ArrayList<Card> freeCards = new ArrayList<Card>();
 		Random rng = new Random();
 
@@ -122,13 +123,11 @@ public class Board extends BoardType {
 			for (int j = 0; j < 7; j += 1) {
 				setCard(i, j, freeCards.get(k++));
 			}
-
 		}
 		for (int i = 1; i < 7; i += 2) {
 			for (int j = 0; j < 7; j += 2) {
 				setCard(j, i, freeCards.get(k++));
 			}
-
 		}
 		this.setShiftCard(freeCards.get(k));
 		getCard(0, 0).getPin().getPlayerID().add(1);
@@ -142,10 +141,10 @@ public class Board extends BoardType {
 		getCard(6, 0).setTreasure(TreasureType.START_03);
 		getCard(6, 6).setTreasure(TreasureType.START_04);
 
-		//Debug.print(this.toString());
+		Debug.print(this.toString(), DebugLevel.DEBUG);
 	}
 
-	//Ausgabe des Spielbretts als AsciiArt
+	// Ausgabe des Spielbretts als AsciiArt
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -160,65 +159,64 @@ public class Board extends BoardType {
 			StringBuilder line5 = new StringBuilder("|");
 			StringBuilder line6 = new StringBuilder("|");
 			for (int j = 0; j < getRow().get(i).getCol().size(); j++) {
-				Card c=new Card(getCard(i, j));
-				if(c.getOpenings().isTop()){
+				Card c = new Card(getCard(i, j));
+				if (c.getOpenings().isTop()) {
 					line1.append("##  ##|");
 					line2.append("##  ##|");
-				}else{
+				} else {
 					line1.append("######|");
 					line2.append("######|");
 				}
-				if(c.getOpenings().isLeft()){
+				if (c.getOpenings().isLeft()) {
 					line3.append("  ");
 					line4.append("  ");
-				}else{
+				} else {
 					line3.append("##");
 					line4.append("##");
 				}
-				if(c.getPin().getPlayerID().size()!=0){
+				if (c.getPin().getPlayerID().size() != 0) {
 					line3.append("S");
-				}else{
+				} else {
 					line3.append(" ");
 				}
-				if(c.getTreasure()!=null){
-					String name=c.getTreasure().name();
-					switch( name.charAt(1)) {
+				if (c.getTreasure() != null) {
+					String name = c.getTreasure().name();
+					switch (name.charAt(1)) {
 					case 'Y':
-						//Symbol
+						// Symbol
 						line3.append("T");
 						break;
 					case 'T':
-						//Startpunkt
+						// Startpunkt
 						line3.append("S");
 						break;
 					}
-
-					line4.append(name.substring(name.length()-2));
-				}else{
+					line4.append(name.substring(name.length() - 2));
+				} else {
 					line3.append(" ");
 					line4.append("  ");
 				}
-				if(c.getOpenings().isRight()){
+				if (c.getOpenings().isRight()) {
 					line3.append("  |");
 					line4.append("  |");
-				}else{
+				} else {
 					line3.append("##|");
 					line4.append("##|");
 				}
-				if(c.getOpenings().isBottom()){
+				if (c.getOpenings().isBottom()) {
 					line5.append("##  ##|");
 					line6.append("##  ##|");
-				}else{
+				} else {
 					line5.append("######|");
 					line6.append("######|");
 				}
 			}
-			sb.append(line1.toString()+"\n");
-			sb.append(line2.toString()+"\n");
-			sb.append(line3.toString()+"\n");
-			sb.append(line4.toString()+"\n");
-			sb.append(line5.toString()+"\n");
-			sb.append(line6.toString()+"\n");
+			sb.append(line1.toString() + "\n");
+			sb.append(line2.toString() + "\n");
+			sb.append(line3.toString() + "\n");
+			sb.append(line4.toString() + "\n");
+			sb.append(line5.toString() + "\n");
+			sb.append(line6.toString() + "\n");
 			sb.append(" ------ ------ ------ ------ ------ ------ ------ \n");
 		}
 
@@ -226,9 +224,9 @@ public class Board extends BoardType {
 	}
 
 	private void setCard(int row, int col, Card c) {
-		//Muss überschrieben werden, daher zuerst entfernen und dann...
+		// Muss ueberschrieben werden, daher zuerst entfernen und dann...
 		this.getRow().get(row).getCol().remove(col);
-		//...hinzufügen
+		// ...hinzufuegen
 		this.getRow().get(row).getCol().add(col, c);
 	}
 
@@ -236,7 +234,7 @@ public class Board extends BoardType {
 		return this.getRow().get(row).getCol().get(col);
 	}
 
-	// Führt nur das herreinschieben der Karte aus!!!
+	// Fuehrt nur das Hereinschieben der Karte aus!!!
 	private void proceedShift(MoveMessageType move) {
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
@@ -275,13 +273,12 @@ public class Board extends BoardType {
 						setCard(i, col, new Card(getCard(i + 1, col)));
 					}
 				}
-				
-				
+
 			}
 		}
 		Card c = null;
 		c = new Card(move.getShiftCard());
-		// Wenn Spielfigur auf neuer shiftcard
+		// Wenn Spielfigur auf neuer shiftcard steht,
 		// muss dieser wieder aufs Brett gesetzt werden
 		if (!shiftCard.getPin().getPlayerID().isEmpty()) {
 			Pin temp = shiftCard.getPin();
@@ -290,7 +287,7 @@ public class Board extends BoardType {
 		setCard(sm.getRow(), sm.getCol(), c);
 	}
 
-	// gibt zurück ob mit dem Zug der aktuelle Schatz erreicht wurde
+	// gibt zurueck ob mit dem Zug der aktuelle Schatz erreicht wurde
 	public boolean proceedTurn(MoveMessageType move, Integer currPlayer) {
 		// XXX ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
 		this.proceedShift(move);
@@ -334,7 +331,7 @@ public class Board extends BoardType {
 	}
 
 	public boolean validateTransition(MoveMessageType move, Integer playerID) {
-		// Überprüfen ob das Reinschieben der Karte gültig ist
+		// Ueberpruefen ob das Reinschieben der Karte gueltig ist
 
 		Position sm = new Position(move.getShiftPosition());
 		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
@@ -346,18 +343,22 @@ public class Board extends BoardType {
 			System.err.println("Warning: Schiebekarte wurde illegal verändert");
 			return false;
 		}
-		// Überprüfen ob der Spielzug gültig ist
+		// Ueberpruefen ob der Spielzug gueltig ist
 		Board fake = this.fakeShift(move);
 		Position playerPosition = new Position(fake.findPlayer(playerID));
-		Debug.print("Spieler möchte von: ("+playerPosition.getRow()+":"+playerPosition.getCol()+")",DebugLevel.VERBOSE);
-		Debug.print("nach:               ("+move.getNewPinPos().getRow()+":"+move.getNewPinPos().getCol()+")",DebugLevel.VERBOSE);
-		Debug.print("Brett nach dem Schieben:",DebugLevel.VERBOSE);
-		Debug.print(fake.toString(),DebugLevel.VERBOSE);
+		Debug.print("Spieler möchte von: (" + playerPosition.getRow() + ":"
+				+ playerPosition.getCol() + ")", DebugLevel.VERBOSE);
+		Debug.print("nach:               (" + move.getNewPinPos().getRow()
+				+ ":" + move.getNewPinPos().getCol() + ")", DebugLevel.VERBOSE);
+		Debug.print("Brett nach dem Schieben:", DebugLevel.VERBOSE);
+		Debug.print(fake.toString(), DebugLevel.VERBOSE);
 		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
-			Debug.print("Zug gültig",DebugLevel.VERBOSE);
+			Debug.print("Zug gültig", DebugLevel.VERBOSE);
 			return true;
 		} else {
-			Debug.print("Warning: Die Angegebene Position ist nicht erreichbar",DebugLevel.DEFAULT);
+			Debug.print(
+					"Warning: Die Angegebene Position ist nicht erreichbar",
+					DebugLevel.DEFAULT);
 			return false;
 		}
 	}
@@ -365,8 +366,8 @@ public class Board extends BoardType {
 	public boolean pathpossible(PositionType oldPos, PositionType newPos) {
 		if (oldPos == null || newPos == null)
 			return false;
-		Position oldP=new Position(oldPos);
-		Position newP=new Position(newPos);
+		Position oldP = new Position(oldPos);
+		Position newP = new Position(newPos);
 		return getAlleEreichbarenNachbarn(oldP).contains(newP);
 	}
 

@@ -47,7 +47,7 @@ public class Game {
 	}
 
 	/**
-	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermöglichen
+	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
 	public void init() {
 		try {
@@ -60,12 +60,14 @@ public class Game {
 			while (accepting && i <= players) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
-					Debug.print("Waiting for another Player (" + i + ")",DebugLevel.DEFAULT);
+					Debug.print("Waiting for another Player (" + i + ")",
+							DebugLevel.DEFAULT);
 					Socket mazeClient = s.accept();
 					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
 				} catch (SocketException e) {
-					Debug.print("...Waiting for Player timed out!",DebugLevel.DEFAULT);
+					Debug.print("...Waiting for Player timed out!",
+							DebugLevel.DEFAULT);
 				}
 				++i;
 			}
@@ -129,7 +131,6 @@ public class Game {
 		} catch (IOException e) {
 			System.err.println("Fehler beim Verbindungsaufbau (game.init()):");
 			System.err.println(e.getMessage());
-			// e.printStackTrace();
 		}
 
 	}
@@ -138,7 +139,6 @@ public class Game {
 		try {
 			s.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -152,15 +152,16 @@ public class Game {
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 
-		// Debug.print("Spielbrett vor Zug von Spieler "+currPlayer);
-		// Debug.print(spielBrett);
+		Debug.print("Spielbrett vor Zug von Spieler " + currPlayer,
+				DebugLevel.DEBUG);
+		Debug.print(spielBrett.toString(), DebugLevel.DEBUG);
 
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
 			if (spielBrett.proceedTurn(move, currPlayer)) {
-				// foundTreasure gibt zurück wieviele
-				// Schätze noch zu finden sind
+				// foundTreasure gibt zurueck wieviele
+				// Schaetze noch zu finden sind
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
 					winner = currPlayer;
 				}
@@ -186,7 +187,7 @@ public class Game {
 		// TODO muss sonst noch was gemacht werden??
 	}
 
-	public boolean someBodyWon() {
+	public boolean somebodyWon() {
 		return winner != -1;
 
 	}
@@ -195,8 +196,8 @@ public class Game {
 		Game currentGame = new Game();
 		currentGame.init();
 		Integer currPlayer = 1;
-		while (!currentGame.someBodyWon()) {
-			Debug.print("Aktueller Spieler: " + currPlayer,DebugLevel.VERBOSE);
+		while (!currentGame.somebodyWon()) {
+			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);
 			currentGame.singleTurn(currPlayer);
 			currPlayer = currentGame.nextPlayer(currPlayer);
 		}
@@ -218,7 +219,7 @@ public class Game {
 		if (iDIterator.hasNext()) {
 			return iDIterator.next();
 		} else {
-			// Erste ID zurückgeben,
+			// Erste ID zurueckgeben,
 			return spieler.keySet().iterator().next();
 		}
 	}

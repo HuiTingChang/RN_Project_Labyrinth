@@ -21,7 +21,7 @@ public class Position extends PositionType {
 		this.col = col;
 	}
 
-	// checkt ob an dieser Stelle ein Schieben möglich ist
+	// checkt ob an dieser Stelle ein Schieben moeglich ist
 	public boolean isLoosePosition() {
 		return ((row % 6 == 0 && col % 2 == 1) || (col % 6 == 0 && row % 2 == 1));
 	}

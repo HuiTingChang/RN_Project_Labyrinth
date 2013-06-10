@@ -64,7 +64,7 @@ public class MazeComMessageFactory {
 		mc.setMcType(MazeComType.AWAITMOVE);
 		mc.setId(Player.get(currPlayer).getID());
 		mc.setAwaitMoveMessage(of.createAwaitMoveMessageType());
-		//  Brett  übergeben
+		// Brett uebergeben
 		mc.getAwaitMoveMessage().setBoard(brett);
 		mc.getAwaitMoveMessage().setTreasure(Player.get(currPlayer).getCurrentTreasure());
 		for(Integer playerID : Player.keySet()){
