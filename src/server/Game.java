@@ -148,8 +148,8 @@ public class Game {
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 		
-		System.out.println("Spielbrett vor Zug von Spieler "+currPlayer);
-		System.out.println(spielBrett);
+		//System.out.println("Spielbrett vor Zug von Spieler "+currPlayer);
+		//System.out.println(spielBrett);
 		
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler,this.spielBrett, 0);
@@ -161,6 +161,8 @@ public class Game {
 					winner=currPlayer;
 				}
 			}
+		}else{
+			System.err.println("Keinen Move erhalten!");
 		}
 	}
 
@@ -196,12 +198,14 @@ public class Game {
 	}
 
 	private Integer nextPlayer(Integer currPlayer) {
+		//TODO Fehler finden
 		// Soll Verhindern, das bereits vom Spiel
 		// ausgeschlossene Spieler nach an die Reihe kommen
 		Iterator<Integer> iDIterator=spieler.keySet().iterator();
-		
+		Integer id=-1;
 		while(iDIterator.hasNext()){
-			if(iDIterator.next()==currPlayer){
+			id=iDIterator.next();
+			if(id==currPlayer){
 				break;
 			}
 		}

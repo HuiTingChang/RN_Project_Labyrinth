@@ -56,18 +56,18 @@ public class Board extends BoardType {
 		setCard(2, 6, new Card(CardShape.T, Orientation.D90,
 				TreasureType.SYM_18));
 		setCard(4, 0, new Card(CardShape.T, Orientation.D270,
-				TreasureType.SYM_18));
-		setCard(4, 2, new Card(CardShape.T, Orientation.D180,
 				TreasureType.SYM_19));
-		setCard(4, 4, new Card(CardShape.T, Orientation.D90,
+		setCard(4, 2, new Card(CardShape.T, Orientation.D180,
 				TreasureType.SYM_20));
-		setCard(4, 6, new Card(CardShape.T, Orientation.D90,
+		setCard(4, 4, new Card(CardShape.T, Orientation.D90,
 				TreasureType.SYM_21));
+		setCard(4, 6, new Card(CardShape.T, Orientation.D90,
+				TreasureType.SYM_22));
 		setCard(6, 0, new Card(CardShape.L, Orientation.D0, null));
 		setCard(6, 2, new Card(CardShape.T, Orientation.D180,
-				TreasureType.SYM_22));
-		setCard(6, 4, new Card(CardShape.T, Orientation.D180,
 				TreasureType.SYM_23));
+		setCard(6, 4, new Card(CardShape.T, Orientation.D180,
+				TreasureType.SYM_24));
 		setCard(6, 6, new Card(CardShape.L, Orientation.D270, null));
 		
 		//die freien verschiebbaren Teile auf dem Spielbrett
@@ -115,12 +115,16 @@ public class Board extends BoardType {
 
 		Collections.shuffle(freeCards);
 
-
-
 		int k = 0;
 		for (int i = 1; i < 7; i += 2) {
-			for (int j = 1; j < 7; j += 2) {
+			for (int j = 0; j < 7; j += 1) {
 				setCard(i, j, freeCards.get(k++));
+			}
+
+		}
+		for (int i = 1; i < 7; i += 2) {
+			for (int j = 0; j < 7; j += 2) {
+				setCard(j, i, freeCards.get(k++));
 			}
 
 		}
@@ -170,13 +174,26 @@ public class Board extends BoardType {
 					line4.append("##");
 				}
 				if(c.getPin().getPlayerID().size()!=0){
-					line3.append("sp");
+					line3.append("S");
 				}else{
-					line3.append("  ");
+					line3.append(" ");
 				}
 				if(c.getTreasure()!=null){
-					line4.append("Tr");
+					String name=c.getTreasure().name();
+					switch( name.charAt(1)) {
+					case 'Y':
+						//Symbol
+						line3.append("T");
+						break;
+					case 'T':
+						//Startpunkt
+						line3.append("S");
+						break;
+					}
+
+					line4.append(name.substring(name.length()-2));
 				}else{
+					line3.append(" ");
 					line4.append("  ");
 				}
 				if(c.getOpenings().isRight()){
@@ -286,7 +303,7 @@ public class Board extends BoardType {
 			Integer playerID) {
 		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
 				.remove(playerID);
-		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
+		getCard(newPos.getRow(), newPos.getCol()).getPin().getPlayerID()
 				.add(playerID);
 	}
 
@@ -332,7 +349,10 @@ public class Board extends BoardType {
 		Position playerPosition = new Position(fake.findPlayer(playerID));
 		System.out.println("Spieler möchte von: ("+playerPosition.getRow()+":"+playerPosition.getCol()+")");
 		System.out.println("nach:               ("+move.getNewPinPos().getRow()+":"+move.getNewPinPos().getCol()+")");
+		System.out.println("Brett nach dem Schieben:");
+		System.out.println(fake);
 		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
+			System.out.println("Zug gültig");
 			return true;
 		} else {
 			System.err.println("Warning: Die Angegebene Position ist nicht erreichbar");
