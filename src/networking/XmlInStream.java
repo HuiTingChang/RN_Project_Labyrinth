@@ -10,13 +10,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import tools.Debug;
+import tools.DebugLevel;
+
 public class XmlInStream extends UTFInputStream {
 
 	private Unmarshaller unmarshaller;
 
 	public XmlInStream(InputStream in) {
 		super(in);
-		try {			
+		try {
 			JAXBContext jc = JAXBContext.newInstance(MazeCom.class);
 			this.unmarshaller = jc.createUnmarshaller();
 		} catch (JAXBException e) {
@@ -35,24 +38,21 @@ public class XmlInStream extends UTFInputStream {
 		MazeCom result = null;
 		try {
 			String xml = this.readUTF8();
-			// TODO entfernen
-			//System.out.println("Empfangen");
-			//System.out.println(xml);
-			// TODO bis hier
+			Debug.print("Empfangen",DebugLevel.DEBUG);
+			Debug.print(xml,DebugLevel.DEBUG);
 			bytes = xml.getBytes();
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 
 			result = (MazeCom) this.unmarshaller.unmarshal(bais);
 		} catch (JAXBException e) {
 			e.printStackTrace();
-			System.err
-					.println("[ERROR]: Fehler beim unmarshallen der Nachricht");
+			Debug.print("[ERROR]: Fehler beim unmarshallen der Nachricht",DebugLevel.DEFAULT);
 		} catch (IOException e1) {
 			e1.printStackTrace();
-			System.err.println("[ERROR]: Fehler beim lesen der Nachricht");
+			Debug.print("[ERROR]: Fehler beim lesen der Nachricht",
+					DebugLevel.DEFAULT);
 		} catch (NullPointerException e) {
-			System.err
-					.println("[ERROR]: Nullpointer beim lesen der Nachricht aufgrund weiterer Fehler");
+			Debug.print("[ERROR]: Nullpointer beim lesen der Nachricht aufgrund weiterer Fehler",DebugLevel.DEFAULT);
 		}
 		return result;
 	}

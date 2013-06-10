@@ -1,5 +1,7 @@
 package server;
 
+import tools.Debug;
+import tools.DebugLevel;
 import generated.CardType;
 import generated.TreasureType;
 
@@ -151,12 +153,12 @@ public class Card extends CardType {
 			return false;
 		CardType other = (CardType) obj;
 		if (this.treasure != other.getTreasure()) {
-			System.err.println("Schatz ungleich");
+			Debug.print("Schatz ungleich",DebugLevel.DEBUG);
 			return false;
 		}
 		for (Integer ID: this.getPin().getPlayerID()) {
 			if(!other.getPin().getPlayerID().contains(ID))
-				System.err.println("Spieler ungleich");
+				Debug.print("Spieler ungleich",DebugLevel.DEBUG);
 				return false;
 		}
 		// positions-check:
@@ -186,19 +188,19 @@ public class Card extends CardType {
 			}
 		}
 		if (anzop1 != anzop2) {
-			System.err.println("Form ungleich(Anzahl)");
-			System.out.println("From:");
-			System.out.println(this);
-			System.out.println("To:");
-			System.out.println(other);
+			Debug.print("Form ungleich(Anzahl)",DebugLevel.DEBUG);
+			Debug.print("From:",DebugLevel.DEBUG);
+			Debug.print(this.toString(),DebugLevel.DEBUG);
+			Debug.print("To:",DebugLevel.DEBUG);
+			Debug.print(other.toString(),DebugLevel.DEBUG);
 			return false;
 		}
 		if ((anzop1!=3) && (indsum1 % 2) != (indsum2 % 2)) {
-			System.err.println("Form ungleich(Index)");
-			System.out.println("From: ("+indsum1+")");
-			System.out.println(this);
-			System.out.println("To:("+indsum2+")");
-			System.out.println(other);
+			Debug.print("Form ungleich(Index)",DebugLevel.DEBUG);
+			Debug.print("From: ("+indsum1+")",DebugLevel.DEBUG);
+			Debug.print(this.toString(),DebugLevel.DEBUG);
+			Debug.print("To:("+indsum2+")",DebugLevel.DEBUG);
+			Debug.print(other.toString(),DebugLevel.DEBUG);
 			return false;
 		}
 		return true;
@@ -217,31 +219,55 @@ public class Card extends CardType {
 		StringBuilder line5 = new StringBuilder("|");
 		StringBuilder line6 = new StringBuilder("|");
 
-		if (this.getOpenings().isTop()) {
+		Card c=new Card(this);
+		if(c.getOpenings().isTop()){
 			line1.append("##  ##|");
 			line2.append("##  ##|");
-		} else {
+		}else{
 			line1.append("######|");
 			line2.append("######|");
 		}
-		if (this.getOpenings().isLeft()) {
-			line3.append("    ");
-			line4.append("    ");
-		} else {
-			line3.append("##  ");
-			line4.append("##  ");
+		if(c.getOpenings().isLeft()){
+			line3.append("  ");
+			line4.append("  ");
+		}else{
+			line3.append("##");
+			line4.append("##");
 		}
-		if (this.getOpenings().isRight()) {
+		if(c.getPin().getPlayerID().size()!=0){
+			line3.append("S");
+		}else{
+			line3.append(" ");
+		}
+		if(c.getTreasure()!=null){
+			String name=c.getTreasure().name();
+			switch( name.charAt(1)) {
+			case 'Y':
+				//Symbol
+				line3.append("T");
+				break;
+			case 'T':
+				//Startpunkt
+				line3.append("S");
+				break;
+			}
+
+			line4.append(name.substring(name.length()-2));
+		}else{
+			line3.append(" ");
+			line4.append("  ");
+		}
+		if(c.getOpenings().isRight()){
 			line3.append("  |");
 			line4.append("  |");
-		} else {
+		}else{
 			line3.append("##|");
 			line4.append("##|");
 		}
-		if (this.getOpenings().isBottom()) {
+		if(c.getOpenings().isBottom()){
 			line5.append("##  ##|");
 			line6.append("##  ##|");
-		} else {
+		}else{
 			line5.append("######|");
 			line6.append("######|");
 		}

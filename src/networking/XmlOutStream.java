@@ -10,6 +10,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import tools.Debug;
+import tools.DebugLevel;
+
 public class XmlOutStream extends UTFOutputStream{
 
 	private Marshaller marshaller;
@@ -23,8 +26,7 @@ public class XmlOutStream extends UTFOutputStream{
 			this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
 					Boolean.TRUE);
 		} catch (JAXBException e) {
-			System.err
-					.println("[ERROR]: Fehler beim Initialisieren der JAXB-Komponenten");
+			Debug.print("[ERROR]: Fehler beim Initialisieren der JAXB-Komponenten",DebugLevel.DEFAULT);
 		}
 	}
 
@@ -34,21 +36,18 @@ public class XmlOutStream extends UTFOutputStream{
 	 * @param mc
 	 */
 	public void write(MazeCom mc) {
-		// gernerierung des fertigen XML
+		// generierung des fertigen XML
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			this.marshaller.marshal(mc, baos);
-			// TODO entferne Ausgabe
-			//System.out.println("Geschrieben");
-			//System.out.println(new String(baos.toByteArray()));
-			// TODO bis hier
+			Debug.print("Geschrieben",DebugLevel.DEBUG);
+			Debug.print(new String(baos.toByteArray()),DebugLevel.DEBUG);
 			// Versenden des XML
 			this.writeUTF8(new String(baos.toByteArray()));
 			this.flush();
 		} catch (IOException e) {
-			System.err.println("[ERROR]: Fehler beim versendern der Nachricht");
+			Debug.print("[ERROR]: Fehler beim versendern der Nachricht",DebugLevel.DEFAULT);
 		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}

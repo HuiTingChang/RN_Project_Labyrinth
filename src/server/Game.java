@@ -32,11 +32,9 @@ public class Game {
 	private Board spielBrett;
 	private Integer winner = -1;// Default wert -1 solange kein Gewinner
 								// feststeht
-	private Debug debugger;
 
 	public Game() {
-		debugger = new Debug();
-		debugger.addDebugger(System.out, DebugLevel.VERBOSE);
+		Debug.addDebugger(System.out, DebugLevel.VERBOSE);
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutMan = new TimeOutManager();
@@ -62,13 +60,12 @@ public class Game {
 			while (accepting && i <= players) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
-					System.out
-							.println("Waiting for another Player (" + i + ")");
+					Debug.print("Waiting for another Player (" + i + ")",DebugLevel.DEFAULT);
 					Socket mazeClient = s.accept();
 					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
 				} catch (SocketException e) {
-					System.out.println("...Waiting for Player timed out!");
+					Debug.print("...Waiting for Player timed out!",DebugLevel.DEFAULT);
 				}
 				++i;
 			}
@@ -155,8 +152,8 @@ public class Game {
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 
-		// System.out.println("Spielbrett vor Zug von Spieler "+currPlayer);
-		// System.out.println(spielBrett);
+		// Debug.print("Spielbrett vor Zug von Spieler "+currPlayer);
+		// Debug.print(spielBrett);
 
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
@@ -199,7 +196,7 @@ public class Game {
 		currentGame.init();
 		Integer currPlayer = 1;
 		while (!currentGame.someBodyWon()) {
-			System.out.println("Aktueller Spieler: " + currPlayer);
+			Debug.print("Aktueller Spieler: " + currPlayer,DebugLevel.VERBOSE);
 			currentGame.singleTurn(currPlayer);
 			currPlayer = currentGame.nextPlayer(currPlayer);
 		}

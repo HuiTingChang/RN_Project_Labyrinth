@@ -16,6 +16,8 @@ import java.util.Random;
 
 import server.Card.CardShape;
 import server.Card.Orientation;
+import tools.Debug;
+import tools.DebugLevel;
 
 public class Board extends BoardType {
 
@@ -140,7 +142,7 @@ public class Board extends BoardType {
 		getCard(6, 0).setTreasure(TreasureType.START_03);
 		getCard(6, 6).setTreasure(TreasureType.START_04);
 
-		//System.out.println(this.toString());
+		//Debug.print(this.toString());
 	}
 
 	//Ausgabe des Spielbretts als AsciiArt
@@ -347,15 +349,15 @@ public class Board extends BoardType {
 		// Überprüfen ob der Spielzug gültig ist
 		Board fake = this.fakeShift(move);
 		Position playerPosition = new Position(fake.findPlayer(playerID));
-		System.out.println("Spieler möchte von: ("+playerPosition.getRow()+":"+playerPosition.getCol()+")");
-		System.out.println("nach:               ("+move.getNewPinPos().getRow()+":"+move.getNewPinPos().getCol()+")");
-		System.out.println("Brett nach dem Schieben:");
-		System.out.println(fake);
+		Debug.print("Spieler möchte von: ("+playerPosition.getRow()+":"+playerPosition.getCol()+")",DebugLevel.VERBOSE);
+		Debug.print("nach:               ("+move.getNewPinPos().getRow()+":"+move.getNewPinPos().getCol()+")",DebugLevel.VERBOSE);
+		Debug.print("Brett nach dem Schieben:",DebugLevel.VERBOSE);
+		Debug.print(fake.toString(),DebugLevel.VERBOSE);
 		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
-			System.out.println("Zug gültig");
+			Debug.print("Zug gültig",DebugLevel.VERBOSE);
 			return true;
 		} else {
-			System.err.println("Warning: Die Angegebene Position ist nicht erreichbar");
+			Debug.print("Warning: Die Angegebene Position ist nicht erreichbar",DebugLevel.DEFAULT);
 			return false;
 		}
 	}

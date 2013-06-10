@@ -2,37 +2,22 @@ package tools;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class Debug {
 
-	private class Unit {
-		private DebugLevel level;
-		private OutputStream stream;
-
-		public Unit(OutputStream stream, DebugLevel level) {
-			this.level = level;
-			this.stream = stream;
-		}
-
-		public void print(String str, DebugLevel level) throws IOException {
-			if (level.value() <= this.level.value())
-				stream.write(str.getBytes());
-		}
-	}
-
-	static List<Unit> liste = new ArrayList<Unit>();
+	static HashMap<OutputStream, DebugLevel> liste = new HashMap<OutputStream, DebugLevel>();
 
 	public static void addDebugger(OutputStream stream, DebugLevel level) {
-		// Unit u=new Unit(stream, level);
-		// liste.add(u);
+		liste.put(stream, level);
 	}
 
 	public static void print(String str, DebugLevel level) {
-		for (Unit u : liste) {
+		for (OutputStream out : liste.keySet()) {
+			DebugLevel streamLevel = liste.get(out);
 			try {
-				u.print(str, level);
+				if (streamLevel.value() <= level.value())
+					out.write(str.getBytes());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
