@@ -12,6 +12,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import tools.Debug;
+import tools.DebugLevel;
+
 import config.Settings;
 
 import networking.Connection;
@@ -27,10 +30,14 @@ public class Game {
 	private ServerSocket s;
 	private TimeOutManager timeOutMan;
 	private Board spielBrett;
-	private Integer winner=-1;//Default wert -1 solange kein Gewinner feststeht
+	private Integer winner = -1;// Default wert -1 solange kein Gewinner
+								// feststeht
+	private Debug debugger;
 
 	public Game() {
-		winner=-1;
+		debugger = new Debug();
+		debugger.addDebugger(System.out, DebugLevel.VERBOSE);
+		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutMan = new TimeOutManager();
 		try {
@@ -49,30 +56,30 @@ public class Game {
 			int i = 1;
 			boolean accepting = true;
 			timeOutMan.startLoginTimeOut(this);
-			//Soll noch über Parameter anpassbar sein
-			int players=Settings.DEFAULT_PLAYERS;
-			
+			// Soll noch über Parameter anpassbar sein
+			int players = Settings.DEFAULT_PLAYERS;
+
 			while (accepting && i <= players) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
 					System.out
 							.println("Waiting for another Player (" + i + ")");
 					Socket mazeClient = s.accept();
-					Connection c = new Connection(mazeClient, this,i);
+					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
 				} catch (SocketException e) {
 					System.out.println("...Waiting for Player timed out!");
 				}
 				++i;
 			}
-			//Warten bis die Initialisierung durchgelaufen ist
-			boolean spielbereit=false;
-			while(!spielbereit){
-				spielbereit=true;
-				for(Integer id :spieler.keySet()){
-					Player p=spieler.get(id);
-					if(!p.isInitialized()){
-						spielbereit=false;
+			// Warten bis die Initialisierung durchgelaufen ist
+			boolean spielbereit = false;
+			while (!spielbereit) {
+				spielbereit = true;
+				for (Integer id : spieler.keySet()) {
+					Player p = spieler.get(id);
+					if (!p.isInitialized()) {
+						spielbereit = false;
 					}
 				}
 				try {
@@ -82,41 +89,41 @@ public class Game {
 				}
 			}
 			timeOutMan.stopLoginTimeOut();
-			//Spielbrett generieren
-			spielBrett = new Board();		
+			// Spielbrett generieren
+			spielBrett = new Board();
 
-			//Verteilen der Schatzkarten
-			ArrayList<TreasureType> tcp=new ArrayList<TreasureType>();
+			// Verteilen der Schatzkarten
+			ArrayList<TreasureType> tcp = new ArrayList<TreasureType>();
 			tcp.add(TreasureType.SYM_01);
-			tcp.add(TreasureType.SYM_02);			
-			tcp.add(TreasureType.SYM_03);			
-			tcp.add(TreasureType.SYM_04);			
-			tcp.add(TreasureType.SYM_05);			
-			tcp.add(TreasureType.SYM_06);			
-			tcp.add(TreasureType.SYM_07);			
-			tcp.add(TreasureType.SYM_08);			
-			tcp.add(TreasureType.SYM_09);			
-			tcp.add(TreasureType.SYM_10);			
-			tcp.add(TreasureType.SYM_11);			
-			tcp.add(TreasureType.SYM_12);			
-			tcp.add(TreasureType.SYM_13);			
+			tcp.add(TreasureType.SYM_02);
+			tcp.add(TreasureType.SYM_03);
+			tcp.add(TreasureType.SYM_04);
+			tcp.add(TreasureType.SYM_05);
+			tcp.add(TreasureType.SYM_06);
+			tcp.add(TreasureType.SYM_07);
+			tcp.add(TreasureType.SYM_08);
+			tcp.add(TreasureType.SYM_09);
+			tcp.add(TreasureType.SYM_10);
+			tcp.add(TreasureType.SYM_11);
+			tcp.add(TreasureType.SYM_12);
+			tcp.add(TreasureType.SYM_13);
 			tcp.add(TreasureType.SYM_14);
-			tcp.add(TreasureType.SYM_15);			
-			tcp.add(TreasureType.SYM_16);			
-			tcp.add(TreasureType.SYM_17);			
-			tcp.add(TreasureType.SYM_18);			
-			tcp.add(TreasureType.SYM_19);			
-			tcp.add(TreasureType.SYM_20);			
-			tcp.add(TreasureType.SYM_21);			
-			tcp.add(TreasureType.SYM_22);			
-			tcp.add(TreasureType.SYM_23);			
-			tcp.add(TreasureType.SYM_24);		
+			tcp.add(TreasureType.SYM_15);
+			tcp.add(TreasureType.SYM_16);
+			tcp.add(TreasureType.SYM_17);
+			tcp.add(TreasureType.SYM_18);
+			tcp.add(TreasureType.SYM_19);
+			tcp.add(TreasureType.SYM_20);
+			tcp.add(TreasureType.SYM_21);
+			tcp.add(TreasureType.SYM_22);
+			tcp.add(TreasureType.SYM_23);
+			tcp.add(TreasureType.SYM_24);
 			Collections.shuffle(tcp);
-			int anzCards=tcp.size()/spieler.size();
-			i=0;
+			int anzCards = tcp.size() / spieler.size();
+			i = 0;
 			for (Integer player : spieler.keySet()) {
-				ArrayList<TreasureType> cardsPerPlayer=new ArrayList<TreasureType>();
-				for (int j = i*anzCards; j < (i+1)*anzCards; j++) {
+				ArrayList<TreasureType> cardsPerPlayer = new ArrayList<TreasureType>();
+				for (int j = i * anzCards; j < (i + 1) * anzCards; j++) {
 					cardsPerPlayer.add(tcp.get(j));
 				}
 				spieler.get(player).setTreasure(cardsPerPlayer);
@@ -144,24 +151,24 @@ public class Game {
 		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
 		 * Zug
 		 */
-		
+
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
-		
-		//System.out.println("Spielbrett vor Zug von Spieler "+currPlayer);
-		//System.out.println(spielBrett);
-		
+
+		// System.out.println("Spielbrett vor Zug von Spieler "+currPlayer);
+		// System.out.println(spielBrett);
+
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
-				.awaitMove(spieler,this.spielBrett, 0);
+				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
-			if(spielBrett.proceedTurn(move,currPlayer)){
-				//foundTreasure gibt zurück wieviele 
-				//Schätze noch zu finden sind
-				if(spieler.get(currPlayer).foundTreasure()==0){
-					winner=currPlayer;
+			if (spielBrett.proceedTurn(move, currPlayer)) {
+				// foundTreasure gibt zurück wieviele
+				// Schätze noch zu finden sind
+				if (spieler.get(currPlayer).foundTreasure() == 0) {
+					winner = currPlayer;
 				}
 			}
-		}else{
+		} else {
 			System.err.println("Keinen Move erhalten!");
 		}
 	}
@@ -175,15 +182,16 @@ public class Game {
 	 */
 	public void cleanUp() {
 		for (Integer playerID : spieler.keySet()) {
-			Player s=spieler.get(playerID);
-			s.getConToClient().sendWin(winner, spieler.get(winner).getName(),spielBrett );
+			Player s = spieler.get(playerID);
+			s.getConToClient().sendWin(winner, spieler.get(winner).getName(),
+					spielBrett);
 		}
 		// TODO muss sonst noch was gemacht werden??
 	}
 
 	public boolean someBodyWon() {
-		return winner!=-1;
-		
+		return winner != -1;
+
 	}
 
 	public static void main(String[] args) {
@@ -191,6 +199,7 @@ public class Game {
 		currentGame.init();
 		Integer currPlayer = 1;
 		while (!currentGame.someBodyWon()) {
+			System.out.println("Aktueller Spieler: " + currPlayer);
 			currentGame.singleTurn(currPlayer);
 			currPlayer = currentGame.nextPlayer(currPlayer);
 		}
@@ -198,21 +207,21 @@ public class Game {
 	}
 
 	private Integer nextPlayer(Integer currPlayer) {
-		//TODO Fehler finden
+		// FIXME Fehler finden
 		// Soll Verhindern, das bereits vom Spiel
 		// ausgeschlossene Spieler nach an die Reihe kommen
-		Iterator<Integer> iDIterator=spieler.keySet().iterator();
-		Integer id=-1;
-		while(iDIterator.hasNext()){
-			id=iDIterator.next();
-			if(id==currPlayer){
+		Iterator<Integer> iDIterator = spieler.keySet().iterator();
+		Integer id = -1;
+		while (iDIterator.hasNext()) {
+			id = iDIterator.next();
+			if (id == currPlayer) {
 				break;
 			}
 		}
-		if(iDIterator.hasNext()){
+		if (iDIterator.hasNext()) {
 			return iDIterator.next();
-		}else{
-			//Erste ID zurückgeben,
+		} else {
+			// Erste ID zurückgeben,
 			return spieler.keySet().iterator().next();
 		}
 	}
