@@ -62,7 +62,7 @@ public class GraphicalCard extends Canvas {
 	public void loadShape(CardShape c) {
 		try {
 			shape = ImageIO.read(GraphicalCard.class
-					.getResource("/server/userInterface/Resources/" + c.toString() + ".png"));
+					.getResource("/server/userInterface/resources/" + c.toString() + ".png"));
 			this.setBounds(new Rectangle(shape.getWidth(), shape.getHeight()));
 		} catch (IOException e) {
 		}
@@ -71,7 +71,7 @@ public class GraphicalCard extends Canvas {
 	public void loadTreasure(TreasureType t) {
 		try {
 			treasure = ImageIO.read(GraphicalCard.class
-					.getResource("/server/userInterface/Resources/" + t.value()
+					.getResource("/server/userInterface/resources/" + t.value()
 							+ ".png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
