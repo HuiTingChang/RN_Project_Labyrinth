@@ -13,6 +13,7 @@ public class Debug {
 	}
 
 	public static void print(String str, DebugLevel level) {
+		str+="\n";
 		for (OutputStream out : liste.keySet()) {
 			DebugLevel streamLevel = liste.get(out);
 			try {

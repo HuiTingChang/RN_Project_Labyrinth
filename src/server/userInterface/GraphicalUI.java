@@ -136,14 +136,15 @@ public class GraphicalUI extends javax.swing.JFrame implements UI{
 
 	@Override
 	public void displayMove(MoveMessageType mm, Board b) {
-		// TODO Auto-generated method stub
-		
+		// TODO 
+		updateBoard(b);
 	}
 
 	@Override
 	public void init(Board b) {
-		// TODO Auto-generated method stub
+		//TODO
 		updateBoard(b);
+		this.setVisible(true);
 	}
 
 	private void updateBoard(Board b){

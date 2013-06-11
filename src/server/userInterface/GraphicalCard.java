@@ -11,12 +11,16 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import server.Card;
 import server.Card.CardShape;
+import server.Card.Orientation;
+import tools.Debug;
+import tools.DebugLevel;
 
 public class GraphicalCard extends Canvas {
 
@@ -37,11 +41,11 @@ public class GraphicalCard extends Canvas {
 		this.setBounds(new Rectangle(shape.getWidth(), shape.getHeight()));
 	}
 
-	public void rotateCard(int orientierung) {
+	public void rotateCard(Orientation o) {
 
 		Graphics2D g = shape.createGraphics();
 		AffineTransform trans = AffineTransform.getRotateInstance(
-				Math.toRadians(90 * orientierung), shape.getWidth() / 2,
+				Math.toRadians(o.value()), shape.getWidth() / 2,
 				shape.getHeight() / 2);
 		g.setTransform(trans);
 	}
@@ -53,16 +57,20 @@ public class GraphicalCard extends Canvas {
 		pin = null;
 	}
 
-	public void setCard(Card c){
+	public void setCard(Card c) {
 		loadShape(c.getShape());
+		rotateCard(c.getOrientation());
 		loadTreasure(c.getTreasure());
 		loadPins(c.getPin().getPlayerID());
 	}
-	
+
 	public void loadShape(CardShape c) {
 		try {
-			shape = ImageIO.read(GraphicalCard.class
-					.getResource("/server/userInterface/resources/" + c.toString() + ".png"));
+			URL url = GraphicalCard.class
+					.getResource("/server/userInterface/resources/"
+							+ c.toString() + ".png");
+			Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
+			shape = ImageIO.read(url);
 			this.setBounds(new Rectangle(shape.getWidth(), shape.getHeight()));
 		} catch (IOException e) {
 		}
@@ -70,9 +78,13 @@ public class GraphicalCard extends Canvas {
 
 	public void loadTreasure(TreasureType t) {
 		try {
-			treasure = ImageIO.read(GraphicalCard.class
-					.getResource("/server/userInterface/resources/" + t.value()
-							+ ".png"));
+			if (t != null) {
+				URL url = GraphicalCard.class
+						.getResource("/server/userInterface/resources/"
+								+ t.value() + ".png");
+				Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
+				treasure = ImageIO.read(url);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,10 +106,10 @@ public class GraphicalCard extends Canvas {
 			g.drawImage(treasure, zentrum, zentrum, null);
 		}
 		if (pin != null) {
-			int height=20;
-			int width=20;
+			int height = 20;
+			int width = 20;
 			int zentrum = shape.getHeight() / 2 - height / 2;
-			g.fillOval(zentrum, zentrum, height,width);
+			g.fillOval(zentrum, zentrum, height, width);
 		}
 		// g2.fillOval(x, y, width, height)
 

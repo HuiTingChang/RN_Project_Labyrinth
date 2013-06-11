@@ -12,13 +12,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import networking.Connection;
+import server.userInterface.GraphicalUI;
+import server.userInterface.UI;
 import tools.Debug;
 import tools.DebugLevel;
-
-import config.Settings;
-
-import networking.Connection;
 import Timeouts.TimeOutManager;
+import config.Settings;
 
 public class Game {
 
@@ -32,6 +32,7 @@ public class Game {
 	private Board spielBrett;
 	private Integer winner = -1;// Default wert -1 solange kein Gewinner
 								// feststeht
+	private UI userinterface;
 
 	public Game() {
 		Debug.addDebugger(System.out, DebugLevel.DEBUG);
@@ -159,12 +160,20 @@ public class Game {
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
+			userinterface.displayMove(move, spielBrett);
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
 					winner = currPlayer;
 				}
+			}
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} else {
 			System.err.println("Keinen Move erhalten!");
@@ -195,6 +204,8 @@ public class Game {
 	public static void main(String[] args) {
 		Game currentGame = new Game();
 		currentGame.init();
+		currentGame.userinterface=new GraphicalUI();
+		currentGame.userinterface.init(currentGame.spielBrett);
 		Integer currPlayer = 1;
 		while (!currentGame.somebodyWon()) {
 			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);

@@ -309,5 +309,38 @@ public class Card extends CardType {
 			return CardShape.T;
 		}
 	}
+	public Orientation getOrientation(){
+		switch(getShape()){
+		case I:
+			if(getOpenings().isTop()){
+				return Orientation.D0;
+			}else{
+				return Orientation.D90;
+			}
+		case L:
+			if(getOpenings().isTop() && getOpenings().isRight()){
+				return Orientation.D0;
+			}else if(getOpenings().isRight() && getOpenings().isBottom()){
+				return Orientation.D90;
+			}else if(getOpenings().isBottom() && getOpenings().isLeft()){
+				return Orientation.D180;
+			}else { //if(getOpenings().isLeft() && getOpenings().isTop()){
+				return Orientation.D270;
+			}
+		case T:
+			if(!getOpenings().isTop()){
+				return Orientation.D0;
+			}else if(!getOpenings().isRight()){
+				return Orientation.D90;
+			}else if(!getOpenings().isBottom()){
+				return Orientation.D180;
+			}else {//if(!getOpenings().isLeft()){
+				return Orientation.D270;
+			}
+		default:
+			return null;					
+		}
+		
+	}
 
 }
