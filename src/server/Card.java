@@ -36,13 +36,13 @@ public class Card extends CardType {
 
 	public Card(CardType c) {
 		super();
-		
-		this.setOpenings(new Openings());		
+
+		this.setOpenings(new Openings());
 		this.getOpenings().setBottom(c.getOpenings().isBottom());
 		this.getOpenings().setLeft(c.getOpenings().isLeft());
 		this.getOpenings().setRight(c.getOpenings().isRight());
 		this.getOpenings().setTop(c.getOpenings().isTop());
-		
+
 		this.setTreasure(c.getTreasure());
 		this.setPin(new Pin());
 		this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
@@ -153,13 +153,14 @@ public class Card extends CardType {
 			return false;
 		CardType other = (CardType) obj;
 		if (this.treasure != other.getTreasure()) {
-			Debug.print("Schatz ungleich",DebugLevel.DEBUG);
+			Debug.print("Schatz ungleich", DebugLevel.DEBUG);
 			return false;
 		}
-		for (Integer ID: this.getPin().getPlayerID()) {
-			if(!other.getPin().getPlayerID().contains(ID))
-				Debug.print("Spieler ungleich",DebugLevel.DEBUG);
+		for (Integer ID : this.getPin().getPlayerID()) {
+			if (!other.getPin().getPlayerID().contains(ID)) {
+				Debug.print("Spieler ungleich", DebugLevel.DEBUG);
 				return false;
+			}
 		}
 		// positions-check:
 		boolean[] op1 = new boolean[4];
@@ -188,23 +189,24 @@ public class Card extends CardType {
 			}
 		}
 		if (anzop1 != anzop2) {
-			Debug.print("Form ungleich(Anzahl)",DebugLevel.DEBUG);
-			Debug.print("From:",DebugLevel.DEBUG);
-			Debug.print(this.toString(),DebugLevel.DEBUG);
-			Debug.print("To:",DebugLevel.DEBUG);
-			Debug.print(other.toString(),DebugLevel.DEBUG);
+			Debug.print("Form ungleich(Anzahl)", DebugLevel.DEBUG);
+			Debug.print("From:", DebugLevel.DEBUG);
+			Debug.print(this.toString(), DebugLevel.DEBUG);
+			Debug.print("To:", DebugLevel.DEBUG);
+			Debug.print(other.toString(), DebugLevel.DEBUG);
 			return false;
 		}
-		if ((anzop1!=3) && (indsum1 % 2) != (indsum2 % 2)) {
-			Debug.print("Form ungleich(Index)",DebugLevel.DEBUG);
-			Debug.print("From: ("+indsum1+")",DebugLevel.DEBUG);
-			Debug.print(this.toString(),DebugLevel.DEBUG);
-			Debug.print("To:("+indsum2+")",DebugLevel.DEBUG);
-			Debug.print(other.toString(),DebugLevel.DEBUG);
+		if ((anzop1 != 3) && (indsum1 % 2) != (indsum2 % 2)) {
+			Debug.print("Form ungleich(Index)", DebugLevel.DEBUG);
+			Debug.print("From: (" + indsum1 + ")", DebugLevel.DEBUG);
+			Debug.print(this.toString(), DebugLevel.DEBUG);
+			Debug.print("To:(" + indsum2 + ")", DebugLevel.DEBUG);
+			Debug.print(other.toString(), DebugLevel.DEBUG);
 			return false;
 		}
 		return true;
 	}
+
 	@Override
 	public String toString() {
 
@@ -219,55 +221,55 @@ public class Card extends CardType {
 		StringBuilder line5 = new StringBuilder("|");
 		StringBuilder line6 = new StringBuilder("|");
 
-		Card c=new Card(this);
-		if(c.getOpenings().isTop()){
+		Card c = new Card(this);
+		if (c.getOpenings().isTop()) {
 			line1.append("##  ##|");
 			line2.append("##  ##|");
-		}else{
+		} else {
 			line1.append("######|");
 			line2.append("######|");
 		}
-		if(c.getOpenings().isLeft()){
+		if (c.getOpenings().isLeft()) {
 			line3.append("  ");
 			line4.append("  ");
-		}else{
+		} else {
 			line3.append("##");
 			line4.append("##");
 		}
-		if(c.getPin().getPlayerID().size()!=0){
+		if (c.getPin().getPlayerID().size() != 0) {
 			line3.append("S");
-		}else{
+		} else {
 			line3.append(" ");
 		}
-		if(c.getTreasure()!=null){
-			String name=c.getTreasure().name();
-			switch( name.charAt(1)) {
+		if (c.getTreasure() != null) {
+			String name = c.getTreasure().name();
+			switch (name.charAt(1)) {
 			case 'Y':
-				//Symbol
+				// Symbol
 				line3.append("T");
 				break;
 			case 'T':
-				//Startpunkt
+				// Startpunkt
 				line3.append("S");
 				break;
 			}
 
-			line4.append(name.substring(name.length()-2));
-		}else{
+			line4.append(name.substring(name.length() - 2));
+		} else {
 			line3.append(" ");
 			line4.append("  ");
 		}
-		if(c.getOpenings().isRight()){
+		if (c.getOpenings().isRight()) {
 			line3.append("  |");
 			line4.append("  |");
-		}else{
+		} else {
 			line3.append("##|");
 			line4.append("##|");
 		}
-		if(c.getOpenings().isBottom()){
+		if (c.getOpenings().isBottom()) {
 			line5.append("##  ##|");
 			line6.append("##  ##|");
-		}else{
+		} else {
 			line5.append("######|");
 			line6.append("######|");
 		}
@@ -281,6 +283,31 @@ public class Card extends CardType {
 		sb.append(" ------ \n");
 
 		return sb.toString();
+	}
+
+	public CardShape getShape() {
+		boolean[] open = new boolean[4];
+		open[0] = getOpenings().isTop();
+		open[1] = getOpenings().isRight();
+		open[2] = getOpenings().isBottom();
+		open[3] = getOpenings().isLeft();
+
+		int indsum = 0;
+		int anzop = 0;
+
+		for (int i = 0; i < open.length; i++) {
+			if (open[i]) {
+				indsum += i;
+				++anzop;
+			}
+		}
+		if (anzop == 2 && indsum % 2 == 0) {
+			return CardShape.I;
+		} else if (anzop == 2 && indsum % 2 == 1) {
+			return CardShape.L;
+		} else {
+			return CardShape.T;
+		}
 	}
 
 }
