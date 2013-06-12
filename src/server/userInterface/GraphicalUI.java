@@ -84,6 +84,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			thisLayout.columnWidths = new int[] { 70, 30 };
 
 			getContentPane().setLayout(thisLayout);
+			this.setTitle("MazeCom");
 			{
 				BoardPane = new JPanel();
 				getContentPane().add(
@@ -263,6 +264,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			}
 
 		}
+		resizeBoard();
 		shiftCard.setCard(new Card(b.getShiftCard()));
 		BoardPane.revalidate();
 	}

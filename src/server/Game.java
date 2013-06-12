@@ -170,10 +170,10 @@ public class Game {
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
 			userinterface.displayMove(move, spielBrett);
-			userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
+				userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
 					winner = currPlayer;
 				}
@@ -181,7 +181,7 @@ public class Game {
 			
 			try {
 				//5 sec Wartezeit zwischen den Zügen
-				Thread.sleep(5000);
+				Thread.sleep(Settings.MOVEDELAY);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
