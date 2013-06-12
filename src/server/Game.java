@@ -35,7 +35,7 @@ public class Game {
 	private UI userinterface;
 
 	public Game() {
-		Debug.addDebugger(System.out, DebugLevel.DEBUG);
+		Debug.addDebugger(System.out, DebugLevel.DEFAULT);
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutMan = new TimeOutManager();
@@ -170,7 +170,7 @@ public class Game {
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

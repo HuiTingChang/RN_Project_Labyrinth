@@ -33,47 +33,55 @@ public class GraphicalCard extends Canvas {
 	private List<Integer> pin;
 
 	public void resizeCard(Dimension d) {
-		Image image = shape.getScaledInstance(d.width, d.height,
-				Image.SCALE_SMOOTH);
-		shape = new BufferedImage(d.width, d.height,
-				BufferedImage.TYPE_INT_ARGB);
-		shape.getGraphics().drawImage(image, 0, 0, null);
-		this.setBounds(new Rectangle(shape.getWidth(), shape.getHeight()));
+		 Image image = shape.getScaledInstance(d.width, d.height,
+		 Image.SCALE_SMOOTH);
+		 shape = new BufferedImage(d.width, d.height,
+		 BufferedImage.TYPE_INT_ARGB);
+		 shape.getGraphics().drawImage(image, 0, 0, null);
+		 this.setBounds(new Rectangle(shape.getWidth(), shape.getHeight()));
+//		Graphics2D g = (Graphics2D) this.getGraphics();
+//		AffineTransform tran = AffineTransform.getScaleInstance(
+//				(double) d.getHeight() / this.getHeight(),
+//				(double) d.getWidth() / this.getWidth());
+//		g.setTransform(tran);
+//		this.repaint();
 	}
 
-	public void rotateCard(Orientation o) {
-
-		Graphics2D g = shape.createGraphics();
-		AffineTransform trans = AffineTransform.getRotateInstance(
-				Math.toRadians(o.value()), shape.getWidth() / 2,
-				shape.getHeight() / 2);
-		g.setTransform(trans);
-	}
+//	public void rotateCard(Orientation o) {
+//
+//		Graphics2D g = (Graphics2D) this.getGraphics();
+//		AffineTransform trans = AffineTransform.getRotateInstance(
+//				Math.toRadians(o.value()), this.getWidth() / 2,
+//				this.getHeight() / 2);
+//		g.setTransform(trans);
+//		this.repaint();
+//
+//	}
 
 	public GraphicalCard() {
 		super();
-		loadShape(CardShape.I);
+		loadShape(CardShape.I,Orientation.D0);
 		treasure = null;
 		pin = null;
 	}
 
 	public void setCard(Card c) {
-		loadShape(c.getShape());
-		rotateCard(c.getOrientation());
+		loadShape(c.getShape(),c.getOrientation());
 		loadTreasure(c.getTreasure());
 		loadPins(c.getPin().getPlayerID());
 	}
 
-	public void loadShape(CardShape c) {
+	public void loadShape(CardShape c, Orientation o) {
 		try {
 			URL url = GraphicalCard.class
 					.getResource("/server/userInterface/resources/"
-							+ c.toString() + ".png");
+							+ c.toString() + o.value() + ".png");
 			Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
 			shape = ImageIO.read(url);
 			this.setBounds(new Rectangle(shape.getWidth(), shape.getHeight()));
 		} catch (IOException e) {
 		}
+		// this.paint(getGraphics());
 	}
 
 	public void loadTreasure(TreasureType t) {
@@ -84,35 +92,49 @@ public class GraphicalCard extends Canvas {
 								+ t.value() + ".png");
 				Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
 				treasure = ImageIO.read(url);
+			} else {
+				treasure = null;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		// this.paint(getGraphics());
 	}
 
 	public void loadPins(List<Integer> list) {
-		pin = list;
+		if (list.size() != 0)
+			pin = list;
+		else
+			pin = null;
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-
-		g.drawImage(shape, 0, 0, null);
+		if (shape != null) {
+			g.drawImage(shape, 0, 0, null);
+		}
 		if (treasure != null) {
 			int zentrum = shape.getHeight() / 2 - treasure.getHeight() / 2;
 			g.drawImage(treasure, zentrum, zentrum, null);
 		}
 		if (pin != null) {
 			int height = 20;
-			int width = 20;
+			int width = 10;
 			int zentrum = shape.getHeight() / 2 - height / 2;
 			g.fillOval(zentrum, zentrum, height, width);
 		}
-		// g2.fillOval(x, y, width, height)
-
 	}
+
+	// @Override
+	// public void repaint() {
+	// // TODO Auto-generated method stub
+	// super.repaint();
+	// Graphics g = getGraphics();
+	// if (g != null) {
+	// paint(g);
+	// }
+	// }
 
 }
