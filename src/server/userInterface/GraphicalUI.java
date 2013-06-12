@@ -181,7 +181,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		}
 		resizeBoard();
 		shiftCard.setCard(new Card(b.getShiftCard()));
-		//this.repaint();
+		BoardPane.revalidate();
 	}
 
 }
