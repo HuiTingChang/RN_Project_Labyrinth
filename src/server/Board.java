@@ -283,6 +283,7 @@ public class Board extends BoardType {
 		if (!shiftCard.getPin().getPlayerID().isEmpty()) {
 			Pin temp = shiftCard.getPin();
 			c.setPin(temp);
+			shiftCard.setPin(null);
 		}
 		setCard(sm.getRow(), sm.getCol(), c);
 	}
