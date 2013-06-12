@@ -223,7 +223,7 @@ public class Board extends BoardType {
 		return sb.toString();
 	}
 
-	private void setCard(int row, int col, Card c) {
+	protected void setCard(int row, int col, Card c) {
 		// Muss ueberschrieben werden, daher zuerst entfernen und dann...
 		this.getRow().get(row).getCol().remove(col);
 		// ...hinzufuegen
@@ -235,7 +235,7 @@ public class Board extends BoardType {
 	}
 
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
-	private void proceedShift(MoveMessageType move) {
+	protected void proceedShift(MoveMessageType move) {
 		PositionType sm = move.getShiftPosition();
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
@@ -298,7 +298,7 @@ public class Board extends BoardType {
 
 	}
 
-	private void movePlayer(PositionType oldPos, PositionType newPos,
+	protected void movePlayer(PositionType oldPos, PositionType newPos,
 			Integer playerID) {
 		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
 				.remove(playerID);
@@ -306,7 +306,7 @@ public class Board extends BoardType {
 				.add(playerID);
 	}
 
-	private Board fakeShift(MoveMessageType move) {
+	protected Board fakeShift(MoveMessageType move) {
 		Board fake = (Board) this.clone();
 		fake.proceedShift(move);
 		return fake;
@@ -371,7 +371,7 @@ public class Board extends BoardType {
 		return getAlleEreichbarenNachbarn(oldP).contains(newP);
 	}
 
-	private List<PositionType> getAlleEreichbarenNachbarn(PositionType position) {
+	protected List<PositionType> getAlleEreichbarenNachbarn(PositionType position) {
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
 		int[][] erreichbar = new int[7][7];
 		erreichbar[position.getRow()][position.getCol()] = 1;
