@@ -108,7 +108,7 @@ public class Connection {
 			if (this.currentGame.getBoard().validateTransition(
 					result.getMoveMessage(), this.p.getID())) {
 				this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-						ErrorType.NOERROR),true);
+						ErrorType.NOERROR),false);
 				return result.getMoveMessage();
 			} else if (tries < Settings.MOVETRIES)
 				return illigalMove(spieler,brett, ++tries);
@@ -119,7 +119,7 @@ public class Connection {
 
 		} else {
 			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-					ErrorType.AWAIT_MOVE),true);
+					ErrorType.AWAIT_MOVE),false);
 			if (tries < Settings.MOVETRIES)
 				return awaitMove(spieler,brett, ++tries);
 			else {
