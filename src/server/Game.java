@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import networking.Connection;
 import server.userInterface.GraphicalUI;
@@ -144,6 +145,14 @@ public class Game {
 		}
 	}
 
+	private List<Player> playerToList(){
+		List<Player> erg=new ArrayList<Player>();
+		for (Integer id : spieler.keySet()) {
+			erg.add(spieler.get(id));
+		}
+		return erg;
+	}
+	
 	public void singleTurn(Integer currPlayer) {
 		/**
 		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
@@ -161,6 +170,7 @@ public class Game {
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
 			userinterface.displayMove(move, spielBrett);
+			userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
@@ -170,13 +180,14 @@ public class Game {
 			}
 			
 			try {
+				//5 sec Wartezeit zwischen den Zügen
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
-			System.err.println("Keinen Move erhalten!");
+			Debug.print("Keinen Move erhalten!",DebugLevel.DEFAULT);
 		}
 	}
 
