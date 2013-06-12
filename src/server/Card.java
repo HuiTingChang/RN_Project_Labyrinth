@@ -45,7 +45,11 @@ public class Card extends CardType {
 
 		this.setTreasure(c.getTreasure());
 		this.setPin(new Pin());
-		this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
+		if(c.getPin()!=null){
+			this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
+		}else{
+			this.setPin(null);
+		}
 	}
 
 	public Card(CardShape shape, Orientation o, TreasureType t) {
