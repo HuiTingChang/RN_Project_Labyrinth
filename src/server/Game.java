@@ -218,6 +218,8 @@ public class Game {
 		currentGame.userinterface=new GraphicalUI();
 		currentGame.userinterface.init(currentGame.spielBrett);
 		Integer currPlayer = 1;
+		currentGame.userinterface.updatePlayerStatistics(currentGame.playerToList(), currPlayer);
+
 		while (!currentGame.somebodyWon()) {
 			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);
 			currentGame.singleTurn(currPlayer);
