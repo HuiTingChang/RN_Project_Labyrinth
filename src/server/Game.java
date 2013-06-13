@@ -171,8 +171,7 @@ public class Game {
 
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
-		if (move != null) {
-			userinterface.displayMove(move, spielBrett);
+		if (move != null) {	
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
@@ -180,7 +179,7 @@ public class Game {
 					winner = currPlayer;
 				}
 			}
-
+			userinterface.displayMove(move, spielBrett);
 			try {
 				// 5 sec Wartezeit zwischen den Zügen
 				Thread.sleep(Settings.MOVEDELAY);

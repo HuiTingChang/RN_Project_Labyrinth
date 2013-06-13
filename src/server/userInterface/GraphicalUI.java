@@ -13,7 +13,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -245,12 +244,12 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	}
 
 	@Override
-	public void displayMove(MoveMessageType mm, Board b) {
-		setCurrentTreasure(b.getTreasure());
+	public void displayMove(MoveMessageType mm, Board gb) {
+		setCurrentTreasure(gb.getTreasure());
 
 		// TODO Animation des zuges
 
-		updateBoard(b);
+		updateBoard(gb);
 	}
 
 	@Override
