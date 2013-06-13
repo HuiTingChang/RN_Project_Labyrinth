@@ -48,7 +48,7 @@ public class Player {
 	}
 
 	public int treasuresToGo() {
-		return treasures.size() + 1;
+		return treasures.size() + ( (currentTreasure!=null)?1:0 );
 	}
 
 	public void setTreasure(Collection<? extends TreasureType> c) {

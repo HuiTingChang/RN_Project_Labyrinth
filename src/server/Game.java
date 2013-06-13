@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import networking.Connection;
 import server.userInterface.GraphicalUI;
 import server.userInterface.UI;
@@ -145,26 +147,27 @@ public class Game {
 		}
 	}
 
-	private List<Player> playerToList(){
-		List<Player> erg=new ArrayList<Player>();
+	private List<Player> playerToList() {
+		List<Player> erg = new ArrayList<Player>();
 		for (Integer id : spieler.keySet()) {
 			erg.add(spieler.get(id));
 		}
 		return erg;
 	}
-	
+
 	public void singleTurn(Integer currPlayer) {
 		/**
 		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
 		 * Zug
 		 */
+		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 
 		Debug.print("Spielbrett vor Zug von Spieler " + currPlayer,
-				DebugLevel.DEBUG);
-		Debug.print(spielBrett.toString(), DebugLevel.DEBUG);
+				DebugLevel.VERBOSE);
+		Debug.print(spielBrett.toString(), DebugLevel.VERBOSE);
 
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
@@ -173,21 +176,20 @@ public class Game {
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
-				userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
 					winner = currPlayer;
 				}
 			}
-			
+
 			try {
-				//5 sec Wartezeit zwischen den Zügen
+				// 5 sec Wartezeit zwischen den Zügen
 				Thread.sleep(Settings.MOVEDELAY);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
-			Debug.print("Keinen Move erhalten!",DebugLevel.DEFAULT);
+			Debug.print("Keinen Move erhalten!", DebugLevel.DEFAULT);
 		}
 	}
 
@@ -204,7 +206,10 @@ public class Game {
 			s.getConToClient().sendWin(winner, spieler.get(winner).getName(),
 					spielBrett);
 		}
-		// TODO muss sonst noch was gemacht werden??
+		userinterface.updatePlayerStatistics(playerToList(), winner);
+		Debug.print(winner+" hat das Spiel gewonnen.", DebugLevel.DEFAULT);
+		JOptionPane.showMessageDialog(null, winner+" hat das Spiel gewonnen.\nbitte schliessen Sie das Fenster");
+
 	}
 
 	public boolean somebodyWon() {
@@ -215,10 +220,11 @@ public class Game {
 	public static void main(String[] args) {
 		Game currentGame = new Game();
 		currentGame.init();
-		currentGame.userinterface=new GraphicalUI();
+		currentGame.userinterface = new GraphicalUI();
 		currentGame.userinterface.init(currentGame.spielBrett);
 		Integer currPlayer = 1;
-		currentGame.userinterface.updatePlayerStatistics(currentGame.playerToList(), currPlayer);
+		currentGame.userinterface.updatePlayerStatistics(
+				currentGame.playerToList(), currPlayer);
 
 		while (!currentGame.somebodyWon()) {
 			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);

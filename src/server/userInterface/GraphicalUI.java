@@ -56,6 +56,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private GraphicalCard[][] boardDisplay;
 	private JLabel[][] stats;
 
+	private Board b;
+
 	/**
 	 * Auto-generated main method to display this JFrame
 	 */
@@ -211,13 +213,13 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			}
 			stats = new JLabel[4][2];
 			for (int i = 0; i < stats.length; i++) {
-				stats[i][0]=new JLabel();
+				stats[i][0] = new JLabel();
 				statisticsPane.add(stats[i][0], new GridBagConstraints(0,
 						4 + i, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 				stats[i][0].setText((i + 1) + ": Nicht Verbunden");
-				
-				stats[i][1]=new JLabel();
+
+				stats[i][1] = new JLabel();
 				statisticsPane.add(stats[i][1], new GridBagConstraints(1,
 						4 + i, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -244,8 +246,10 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 
 	@Override
 	public void displayMove(MoveMessageType mm, Board b) {
-		// TODO
 		setCurrentTreasure(b.getTreasure());
+
+		// TODO Animation des zuges
+
 		updateBoard(b);
 	}
 
@@ -253,7 +257,9 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	public void init(Board b) {
 		// TODO
 		updateBoard(b);
+		setCurrentTreasure(null);
 		this.setVisible(true);
+		
 	}
 
 	private void updateBoard(Board b) {
@@ -267,23 +273,33 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		resizeBoard();
 		shiftCard.setCard(new Card(b.getShiftCard()));
 		BoardPane.revalidate();
+		this.b = b;
 	}
 
 	private void setCurrentTreasure(TreasureType t) {
-		currentTreasure
-				.setIcon(new ImageIcon(getClass().getClassLoader().getResource(
-						"server/userInterface/resources/" + t.value() + ".png")));
+		if (t != null) {
+			currentTreasure.setIcon(new ImageIcon(getClass().getClassLoader()
+					.getResource(
+							"server/userInterface/resources/" + t.value()
+									+ ".png")));
+		} else {
+			currentTreasure.setIcon(null);
+		}
 	}
 
 	@Override
 	public void updatePlayerStatistics(List<Player> stats, Integer current) {
+		for (int i = 0; i < 4; ++i) {
+			this.stats[i][0].setText((i + 1) + ": nicht verbunden");
+			this.stats[i][1].setText("");
+		}
 		for (Player p : stats) {
-			if(p.getID()==current){
-			this.stats[p.getID() - 1][0]
-					.setText(">"+p.getID() + ": " + p.getName());
-			}else{
-				this.stats[p.getID() - 1][0]
-						.setText(p.getID() + ": " + p.getName());
+			if (p.getID() == current) {
+				this.stats[p.getID() - 1][0].setText(">" + p.getID() + ": "
+						+ p.getName());
+			} else {
+				this.stats[p.getID() - 1][0].setText(p.getID() + ": "
+						+ p.getName());
 			}
 			this.stats[p.getID() - 1][1].setText("" + p.treasuresToGo());
 		}

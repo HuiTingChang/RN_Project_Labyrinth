@@ -59,9 +59,7 @@ public class Position extends PositionType {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Position other = (Position) obj;
+		Position other = new Position((PositionType) obj);
 		if (col != other.col)
 			return false;
 		if (row != other.row)

@@ -4,7 +4,7 @@ package config;
 public class Settings {
 	// TODO falls alles nur Static => Konstruktor private machen
 	public final static int port = 5123;
-	public final static int DEFAULT_PLAYERS = 1;
+	public final static int DEFAULT_PLAYERS = 2;
 	public final static int MOVEDELAY = 3*1000; //3 sec
 
 	public final static long LOGINTIMEOUT = 2 * 60 * 1000;// 2min
