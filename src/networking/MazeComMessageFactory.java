@@ -43,6 +43,7 @@ public class MazeComMessageFactory {
 		mc.setWinMessage(of.createWinMessageType());
 		Winner w = of.createWinMessageTypeWinner();
 		w.setId(winnerId);
+		w.setValue(name);
 		mc.getWinMessage().setWinner(w);
 		mc.getWinMessage().setBoard(b);
 		return mc;

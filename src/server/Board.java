@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import config.Settings;
+
 import server.Card.CardShape;
 import server.Card.Orientation;
 import tools.Debug;
@@ -76,7 +78,9 @@ public class Board extends BoardType {
 		// die freien verschiebbaren Teile auf dem Spielbrett
 		ArrayList<Card> freeCards = new ArrayList<Card>();
 		Random rng = new Random();
-
+		if (Settings.TESTBOARD) {
+			rng.setSeed(Settings.TESTBOARD_SEED);
+		}
 		// 15 mal L-shape (6 (sym) + 9 (ohne))
 		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
 				.nextInt(4) * 90), TreasureType.SYM_01));
@@ -372,7 +376,8 @@ public class Board extends BoardType {
 		return getAlleEreichbarenNachbarn(oldP).contains(newP);
 	}
 
-	protected List<PositionType> getAlleEreichbarenNachbarn(PositionType position) {
+	protected List<PositionType> getAlleEreichbarenNachbarn(
+			PositionType position) {
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
 		int[][] erreichbar = new int[7][7];
 		erreichbar[position.getRow()][position.getCol()] = 1;
@@ -460,7 +465,7 @@ public class Board extends BoardType {
 	public void setTreasure(TreasureType t) {
 		currentTreasure = t;
 	}
-	
+
 	public TreasureType getTreasure() {
 		return currentTreasure;
 	}
