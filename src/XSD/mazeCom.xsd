@@ -103,6 +103,7 @@
 						<xs:element name="col" type="cardType" minOccurs="7"
 							maxOccurs="7" />
 					</xs:sequence>
+					<xs:attribute name="OptionalAttirbute" type="xs:string" />
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="shiftCard" type="cardType" />
