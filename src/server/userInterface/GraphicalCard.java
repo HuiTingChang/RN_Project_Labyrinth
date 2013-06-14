@@ -104,6 +104,8 @@ public class GraphicalCard extends Canvas {
 			int width = 20;
 			int zentrum = shape.getHeight() / 2 - height / 2;
 			g.fillOval(zentrum, zentrum, height, width);
+			char[] number={(pin.get(0)+"").charAt(0)};
+			g.drawChars(number, 0, 1, zentrum, zentrum);
 		}
 	}
 
