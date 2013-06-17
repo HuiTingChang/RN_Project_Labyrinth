@@ -240,7 +240,7 @@ public class Board extends BoardType {
 
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
 	protected void proceedShift(MoveMessageType move) {
-		PositionType sm = move.getShiftPosition();
+		Position sm =new Position( move.getShiftPosition() );
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
 				// horizontal schieben
@@ -248,7 +248,6 @@ public class Board extends BoardType {
 				int start = (sm.getCol() + 6) % 12; // Karte die rausgenommen
 													// wird
 				setShiftCard(getCard(row, start));
-				forbidden = new Position(row, start);
 
 				if (start == 6) {
 					for (int i = 6; i > 0; --i) {
@@ -267,7 +266,6 @@ public class Board extends BoardType {
 				int start = (sm.getRow() + 6) % 12; // Karte die rausgenommen
 													// wird
 				setShiftCard(getCard(start, col));
-				forbidden = new Position(start, col);
 				if (start == 6) {
 					for (int i = 6; i > 0; --i) {
 						setCard(i, col, new Card(getCard(i - 1, col)));
@@ -280,14 +278,21 @@ public class Board extends BoardType {
 
 			}
 		}
+		forbidden=sm.getOpposite();
 		Card c = null;
 		c = new Card(move.getShiftCard());
 		// Wenn Spielfigur auf neuer shiftcard steht,
 		// muss dieser wieder aufs Brett gesetzt werden
+		// Dazu wird Sie auf die gerade hereingeschoben
+		// Karte gesetzt
 		if (!shiftCard.getPin().getPlayerID().isEmpty()) {
+			//Figur zwischenspeichern
 			Pin temp = shiftCard.getPin();
-			c.setPin(temp);
+			//Figur auf SchiebeKarte löschen
 			shiftCard.setPin(new Pin());
+			//Zwischengespeicherte Figut auf
+			//neuer Karte plazieren
+			c.setPin(temp);			
 		}
 		setCard(sm.getRow(), sm.getCol(), c);
 	}

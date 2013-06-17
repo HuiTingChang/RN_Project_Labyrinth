@@ -155,7 +155,7 @@ public class Card extends CardType {
 			return true;
 		if (obj == null)
 			return false;
-		CardType other = (CardType) obj;
+		Card other = new Card((CardType) obj);
 		if (this.treasure != other.getTreasure()) {
 			Debug.print("Schatz ungleich", DebugLevel.DEBUG);
 			return false;
@@ -166,46 +166,8 @@ public class Card extends CardType {
 				return false;
 			}
 		}
-		// positions-check:
-		boolean[] op1 = new boolean[4];
-		boolean[] op2 = new boolean[4];
-		op1[0] = getOpenings().isTop();
-		op1[1] = getOpenings().isRight();
-		op1[2] = getOpenings().isBottom();
-		op1[3] = getOpenings().isLeft();
-
-		op2[0] = other.getOpenings().isTop();
-		op2[1] = other.getOpenings().isRight();
-		op2[2] = other.getOpenings().isBottom();
-		op2[3] = other.getOpenings().isLeft();
-		int indsum1 = 0;
-		int anzop1 = 0;
-		int indsum2 = 0;
-		int anzop2 = 0;
-		for (int i = 0; i < op2.length; i++) {
-			if (op1[i]) {
-				indsum1 += i;
-				++anzop1;
-			}
-			if (op2[i]) {
-				indsum2 += i;
-				++anzop2;
-			}
-		}
-		if (anzop1 != anzop2) {
-			Debug.print("Form ungleich(Anzahl)", DebugLevel.DEBUG);
-			Debug.print("From:", DebugLevel.DEBUG);
-			Debug.print(this.toString(), DebugLevel.DEBUG);
-			Debug.print("To:", DebugLevel.DEBUG);
-			Debug.print(other.toString(), DebugLevel.DEBUG);
-			return false;
-		}
-		if ((anzop1 != 3) && (indsum1 % 2) != (indsum2 % 2)) {
-			Debug.print("Form ungleich(Index)", DebugLevel.DEBUG);
-			Debug.print("From: (" + indsum1 + ")", DebugLevel.DEBUG);
-			Debug.print(this.toString(), DebugLevel.DEBUG);
-			Debug.print("To:(" + indsum2 + ")", DebugLevel.DEBUG);
-			Debug.print(other.toString(), DebugLevel.DEBUG);
+		if(other.getShape()!=this.getShape()){
+			Debug.print("Form ungleich", DebugLevel.DEBUG);
 			return false;
 		}
 		return true;

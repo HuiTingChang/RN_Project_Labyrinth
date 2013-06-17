@@ -4,10 +4,8 @@ import generated.MoveMessageType;
 import generated.TreasureType;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -50,12 +48,10 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private JLabel jLSpieler;
 	private JLabel jLcurrentTreasure;
 	private JPanel statisticsPane;
-	private JPanel BoardPane;
+	private GraphicalBoard BoardPane;
 	private GraphicalCard shiftCard;
-	private GraphicalCard[][] boardDisplay;
-	private JLabel[][] stats;
 
-	private Board b;
+	private JLabel[][] stats;
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -87,28 +83,14 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			getContentPane().setLayout(thisLayout);
 			this.setTitle("MazeCom");
 			{
-				BoardPane = new JPanel();
+				BoardPane = new GraphicalBoard();
 				getContentPane().add(
 						BoardPane,
 						new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 0), 0, 0));
-				GridLayout BoardPaneLayout = new GridLayout(7, 7);
-				BoardPaneLayout.setRows(7);
-				BoardPaneLayout.setColumns(7);
-				BoardPaneLayout.setHgap(5);
-				BoardPaneLayout.setVgap(5);
-				BoardPane.setLayout(BoardPaneLayout);
-				BoardPane.setPreferredSize(new java.awt.Dimension(213, 266));
-				boardDisplay = new GraphicalCard[7][7];
-				for (int i = 0; i < boardDisplay.length; i++) {
-					for (int j = 0; j < boardDisplay[i].length; j++) {
-						boardDisplay[i][j] = new GraphicalCard();
-						BoardPane.add(boardDisplay[i][j]);
-					}
 
-				}
 			}
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosed(WindowEvent evt) {
@@ -118,8 +100,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			});
 			this.addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent evt) {
-					// System.out.println("this.componentResized, event="+evt);
-					resizeBoard();
+					BoardPane.resizeBoard();
 				}
 			});
 
@@ -232,17 +213,6 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		}
 	}
 
-	private void resizeBoard() {
-
-		for (int i = 0; i < boardDisplay.length; i++) {
-			for (int j = 0; j < boardDisplay[i].length; j++) {
-				boardDisplay[i][j].resizeCard(new Dimension(BoardPane
-						.getHeight() / 7, BoardPane.getWidth() / 7));
-			}
-
-		}
-	}
-
 	@Override
 	public void displayMove(MoveMessageType mm, Board gb) {
 		setCurrentTreasure(gb.getTreasure());
@@ -258,21 +228,12 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		updateBoard(b);
 		setCurrentTreasure(null);
 		this.setVisible(true);
-		
+
 	}
 
 	private void updateBoard(Board b) {
-		for (int i = 0; i < boardDisplay.length; i++) {
-			for (int j = 0; j < boardDisplay[i].length; j++) {
-				Card c = new Card(b.getCard(i, j));
-				boardDisplay[i][j].setCard(c);
-			}
-
-		}
-		resizeBoard();
+		BoardPane.updateBoard(b);
 		shiftCard.setCard(new Card(b.getShiftCard()));
-		BoardPane.revalidate();
-		this.b = b;
 	}
 
 	private void setCurrentTreasure(TreasureType t) {
