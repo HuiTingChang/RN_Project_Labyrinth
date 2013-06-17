@@ -21,9 +21,8 @@ public class GraphicalBoard extends JPanel {
 	 */
 	private static final long serialVersionUID = -8826989344981510486L;
 
-	private GraphicalCard[][] boardDisplay = null;
-	private TexturePaint ourPainter = null;
-	private Board b;
+	private GraphicalCardBuffered[][] boardDisplay = null;
+	private TexturePaint paintBuffer = null;
 	private boolean ready = true;
 
 	public GraphicalBoard() {
@@ -33,10 +32,11 @@ public class GraphicalBoard extends JPanel {
 		BoardPaneLayout.setVgap(0);
 		this.setLayout(BoardPaneLayout);
 		this.setPreferredSize(new java.awt.Dimension(700, 700));
-		boardDisplay = new GraphicalCard[7][7];
+		setBounds(0, 0, 700, 700);
+		boardDisplay = new GraphicalCardBuffered[7][7];
 		for (int i = 0; i < boardDisplay.length; i++) {
 			for (int j = 0; j < boardDisplay[i].length; j++) {
-				boardDisplay[i][j] = new GraphicalCard();
+				boardDisplay[i][j] = new GraphicalCardBuffered();
 				this.add(boardDisplay[i][j]);
 			}
 
@@ -50,7 +50,7 @@ public class GraphicalBoard extends JPanel {
 						this.getHeight() / 7, this.getWidth() / 7));
 			}
 		}
-		this.revalidate();
+		revalidate();
 	}
 
 	public void updateBoard(Board b) {
@@ -63,14 +63,14 @@ public class GraphicalBoard extends JPanel {
 
 		}
 		resizeBoard();
-		this.b = b;
 		updatePaint();
 		ready = true;
+		this.repaint();
 	}
 
 	private void updatePaint() {
 		if (boardDisplay == null) {
-			ourPainter = null;
+			paintBuffer = null;
 			return;
 		}
 
@@ -78,7 +78,7 @@ public class GraphicalBoard extends JPanel {
 		int h = this.getHeight();
 
 		if (w <= 0 || h <= 0) {
-			ourPainter = null;
+			paintBuffer = null;
 			return;
 		}
 
@@ -88,7 +88,7 @@ public class GraphicalBoard extends JPanel {
 		Graphics2D g2 = buff.createGraphics();
 		super.paintComponent(g2);
 
-		ourPainter = new TexturePaint(buff, new Rectangle(0, 0, w, h));
+		paintBuffer = new TexturePaint(buff, new Rectangle(0, 0, w, h));
 		g2.dispose();
 	}
 
@@ -96,7 +96,7 @@ public class GraphicalBoard extends JPanel {
 		// if (ready) {
 		// super.paintComponent(g);
 
-		if (ourPainter != null) {
+		if (paintBuffer != null) {
 			int w = getWidth();
 			int h = getHeight();
 			Insets in = getInsets();
@@ -108,7 +108,7 @@ public class GraphicalBoard extends JPanel {
 
 			if (w >= 0 && h >= 0) {
 				Graphics2D g2 = (Graphics2D) g;
-				g2.setPaint(ourPainter);
+				g2.setPaint(paintBuffer);
 				g2.fillRect(x, y, w, h);
 			}
 		}

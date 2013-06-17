@@ -7,7 +7,7 @@ import generated.TreasureType;
 
 public class Card extends CardType {
 	public enum CardShape {
-		L, T, I
+		L, T, I;
 	}
 
 	public enum Orientation {

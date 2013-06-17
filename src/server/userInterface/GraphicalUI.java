@@ -75,21 +75,17 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		try {
 			GridBagLayout thisLayout = new GridBagLayout();
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			thisLayout.rowWeights = new double[] { 0.3, 0.7 };
+			thisLayout.rowWeights = new double[] { 0.0, 0.0 };
 			thisLayout.rowHeights = new int[] { 30, 70 };
-			thisLayout.columnWeights = new double[] { 0.7, 0.3 };
+			thisLayout.columnWeights = new double[] { 0.0, 0.0 };
 			thisLayout.columnWidths = new int[] { 70, 30 };
 
 			getContentPane().setLayout(thisLayout);
 			this.setTitle("MazeCom");
 			{
 				BoardPane = new GraphicalBoard();
-				getContentPane().add(
-						BoardPane,
-						new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0,
-								GridBagConstraints.CENTER,
-								GridBagConstraints.BOTH,
-								new Insets(0, 0, 0, 0), 0, 0));
+				getContentPane().add(BoardPane, new GridBagConstraints(0, 0, 1, 2, 0.7, 0.1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+				BoardPane.setSize(700, 700);
 
 			}
 			this.addWindowListener(new WindowAdapter() {
