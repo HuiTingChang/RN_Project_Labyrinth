@@ -39,17 +39,22 @@ public class GraphicalCardBuffered extends JPanel {
 	private CardShape cardShape;
 	private Orientation cardOrientation;
 	private TreasureType cardTreasure;
-
-	public void resizeCard(Dimension d) {
+	
+	@Override
+	public void setSize(Dimension d) {
 		if (shape != null) {
 			Image temp = shape;
 			shape = new BufferedImage(d.width, d.height,
 					BufferedImage.TYPE_INT_ARGB);
 			shape = temp.getScaledInstance(d.width, d.height,
-					Image.SCALE_SMOOTH);
+					Image.SCALE_DEFAULT);
 		}
-		this.setPreferredSize(d);
 		updatePaint();
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		setSize(new Dimension(width, height));
 	}
 
 	public GraphicalCardBuffered() {
@@ -57,7 +62,7 @@ public class GraphicalCardBuffered extends JPanel {
 		loadShape(CardShape.T, Orientation.D0);
 		treasure = null;
 		pin = null;
-		resizeCard(new Dimension(100, 100));
+		//setSize(new Dimension(100, 100));
 	}
 
 	public void setCard(Card c) {
@@ -79,8 +84,8 @@ public class GraphicalCardBuffered extends JPanel {
 							+ cs.toString() + co.value() + ".png");
 			Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
 			shape = ImageIO.read(url);
-			this.setPreferredSize(new Dimension(shape.getWidth(null), shape
-					.getHeight(null)));
+			//TODO Größe Anpassen
+			//setSize(getWidth(), getHeight());
 			updatePaint();
 
 		} catch (IOException e) {
@@ -124,11 +129,10 @@ public class GraphicalCardBuffered extends JPanel {
 			return;
 		}
 
-//		int w = shape.getWidth(null);
-//		int h = shape.getHeight(null);
-		int w = this.getWidth();
-		int h = this.getHeight();
-
+		 int w = shape.getWidth(null);
+		 int h = shape.getHeight(null);
+//		int w = this.getWidth();
+//		int h = this.getHeight();
 
 		if (w <= 0 || h <= 0) {
 			paintBuffer = null;
@@ -143,8 +147,7 @@ public class GraphicalCardBuffered extends JPanel {
 			g2.drawImage(shape, 0, 0, null);
 		}
 		if (treasure != null) {
-			int zentrum = h / 2 - treasure.getHeight(null)
-					/ 2;
+			int zentrum = h / 2 - treasure.getHeight(null) / 2;
 			g2.drawImage(treasure, zentrum, zentrum, null);
 		}
 		if (pin != null) {
@@ -158,13 +161,14 @@ public class GraphicalCardBuffered extends JPanel {
 		}
 		paintBuffer = new TexturePaint(buff, new Rectangle(0, 0, w, h));
 		g2.dispose();
+		repaint();
 	}
 
 	protected void paintComponent(Graphics g) {
-		// super.paintComponent(g);
+		super.paintComponent(g);
 		if (paintBuffer != null) {
-			int w = getWidth();
-			int h = getHeight();
+			int w = shape.getWidth(null);
+			int h = shape.getHeight(null);
 			Insets in = getInsets();
 
 			int x = in.left;

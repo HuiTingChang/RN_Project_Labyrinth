@@ -43,16 +43,21 @@ public class GraphicalBoard extends JPanel {
 		}
 	}
 
-	public void resizeBoard() {
+	@Override
+	public void setSize(int width, int height) {
 		for (int i = 0; i < boardDisplay.length; i++) {
 			for (int j = 0; j < boardDisplay[i].length; j++) {
-				boardDisplay[i][j].resizeCard(new Dimension(
-						this.getHeight() / 7, this.getWidth() / 7));
+				boardDisplay[i][j].setSize(height / 7,
+						width / 7);
 			}
 		}
-		revalidate();
 	}
-
+	
+	@Override
+	public void setSize(Dimension d) {
+		setSize(d.width,d.height);
+	}
+	
 	public void updateBoard(Board b) {
 		ready = false;
 		for (int i = 0; i < boardDisplay.length; i++) {
@@ -62,7 +67,7 @@ public class GraphicalBoard extends JPanel {
 			}
 
 		}
-		resizeBoard();
+		//resizeBoard();
 		updatePaint();
 		ready = true;
 		this.repaint();
@@ -93,9 +98,7 @@ public class GraphicalBoard extends JPanel {
 	}
 
 	protected void paintComponent(Graphics g) {
-		// if (ready) {
-		// super.paintComponent(g);
-
+		super.paintComponent(g);
 		if (paintBuffer != null) {
 			int w = getWidth();
 			int h = getHeight();
@@ -112,7 +115,6 @@ public class GraphicalBoard extends JPanel {
 				g2.fillRect(x, y, w, h);
 			}
 		}
-		// }
 	}
 
 }

@@ -12,10 +12,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import javax.swing.GroupLayout;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -49,7 +52,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private JLabel jLcurrentTreasure;
 	private JPanel statisticsPane;
 	private GraphicalBoard BoardPane;
-	private GraphicalCard shiftCard;
+	private GraphicalCardBuffered shiftCard;
 
 	private JLabel[][] stats;
 
@@ -76,7 +79,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			GridBagLayout thisLayout = new GridBagLayout();
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			thisLayout.rowWeights = new double[] { 0.0, 0.0 };
-			thisLayout.rowHeights = new int[] { 30, 70 };
+			thisLayout.rowHeights = new int[] { 100, 100 };
 			thisLayout.columnWeights = new double[] { 0.0, 0.0 };
 			thisLayout.columnWidths = new int[] { 70, 30 };
 
@@ -84,7 +87,12 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			this.setTitle("MazeCom");
 			{
 				BoardPane = new GraphicalBoard();
-				getContentPane().add(BoardPane, new GridBagConstraints(0, 0, 1, 2, 0.7, 0.1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+				getContentPane().add(
+						BoardPane,
+						new GridBagConstraints(0, 0, 1, 2, 0.7, 0.1,
+								GridBagConstraints.CENTER,
+								GridBagConstraints.BOTH,
+								new Insets(5, 5, 5, 5), 0, 0));
 				BoardPane.setSize(700, 700);
 
 			}
@@ -94,42 +102,37 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 					System.exit(0);
 				}
 			});
-			this.addComponentListener(new ComponentAdapter() {
-				public void componentResized(ComponentEvent evt) {
-					BoardPane.resizeBoard();
-				}
-			});
 
 			{
 				shiftCardContainer = new JPanel();
-				BorderLayout shiftCardContainerLayout = new BorderLayout();
-				getContentPane().add(
-						shiftCardContainer,
-						new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-								GridBagConstraints.NORTHEAST,
-								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
-										0, 0), 0, 0));
+				GridBagLayout shiftCardContainerLayout = new GridBagLayout();
 				shiftCardContainer.setLayout(shiftCardContainerLayout);
+				getContentPane().add(shiftCardContainer, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.3, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+				shiftCardContainer.setPreferredSize(new java.awt.Dimension(120,
+						150));
 				{
 					jLShiftCard = new JLabel();
-					shiftCardContainer.add(jLShiftCard, BorderLayout.NORTH);
+					shiftCardContainer.add(jLShiftCard, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 					jLShiftCard.setText("freie Karte:");
 				}
 				{
-					shiftCard = new GraphicalCard();
-					shiftCard.loadShape(CardShape.T, Orientation.D0);
-					shiftCard.loadTreasure(TreasureType.SYM_01);
-					shiftCardContainer.add(shiftCard, BorderLayout.CENTER);
-					shiftCard
-							.setPreferredSize(new java.awt.Dimension(124, 246));
+					shiftCard = new GraphicalCardBuffered();
+					shiftCardContainer.add(shiftCard, new GridBagConstraints(0, 1, 1, 1, 0.5, 0.5, GridBagConstraints.NORTH, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
+					shiftCard.setPreferredSize(new java.awt.Dimension(120, 120));
+					shiftCard.setSize(120, 120);
+
 				}
+					shiftCardContainerLayout.rowWeights = new double[] {0.1, 0.1};
+					shiftCardContainerLayout.rowHeights = new int[] {7, 7};
+					shiftCardContainerLayout.columnWeights = new double[] {0.1};
+					shiftCardContainerLayout.columnWidths = new int[] {7};
 			}
 			{
 				statisticsPane = new JPanel();
 				GridBagLayout statisticsPaneLayout = new GridBagLayout();
 				getContentPane().add(
 						statisticsPane,
-						new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+						new GridBagConstraints(1, 1, 1, 1, 0.0, 0.2,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 0), 0, 0));
@@ -211,18 +214,12 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 
 	@Override
 	public void displayMove(MoveMessageType mm, Board gb) {
-		setCurrentTreasure(gb.getTreasure());
-
-		// TODO Animation des zuges
-
 		updateBoard(gb);
 	}
 
 	@Override
 	public void init(Board b) {
-		// TODO
 		updateBoard(b);
-		setCurrentTreasure(null);
 		this.setVisible(true);
 
 	}
@@ -230,6 +227,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private void updateBoard(Board b) {
 		BoardPane.updateBoard(b);
 		shiftCard.setCard(new Card(b.getShiftCard()));
+		setCurrentTreasure(b.getTreasure());
 	}
 
 	private void setCurrentTreasure(TreasureType t) {
