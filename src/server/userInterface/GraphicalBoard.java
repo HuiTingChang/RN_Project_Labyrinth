@@ -24,6 +24,7 @@ public class GraphicalBoard extends JPanel {
 
 	private GraphicalCardBuffered[][] boardDisplay = null;
 	private TexturePaint paintBuffer = null;
+	@SuppressWarnings("unused")
 	private Board b;
 
 	public GraphicalBoard() {

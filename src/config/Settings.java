@@ -1,5 +1,8 @@
 package config;
 
+import server.userInterface.BetterUI;
+import server.userInterface.UI;
+
 public class Settings {
 	// TODO falls alles nur Static => Konstruktor private machen
 	public final static int port = 5123;
@@ -18,5 +21,5 @@ public class Settings {
 													// Testfälle Anpassen
 													// (Pseudozufallszahlen)
 	
-
+	public static UI USERINTERFACE=new BetterUI(); //Hierüber kann das Usserinterface bestimmt werden
 }

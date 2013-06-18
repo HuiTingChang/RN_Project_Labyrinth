@@ -16,7 +16,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import networking.Connection;
-import server.userInterface.GraphicalUI;
 import server.userInterface.UI;
 import tools.Debug;
 import tools.DebugLevel;
@@ -213,7 +212,9 @@ public class Game {
 	public static void main(String[] args) {
 		Game currentGame = new Game();
 		currentGame.init();
-		currentGame.userinterface = new GraphicalUI();
+		
+		currentGame.userinterface = Settings.USERINTERFACE;
+
 		currentGame.userinterface.init(currentGame.spielBrett);
 		Integer currPlayer = 1;
 		currentGame.userinterface.updatePlayerStatistics(
@@ -228,9 +229,6 @@ public class Game {
 	}
 
 	private Integer nextPlayer(Integer currPlayer) {
-		// FIXME Fehler finden
-		// Soll Verhindern, das bereits vom Spiel
-		// ausgeschlossene Spieler nach an die Reihe kommen
 		Iterator<Integer> iDIterator = spieler.keySet().iterator();
 		Integer id = -1;
 		while (iDIterator.hasNext()) {
