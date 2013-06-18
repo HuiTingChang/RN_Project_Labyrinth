@@ -79,13 +79,11 @@ public class GraphicalCardBuffered extends JPanel {
 		this.cardOrientation = co;
 		try {
 
-			URL url = GraphicalCard.class
+			URL url = GraphicalCardBuffered.class
 					.getResource("/server/userInterface/resources/"
 							+ cs.toString() + co.value() + ".png");
 			Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
 			shape = ImageIO.read(url);
-			//TODO Größe Anpassen
-			//setSize(getWidth(), getHeight());
 			updatePaint();
 
 		} catch (IOException e) {
@@ -108,7 +106,6 @@ public class GraphicalCardBuffered extends JPanel {
 				treasure = null;
 			}
 		} catch (IOException e) {
-			// TODO
 			e.printStackTrace();
 		}
 		updatePaint();
@@ -178,12 +175,40 @@ public class GraphicalCardBuffered extends JPanel {
 
 			if (w >= 0 && h >= 0) {
 				Graphics2D g2 = (Graphics2D) g;
-				// Paint pt = g2.getPaint();
 				g2.setPaint(paintBuffer);
 				g2.fillRect(x, y, w, h);
-				// g2.setPaint(pt);
 			}
 		}
 	}
+	
+	public void blinkCard(long millis, int n){
+		Image save=shape;
+		for (int i = 0; i < n; i++) {			
+			shape=null;
+			updatePaint();
+			try {
+				Thread.sleep(millis/n);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			shape=save;
+			updatePaint();
+		}
+	}
 
+	public void blinkPlayer(long millis, int n){
+		List<Integer> save=pin;
+		for (int i = 0; i < n; i++) {			
+			pin=null;
+			updatePaint();
+			try {
+				Thread.sleep(millis/n);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			pin=save;
+			updatePaint();
+		}
+	}
+	
 }

@@ -179,14 +179,8 @@ public class Game {
 					winner = currPlayer;
 				}
 			}
-			userinterface.displayMove(move, spielBrett);
-			try {
-				// 5 sec Wartezeit zwischen den Zügen
-				Thread.sleep(Settings.MOVEDELAY);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			userinterface.displayMove(move, spielBrett,Settings.MOVEDELAY);
+
 		} else {
 			Debug.print("Keinen Move erhalten!", DebugLevel.DEFAULT);
 		}

@@ -3,30 +3,23 @@ package server.userInterface;
 import generated.MoveMessageType;
 import generated.TreasureType;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import javax.swing.GroupLayout;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import server.Board;
 import server.Card;
-import server.Card.CardShape;
-import server.Card.Orientation;
 import server.Player;
+import server.Position;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -55,6 +48,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private GraphicalCardBuffered shiftCard;
 
 	private JLabel[][] stats;
+	@SuppressWarnings("unused")
+	private Integer currentPlayer;
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -107,25 +102,37 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 				shiftCardContainer = new JPanel();
 				GridBagLayout shiftCardContainerLayout = new GridBagLayout();
 				shiftCardContainer.setLayout(shiftCardContainerLayout);
-				getContentPane().add(shiftCardContainer, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.3, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+				getContentPane().add(
+						shiftCardContainer,
+						new GridBagConstraints(1, 0, 1, 1, 0.0, 0.3,
+								GridBagConstraints.CENTER,
+								GridBagConstraints.BOTH,
+								new Insets(0, 0, 0, 0), 0, 0));
 				shiftCardContainer.setPreferredSize(new java.awt.Dimension(120,
 						150));
 				{
 					jLShiftCard = new JLabel();
-					shiftCardContainer.add(jLShiftCard, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+					shiftCardContainer.add(jLShiftCard, new GridBagConstraints(
+							0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
+							0));
 					jLShiftCard.setText("freie Karte:");
 				}
 				{
 					shiftCard = new GraphicalCardBuffered();
-					shiftCardContainer.add(shiftCard, new GridBagConstraints(0, 1, 1, 1, 0.5, 0.5, GridBagConstraints.NORTH, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
-					shiftCard.setPreferredSize(new java.awt.Dimension(120, 120));
+					shiftCardContainer.add(shiftCard, new GridBagConstraints(0,
+							1, 1, 1, 0.5, 0.5, GridBagConstraints.NORTH,
+							GridBagConstraints.VERTICAL,
+							new Insets(0, 0, 0, 0), 0, 0));
+					shiftCard
+							.setPreferredSize(new java.awt.Dimension(120, 120));
 					shiftCard.setSize(120, 120);
 
 				}
-					shiftCardContainerLayout.rowWeights = new double[] {0.1, 0.1};
-					shiftCardContainerLayout.rowHeights = new int[] {7, 7};
-					shiftCardContainerLayout.columnWeights = new double[] {0.1};
-					shiftCardContainerLayout.columnWidths = new int[] {7};
+				shiftCardContainerLayout.rowWeights = new double[] { 0.1, 0.1 };
+				shiftCardContainerLayout.rowHeights = new int[] { 7, 7 };
+				shiftCardContainerLayout.columnWeights = new double[] { 0.1 };
+				shiftCardContainerLayout.columnWidths = new int[] { 7 };
 			}
 			{
 				statisticsPane = new JPanel();
@@ -213,8 +220,17 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	}
 
 	@Override
-	public void displayMove(MoveMessageType mm, Board gb) {
+	public void displayMove(MoveMessageType mm, Board gb, long millis) {
+		long pause = (long) (millis * (2.0 / 3.0));
+		long animation = millis - pause;
+		server.Position insertPos = new Position(mm.getShiftPosition());
+		BoardPane.blink(insertPos, animation);
 		updateBoard(gb);
+		try {
+			Thread.sleep(pause);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -243,6 +259,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 
 	@Override
 	public void updatePlayerStatistics(List<Player> stats, Integer current) {
+		currentPlayer=current;
 		for (int i = 0; i < 4; ++i) {
 			this.stats[i][0].setText((i + 1) + ": nicht verbunden");
 			this.stats[i][1].setText("");

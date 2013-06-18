@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import server.Board;
 import server.Card;
+import server.Position;
 
 public class GraphicalBoard extends JPanel {
 
@@ -23,21 +24,21 @@ public class GraphicalBoard extends JPanel {
 
 	private GraphicalCardBuffered[][] boardDisplay = null;
 	private TexturePaint paintBuffer = null;
-	private boolean ready = true;
+	private Board b;
 
 	public GraphicalBoard() {
 		super();
 		GridLayout BoardPaneLayout = new GridLayout(7, 7);
 		BoardPaneLayout.setHgap(0);
 		BoardPaneLayout.setVgap(0);
-		this.setLayout(BoardPaneLayout);
-		this.setPreferredSize(new java.awt.Dimension(700, 700));
+		setLayout(BoardPaneLayout);
+		setPreferredSize(new java.awt.Dimension(700, 700));
 		setBounds(0, 0, 700, 700);
 		boardDisplay = new GraphicalCardBuffered[7][7];
 		for (int i = 0; i < boardDisplay.length; i++) {
 			for (int j = 0; j < boardDisplay[i].length; j++) {
 				boardDisplay[i][j] = new GraphicalCardBuffered();
-				this.add(boardDisplay[i][j]);
+				add(boardDisplay[i][j]);
 			}
 
 		}
@@ -47,19 +48,17 @@ public class GraphicalBoard extends JPanel {
 	public void setSize(int width, int height) {
 		for (int i = 0; i < boardDisplay.length; i++) {
 			for (int j = 0; j < boardDisplay[i].length; j++) {
-				boardDisplay[i][j].setSize(height / 7,
-						width / 7);
+				boardDisplay[i][j].setSize(height / 7, width / 7);
 			}
 		}
 	}
-	
+
 	@Override
 	public void setSize(Dimension d) {
-		setSize(d.width,d.height);
+		setSize(d.width, d.height);
 	}
-	
+
 	public void updateBoard(Board b) {
-		ready = false;
 		for (int i = 0; i < boardDisplay.length; i++) {
 			for (int j = 0; j < boardDisplay[i].length; j++) {
 				Card c = new Card(b.getCard(i, j));
@@ -67,10 +66,9 @@ public class GraphicalBoard extends JPanel {
 			}
 
 		}
-		//resizeBoard();
 		updatePaint();
-		ready = true;
-		this.repaint();
+		repaint();
+		this.b=b;
 	}
 
 	private void updatePaint() {
@@ -79,8 +77,8 @@ public class GraphicalBoard extends JPanel {
 			return;
 		}
 
-		int w = this.getWidth();
-		int h = this.getHeight();
+		int w = getWidth();
+		int h = getHeight();
 
 		if (w <= 0 || h <= 0) {
 			paintBuffer = null;
@@ -116,5 +114,14 @@ public class GraphicalBoard extends JPanel {
 			}
 		}
 	}
+
+	public void blink(Position insertPos,long millis) {
+		boardDisplay[insertPos.getRow()][insertPos.getCol()].blinkCard(millis, 3);
+	}
+	
+//	public void blink(Integer playerID,long millis) {
+//		Position p=new Position( b.findPlayer(playerID) );
+//		boardDisplay[p.getRow()][p.getCol()].blinkPlayer(millis, 3);
+//	}
 
 }
