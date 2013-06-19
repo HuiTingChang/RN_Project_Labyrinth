@@ -420,7 +420,9 @@ public class BetterUI extends JFrame implements UI {
 				Position endPos) {
 			points = Pathfinding.findShortestPath(b, startPos, endPos);
 			uiboard.c[endPos.getRow()][endPos.getCol()].getPin().getPlayerID()
-					.remove(new Integer(currentPlayer));
+			.remove(new Integer(currentPlayer));
+			uiboard.c[startPos.getRow()][startPos.getCol()].getPin().getPlayerID()
+			.add(new Integer(currentPlayer));
 		}
  
 		int i = 0;
