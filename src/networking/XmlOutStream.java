@@ -3,8 +3,10 @@ package networking;
 import generated.MazeCom;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -35,7 +37,7 @@ public class XmlOutStream extends UTFOutputStream{
 	 * 
 	 * @param mc
 	 */
-	public void write(MazeCom mc) {
+	public void write(MazeCom mc){
 		// generierung des fertigen XML
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

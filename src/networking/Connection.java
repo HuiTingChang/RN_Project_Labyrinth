@@ -8,8 +8,10 @@ import generated.MazeCom;
 import generated.MazeComType;
 import generated.MoveMessageType;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 
 import config.Settings;
@@ -19,6 +21,8 @@ import Timeouts.TimeOutManager;
 import server.Board;
 import server.Game;
 import server.Player;
+import tools.Debug;
+import tools.DebugLevel;
 
 public class Connection {
 
@@ -75,9 +79,18 @@ public class Connection {
 	 * @return
 	 */
 	public MazeCom receiveMessage() {
-		MazeCom result = this.inFromClient.readMazeCom();
+		MazeCom result = null;
+		try {
+			result = this.inFromClient.readMazeCom();
+		} catch (EOFException | SocketException e) {
+			Debug.print("[ERROR]: Spieler hat Spiel unerwartet beendet",
+					DebugLevel.DEFAULT);
+			// entfernen des Spielers
+			this.currentGame.removePlayer(this.p.getID());
+		}
 		this.tom.stopSendMessageTimeOut(this.p.getID());
 		return result;
+
 	}
 
 	/**
@@ -100,18 +113,22 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Valieder Zug des Spielers oder NULL
 	 */
-	public MoveMessageType awaitMove(HashMap<Integer, Player> spieler,Board brett, int tries) {
-		this.sendMessage(this.mcmf.createAwaitMoveMessage(spieler,this.p.getID(), brett),true);
+	public MoveMessageType awaitMove(HashMap<Integer, Player> spieler,
+			Board brett, int tries) {
+		this.sendMessage(this.mcmf.createAwaitMoveMessage(spieler,
+				this.p.getID(), brett), true);
 		MazeCom result = this.receiveMessage();
+		if (result == null)
+			return null;
 		if (result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
 			if (this.currentGame.getBoard().validateTransition(
 					result.getMoveMessage(), this.p.getID())) {
 				this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-						ErrorType.NOERROR),false);
+						ErrorType.NOERROR), false);
 				return result.getMoveMessage();
 			} else if (tries < Settings.MOVETRIES)
-				return illigalMove(spieler,brett, ++tries);
+				return illigalMove(spieler, brett, ++tries);
 			else {
 				disconnect(ErrorType.TOO_MANY_TRIES);
 				return null;
@@ -119,9 +136,9 @@ public class Connection {
 
 		} else {
 			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-					ErrorType.AWAIT_MOVE),false);
+					ErrorType.AWAIT_MOVE), false);
 			if (tries < Settings.MOVETRIES)
-				return awaitMove(spieler,brett, ++tries);
+				return awaitMove(spieler, brett, ++tries);
 			else {
 				disconnect(ErrorType.TOO_MANY_TRIES);
 			}
@@ -137,11 +154,12 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Zug des Spielers
 	 */
-	public MoveMessageType illigalMove(HashMap<Integer, Player> spieler,Board brett, int tries) {
+	public MoveMessageType illigalMove(HashMap<Integer, Player> spieler,
+			Board brett, int tries) {
 		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-				ErrorType.ILLEGAL_MOVE),false);
+				ErrorType.ILLEGAL_MOVE), false);
 		if (tries < Settings.MOVETRIES)
-			return this.awaitMove(spieler,brett, tries);
+			return this.awaitMove(spieler, brett, tries);
 		else {
 			disconnect(ErrorType.TOO_MANY_TRIES);
 			return null;
@@ -157,8 +175,9 @@ public class Connection {
 	 * @param b
 	 */
 	public void sendWin(int winnerId, String name, Board b) {
-		this.sendMessage(this.mcmf.createWinMessage(this.p.getID(), winnerId,
-				name, b),false);
+		this.sendMessage(
+				this.mcmf.createWinMessage(this.p.getID(), winnerId, name, b),
+				false);
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();
@@ -172,8 +191,9 @@ public class Connection {
 	 * Senden, dass Spieler diconnected wurde
 	 * */
 	public void disconnect(ErrorType et) {
-		this.sendMessage(this.mcmf.createDisconnectMessage(this.p.getID(),
-				this.p.getName(), et),false);
+		this.sendMessage(
+				this.mcmf.createDisconnectMessage(this.p.getID(),
+						this.p.getName(), et), false);
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();

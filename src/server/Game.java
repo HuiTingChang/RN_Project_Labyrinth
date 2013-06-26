@@ -247,6 +247,8 @@ public class Game {
 
 	public void removePlayer(int id) {
 		this.spieler.remove(id);
+		Debug.print("[INFO]: Spieler mit ID "+id+" hat das Spiel verlassen",
+				DebugLevel.DEFAULT);		
 	}
 
 }
