@@ -14,7 +14,7 @@ public class LoginTimeOut extends TimerTask {
 
 	@Override
 	public void run() {
-		currentGame.stopLogin();
+		currentGame.closeServerSocket();
 	}
 	
 

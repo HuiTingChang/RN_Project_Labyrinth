@@ -6,18 +6,24 @@ import generated.TreasureType;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import server.Board;
 import server.Card;
+import server.Game;
 import server.Player;
 import server.Position;
 
@@ -32,12 +38,14 @@ import server.Position;
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class GraphicalUI extends javax.swing.JFrame implements UI {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -3985631697359900852L;
 	private JPanel shiftCardContainer;
 	private JLabel jLShiftCard;
+	private JMenuItem MIStart;
+	private JMenuItem MIStop;
+	private JMenu jMenu1;
+	private JMenuBar jMenuBar1;
 	private JLabel jLTreasuresToGo;
 	private JLabel jLName;
 	private JLabel currentTreasure;
@@ -50,6 +58,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private JLabel[][] stats;
 	@SuppressWarnings("unused")
 	private Integer currentPlayer;
+	protected static String[] arguments;
+	private Game g;
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -62,6 +72,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 				inst.setVisible(true);
 			}
 		});
+		arguments=args;
 	}
 
 	public GraphicalUI() {
@@ -80,6 +91,37 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 
 			getContentPane().setLayout(thisLayout);
 			this.setTitle("MazeCom");
+			{
+				jMenuBar1 = new JMenuBar();
+				setJMenuBar(jMenuBar1);
+				{
+					jMenu1 = new JMenu();
+					jMenuBar1.add(jMenu1);
+					jMenu1.setText("Server");
+					{
+						MIStart = new JMenuItem();
+						jMenu1.add(MIStart);
+						MIStart.setText("Start");
+						MIStart.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								MIStartActionPerformed(evt);
+							}
+						});
+						//MIStart.addActionListener(new StartAction(this) );
+					}
+					{
+						MIStop = new JMenuItem();
+						jMenu1.add(MIStop);
+						MIStop.setText("Stop");
+						MIStop.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								MIStopActionPerformed(evt);
+							}
+						});
+						//MIStop.addActionListener(new StartAction(this) );
+					}
+				}
+			}
 			{
 				BoardPane = new GraphicalBoard();
 				getContentPane().add(
@@ -275,6 +317,19 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			this.stats[p.getID() - 1][1].setText("" + p.treasuresToGo());
 		}
 
+	}
+	
+	private void MIStopActionPerformed(ActionEvent evt) {
+		System.out.println("MIStop.actionPerformed, event="+evt);
+		g.stopGame();
+	}
+	
+	private void MIStartActionPerformed(ActionEvent evt) {
+		System.out.println("MIStart.actionPerformed, event="+evt);
+		g = new Game();
+		g.parsArgs(arguments);
+		g.setUserinterface(this);
+		g.start();
 	}
 
 }

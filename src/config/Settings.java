@@ -8,8 +8,8 @@ import server.userInterface.UI;
 public class Settings {
 	// TODO falls alles nur Static => Konstruktor private machen
 	public final static int port = 5123;
-	public final static int DEFAULT_PLAYERS = 4;
-	public final static int MOVEDELAY = (int) (0.5 * 1000); // 0,5 sec
+	public final static int DEFAULT_PLAYERS = 1;
+	public final static int MOVEDELAY = (int) (2 * 1000); // 0,5 sec
 
 	public final static long LOGINTIMEOUT = 1 * 60 * 1000;// 1min
 	public final static int LOGINTRIES = 3;// maximal 3 Loginversuche
@@ -22,8 +22,8 @@ public class Settings {
 	public static final long TESTBOARD_SEED = 0; // Hiermit lassen sich die
 													// Testfälle Anpassen
 													// (Pseudozufallszahlen)
-//	public static UI USERINTERFACE = new BetterUI();
-	public static UI USERINTERFACE = new GraphicalUI(); // Hierüber kann das
-														// Usserinterface
-														// bestimmt werden
+	public static UI USERINTERFACE = new BetterUI();
+	// public static UI USERINTERFACE = new GraphicalUI(); // Hierüber kann das
+	// Usserinterface
+	// bestimmt werden
 }

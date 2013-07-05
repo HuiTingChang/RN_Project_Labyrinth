@@ -1,5 +1,6 @@
 package server;
 
+import generated.ErrorType;
 import generated.MoveMessageType;
 import generated.TreasureType;
 
@@ -22,7 +23,7 @@ import tools.DebugLevel;
 import Timeouts.TimeOutManager;
 import config.Settings;
 
-public class Game {
+public class Game extends Thread {
 
 	/**
 	 * beinhaltet die Spieler, die mit dem Server verbunden sind und die durch
@@ -35,6 +36,7 @@ public class Game {
 	private Integer winner = -1;// Default wert -1 solange kein Gewinner
 								// feststeht
 	private UI userinterface;
+	private int playerCount;
 
 	public Game() {
 		Debug.addDebugger(System.out, DebugLevel.DEFAULT);
@@ -52,13 +54,11 @@ public class Game {
 	/**
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
-	public void init() {
+	public void init(int players) {
 		try {
 			int i = 1;
 			boolean accepting = true;
 			timeOutMan.startLoginTimeOut(this);
-			// Soll noch über Parameter anpassbar sein
-			int players = Settings.DEFAULT_PLAYERS;
 
 			while (accepting && i <= players) {
 				try {
@@ -138,7 +138,7 @@ public class Game {
 
 	}
 
-	public void stopLogin() {
+	public void closeServerSocket() {
 		try {
 			s.close();
 		} catch (IOException e) {
@@ -170,7 +170,7 @@ public class Game {
 
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
-		if (move != null) {	
+		if (move != null) {
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
@@ -178,7 +178,7 @@ public class Game {
 					winner = currPlayer;
 				}
 			}
-			userinterface.displayMove(move, spielBrett,Settings.MOVEDELAY);
+			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY);
 
 		} else {
 			Debug.print("Keinen Move erhalten!", DebugLevel.DEFAULT);
@@ -193,15 +193,24 @@ public class Game {
 	 * Aufraeumen nach einem Spiel
 	 */
 	public void cleanUp() {
-		for (Integer playerID : spieler.keySet()) {
-			Player s = spieler.get(playerID);
-			s.getConToClient().sendWin(winner, spieler.get(winner).getName(),
-					spielBrett);
+		if (winner > 0) {
+			for (Integer playerID : spieler.keySet()) {
+				Player s = spieler.get(playerID);
+				s.getConToClient().sendWin(winner,
+						spieler.get(winner).getName(), spielBrett);
+			}
+			userinterface.updatePlayerStatistics(playerToList(), winner);
+			Debug.print(spieler.get(winner).getName() + "(" + winner
+					+ ") hat das Spiel gewonnen.", DebugLevel.DEFAULT);
+			JOptionPane.showMessageDialog(null, spieler.get(winner).getName()
+					+ "(" + winner + ") hat das Spiel gewonnen.");
+		}else{
+			for (Integer playerID : spieler.keySet()) {
+				Player s = spieler.get(playerID);
+				s.getConToClient().disconnect(ErrorType.NOERROR);
+			}
 		}
-		userinterface.updatePlayerStatistics(playerToList(), winner);
-		Debug.print(winner+" hat das Spiel gewonnen.", DebugLevel.DEFAULT);
-		JOptionPane.showMessageDialog(null, winner+" hat das Spiel gewonnen.\nbitte schliessen Sie das Fenster");
-
+		closeServerSocket();
 	}
 
 	public boolean somebodyWon() {
@@ -211,21 +220,41 @@ public class Game {
 
 	public static void main(String[] args) {
 		Game currentGame = new Game();
-		currentGame.init();
-		
+		currentGame.parsArgs(args);
 		currentGame.userinterface = Settings.USERINTERFACE;
+		currentGame.run();
+	}
 
-		currentGame.userinterface.init(currentGame.spielBrett);
-		Integer currPlayer = 1;
-		currentGame.userinterface.updatePlayerStatistics(
-				currentGame.playerToList(), currPlayer);
+	public void setUserinterface(UI userinterface) {
+		this.userinterface = userinterface;
+	}
 
-		while (!currentGame.somebodyWon()) {
-			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);
-			currentGame.singleTurn(currPlayer);
-			currPlayer = currentGame.nextPlayer(currPlayer);
+	public void parsArgs(String args[]) {
+		playerCount = Settings.DEFAULT_PLAYERS;
+		for (String arg : args) {
+			String playerFlag = "-n";
+			if (arg.startsWith(playerFlag)) {
+				playerCount = Integer
+						.valueOf(arg.substring(playerFlag.length()));
+			}
 		}
-		currentGame.cleanUp();
+
+	}
+
+	public void run() {
+
+		init(playerCount);
+
+		userinterface.init(spielBrett);
+		Integer currPlayer = 1;
+		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
+
+		while (!somebodyWon()) {
+			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);
+			singleTurn(currPlayer);
+			currPlayer = nextPlayer(currPlayer);
+		}
+		cleanUp();
 	}
 
 	private Integer nextPlayer(Integer currPlayer) {
@@ -247,8 +276,12 @@ public class Game {
 
 	public void removePlayer(int id) {
 		this.spieler.remove(id);
-		Debug.print("[INFO]: Spieler mit ID "+id+" hat das Spiel verlassen",
-				DebugLevel.DEFAULT);		
+		Debug.print(
+				"[INFO]: Spieler mit ID " + id + " hat das Spiel verlassen",
+				DebugLevel.DEFAULT);
 	}
 
+	public void stopGame() {
+		winner = -2;
+	}
 }
