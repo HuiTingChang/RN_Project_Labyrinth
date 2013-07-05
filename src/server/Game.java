@@ -63,8 +63,8 @@ public class Game extends Thread {
 			while (accepting && i <= players) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
-					Debug.print("Waiting for another Player (" + i + ")",
-							DebugLevel.DEFAULT);
+					Debug.print("Waiting for Player (" + i + "/" + players
+							+ ")", DebugLevel.DEFAULT);
 					Socket mazeClient = s.accept();
 					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
@@ -204,10 +204,17 @@ public class Game extends Thread {
 					+ ") hat das Spiel gewonnen.", DebugLevel.DEFAULT);
 			JOptionPane.showMessageDialog(null, spieler.get(winner).getName()
 					+ "(" + winner + ") hat das Spiel gewonnen.");
-		}else{
-			for (Integer playerID : spieler.keySet()) {
-				Player s = spieler.get(playerID);
+		} else {
+			// Iterator<Integer> playerID = spieler.keySet().iterator();
+			// while (playerID.hasNext() ) {
+			// Player s = spieler.get(playerID.next());
+			// s.getConToClient().disconnect(ErrorType.NOERROR);
+			// }
+
+			while (spieler.size() > 0) {
+				Player s = spieler.get(spieler.keySet().iterator().next());
 				s.getConToClient().disconnect(ErrorType.NOERROR);
+
 			}
 		}
 		closeServerSocket();
@@ -221,7 +228,7 @@ public class Game extends Thread {
 	public static void main(String[] args) {
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
-		currentGame.userinterface = Settings.USERINTERFACE;
+		// currentGame.userinterface = Settings.USERINTERFACE;
 		currentGame.run();
 	}
 

@@ -12,15 +12,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import config.Settings;
 import server.Board;
 import server.Card;
 import server.Game;
@@ -42,6 +45,11 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	private static final long serialVersionUID = -3985631697359900852L;
 	private JPanel shiftCardContainer;
 	private JLabel jLShiftCard;
+	private JRadioButtonMenuItem MI4Spieler;
+	private JRadioButtonMenuItem MI3Spieler;
+	private JRadioButtonMenuItem MI2Spieler;
+	private JRadioButtonMenuItem MI1Spieler;
+	private JMenu MPlayerSettings;
 	private JMenuItem MIStart;
 	private JMenuItem MIStop;
 	private JMenu jMenu1;
@@ -120,6 +128,59 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 						});
 						//MIStop.addActionListener(new StartAction(this) );
 					}
+				}
+				{
+					MPlayerSettings = new JMenu();
+					jMenuBar1.add(MPlayerSettings);
+					MPlayerSettings.setText("Spieleranzahl");
+					{
+						MI1Spieler = new JRadioButtonMenuItem();
+						MPlayerSettings.add(MI1Spieler);
+						MI1Spieler.setText("1 Spieler");
+						MI1Spieler.setSelected(true);
+						MI1Spieler.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								Settings.DEFAULT_PLAYERS=1;
+							}
+						});
+					}
+					{
+						MI2Spieler = new JRadioButtonMenuItem();
+						MPlayerSettings.add(MI2Spieler);
+						MI2Spieler.setText("2 Spieler");
+						MI2Spieler.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								Settings.DEFAULT_PLAYERS=2;
+							}
+						});
+					}
+					{
+						MI3Spieler = new JRadioButtonMenuItem();
+						MPlayerSettings.add(MI3Spieler);
+						MI3Spieler.setText("3 Spieler");
+						MI3Spieler.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								Settings.DEFAULT_PLAYERS=3;
+							}
+						});
+					}
+					{
+						MI4Spieler = new JRadioButtonMenuItem();
+						MPlayerSettings.add(MI4Spieler);
+						MI4Spieler.setText("4 Spieler");
+						MI4Spieler.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								Settings.DEFAULT_PLAYERS=4;
+							}
+						});
+					}
+					ButtonGroup spielerAnz=new ButtonGroup();
+					spielerAnz.add(MI1Spieler);
+					spielerAnz.add(MI2Spieler);
+					spielerAnz.add(MI3Spieler);
+					spielerAnz.add(MI4Spieler);
+					
+
 				}
 			}
 			{

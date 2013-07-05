@@ -272,7 +272,7 @@ public class BetterUI extends JFrame implements UI {
 		this.add(splitPane, BorderLayout.CENTER);
 		this.pack();
 		this.setSize(800, 700);
-		this.setVisible(true);
+
 		splitPane.setDividerLocation(0.8);
  
 	}
@@ -509,6 +509,7 @@ public class BetterUI extends JFrame implements UI {
 	public void init(Board b) {
 		uiboard.setBoard(b);
 		uiboard.repaint();
+		this.setVisible(true);
 	}
  
 	private static Color colorForPlayer(int playerID) {
