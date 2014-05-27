@@ -9,30 +9,30 @@ import config.Settings;
 
 public class TimeOutManager extends Timer {
 
-	private LoginTimeOut lto;
-	private HashMap<Integer, SendMessageTimeout> smt;
+	private LoginTimeOut loginTimeOut;
+	private HashMap<Integer, SendMessageTimeout> sendMessageTimeout;
 
 	public TimeOutManager() {
 		super("TimeOuts", true);
-		this.smt = new HashMap<Integer, SendMessageTimeout>();
+		this.sendMessageTimeout = new HashMap<Integer, SendMessageTimeout>();
 	}
 
 	public void startLoginTimeOut(Game currentGame) {
-		lto = new LoginTimeOut(currentGame);
-		this.schedule(lto, Settings.LOGINTIMEOUT);
+		loginTimeOut = new LoginTimeOut(currentGame);
+		this.schedule(loginTimeOut, Settings.LOGINTIMEOUT);
 	}
 
 	public void stopLoginTimeOut() {
-		lto.cancel();
+		loginTimeOut.cancel();
 	}
 
 	public void startSendMessageTimeOut(int playerId, Connection c) {
-		smt.put(playerId, new SendMessageTimeout(c));
-		this.schedule(smt.get(playerId), Settings.SENDTIMEOUT);
+		sendMessageTimeout.put(playerId, new SendMessageTimeout(c));
+		this.schedule(sendMessageTimeout.get(playerId), Settings.SENDTIMEOUT);
 	}
 
 	public void stopSendMessageTimeOut(int playerId) {
-		if (smt.containsKey(playerId))
-			smt.get(playerId).cancel();
+		if (sendMessageTimeout.containsKey(playerId))
+			sendMessageTimeout.get(playerId).cancel();
 	}
 }

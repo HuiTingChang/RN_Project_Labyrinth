@@ -45,7 +45,7 @@ public class Board extends BoardType {
 
 	private void generateInitialBoard() {
 		// fixedCards:
-		// Die Festen unveraenderbaren Karten auf dem Spielbrett
+		// Die festen, unveraenderbaren Karten auf dem Spielbrett
 		setCard(0, 0, new Card(CardShape.L, Orientation.D90, null));
 		setCard(0, 2,
 				new Card(CardShape.T, Orientation.D0, TreasureType.SYM_13));
@@ -77,50 +77,51 @@ public class Board extends BoardType {
 
 		// die freien verschiebbaren Teile auf dem Spielbrett
 		ArrayList<Card> freeCards = new ArrayList<Card>();
-		Random rng = new Random();
+		Random random = new Random();
 		if (Settings.TESTBOARD) {
-			rng.setSeed(Settings.TESTBOARD_SEED);
+			random.setSeed(Settings.TESTBOARD_SEED);
 		}
 		// 15 mal L-shape (6 (sym) + 9 (ohne))
-		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_01));
-		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_02));
-		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_03));
-		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_04));
-		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_05));
-		freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_06));
 
 		for (int i = 0; i < 9; i++) {
-			freeCards.add(new Card(CardShape.L, Orientation.fromValue(rng
+			freeCards.add(new Card(CardShape.L, Orientation.fromValue(random
 					.nextInt(4) * 90), null));
 		}
 
 		// 13 mal I-shape
 		for (int i = 0; i < 13; i++) {
-			freeCards.add(new Card(CardShape.I, Orientation.fromValue(rng
+			freeCards.add(new Card(CardShape.I, Orientation.fromValue(random
 					.nextInt(4) * 90), null));
 		}
 
 		// 6 mal T-shape
-		freeCards.add(new Card(CardShape.T, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.T, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_07));
-		freeCards.add(new Card(CardShape.T, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.T, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_08));
-		freeCards.add(new Card(CardShape.T, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.T, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_09));
-		freeCards.add(new Card(CardShape.T, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.T, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_10));
-		freeCards.add(new Card(CardShape.T, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.T, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_11));
-		freeCards.add(new Card(CardShape.T, Orientation.fromValue(rng
+		freeCards.add(new Card(CardShape.T, Orientation.fromValue(random
 				.nextInt(4) * 90), TreasureType.SYM_12));
 
-		Collections.shuffle(freeCards);
+		if (!Settings.TESTBOARD)
+			Collections.shuffle(freeCards);
 
 		int k = 0;
 		for (int i = 1; i < 7; i += 2) {
@@ -240,7 +241,7 @@ public class Board extends BoardType {
 
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
 	protected void proceedShift(MoveMessageType move) {
-		Position sm =new Position( move.getShiftPosition() );
+		Position sm = new Position(move.getShiftPosition());
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
 				// horizontal schieben
@@ -278,7 +279,7 @@ public class Board extends BoardType {
 
 			}
 		}
-		forbidden=sm.getOpposite();
+		forbidden = sm.getOpposite();
 		Card c = null;
 		c = new Card(move.getShiftCard());
 		// Wenn Spielfigur auf neuer shiftcard steht,
@@ -286,13 +287,13 @@ public class Board extends BoardType {
 		// Dazu wird Sie auf die gerade hereingeschoben
 		// Karte gesetzt
 		if (!shiftCard.getPin().getPlayerID().isEmpty()) {
-			//Figur zwischenspeichern
+			// Figur zwischenspeichern
 			Pin temp = shiftCard.getPin();
-			//Figur auf SchiebeKarte löschen
+			// Figur auf SchiebeKarte löschen
 			shiftCard.setPin(new Pin());
-			//Zwischengespeicherte Figut auf
-			//neuer Karte plazieren
-			c.setPin(temp);			
+			// Zwischengespeicherte Figut auf
+			// neuer Karte plazieren
+			c.setPin(temp);
 		}
 		setCard(sm.getRow(), sm.getCol(), c);
 	}
@@ -461,7 +462,6 @@ public class Board extends BoardType {
 					}
 				}
 			}
-
 		}
 		// Pin nicht gefunden
 		return null;

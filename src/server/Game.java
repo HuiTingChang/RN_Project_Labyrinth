@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
@@ -30,11 +31,13 @@ public class Game extends Thread {
 	 * die ID zugreifbar sind
 	 */
 	private HashMap<Integer, Player> spieler;
-	private ServerSocket s;
-	private TimeOutManager timeOutMan;
+	private ServerSocket serverSocket;
+	private TimeOutManager timeOutManager;
 	private Board spielBrett;
-	private Integer winner = -1;// Default wert -1 solange kein Gewinner
-								// feststeht
+	/**
+	 * Defaultwert -1, solange kein Gewinner feststeht
+	 */
+	private Integer winner = -1;
 	private UI userinterface;
 	private int playerCount;
 
@@ -42,34 +45,36 @@ public class Game extends Thread {
 		Debug.addDebugger(System.out, DebugLevel.DEFAULT);
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
-		timeOutMan = new TimeOutManager();
+		timeOutManager = new TimeOutManager();
 		try {
-			s = new ServerSocket(config.Settings.port);
+			serverSocket = new ServerSocket(config.Settings.PORT);
 		} catch (IOException e) {
-			System.err
-					.println("Port bereits belegt, bitte schließen Sie alle Serverinstanzen");
+			System.err.println(Messages.getString("Game.portUsed")); //$NON-NLS-1$
 		}
 	}
 
 	/**
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
-	public void init(int players) {
+	public void init(int playerCount) {
 		try {
 			int i = 1;
 			boolean accepting = true;
-			timeOutMan.startLoginTimeOut(this);
-
-			while (accepting && i <= players) {
+			timeOutManager.startLoginTimeOut(this);
+			// FIXME: wenn sich kein Spieler verbindet, sollte ewig gewartet
+			// werden
+			while (accepting && i <= playerCount) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
-					Debug.print("Waiting for Player (" + i + "/" + players
-							+ ")", DebugLevel.DEFAULT);
-					Socket mazeClient = s.accept();
+					Debug.print(
+							Messages.getString("Game.waitingForPlayer") + " (" + i + "/" + playerCount //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+									+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
+					Socket mazeClient = serverSocket.accept();
 					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
 				} catch (SocketException e) {
-					Debug.print("...Waiting for Player timed out!",
+					Debug.print(
+							Messages.getString("Game.playerWaitingTimedOut"), //$NON-NLS-1$
 							DebugLevel.DEFAULT);
 				}
 				++i;
@@ -90,49 +95,53 @@ public class Game extends Thread {
 					e.printStackTrace();
 				}
 			}
-			timeOutMan.stopLoginTimeOut();
+			timeOutManager.stopLoginTimeOut();
 			// Spielbrett generieren
 			spielBrett = new Board();
-
 			// Verteilen der Schatzkarten
-			ArrayList<TreasureType> tcp = new ArrayList<TreasureType>();
-			tcp.add(TreasureType.SYM_01);
-			tcp.add(TreasureType.SYM_02);
-			tcp.add(TreasureType.SYM_03);
-			tcp.add(TreasureType.SYM_04);
-			tcp.add(TreasureType.SYM_05);
-			tcp.add(TreasureType.SYM_06);
-			tcp.add(TreasureType.SYM_07);
-			tcp.add(TreasureType.SYM_08);
-			tcp.add(TreasureType.SYM_09);
-			tcp.add(TreasureType.SYM_10);
-			tcp.add(TreasureType.SYM_11);
-			tcp.add(TreasureType.SYM_12);
-			tcp.add(TreasureType.SYM_13);
-			tcp.add(TreasureType.SYM_14);
-			tcp.add(TreasureType.SYM_15);
-			tcp.add(TreasureType.SYM_16);
-			tcp.add(TreasureType.SYM_17);
-			tcp.add(TreasureType.SYM_18);
-			tcp.add(TreasureType.SYM_19);
-			tcp.add(TreasureType.SYM_20);
-			tcp.add(TreasureType.SYM_21);
-			tcp.add(TreasureType.SYM_22);
-			tcp.add(TreasureType.SYM_23);
-			tcp.add(TreasureType.SYM_24);
-			Collections.shuffle(tcp);
-			int anzCards = tcp.size() / spieler.size();
+			ArrayList<TreasureType> treasureCardPile = new ArrayList<TreasureType>();
+			treasureCardPile.add(TreasureType.SYM_01);
+			treasureCardPile.add(TreasureType.SYM_02);
+			treasureCardPile.add(TreasureType.SYM_03);
+			treasureCardPile.add(TreasureType.SYM_04);
+			treasureCardPile.add(TreasureType.SYM_05);
+			treasureCardPile.add(TreasureType.SYM_06);
+			treasureCardPile.add(TreasureType.SYM_07);
+			treasureCardPile.add(TreasureType.SYM_08);
+			treasureCardPile.add(TreasureType.SYM_09);
+			treasureCardPile.add(TreasureType.SYM_10);
+			treasureCardPile.add(TreasureType.SYM_11);
+			treasureCardPile.add(TreasureType.SYM_12);
+			treasureCardPile.add(TreasureType.SYM_13);
+			treasureCardPile.add(TreasureType.SYM_14);
+			treasureCardPile.add(TreasureType.SYM_15);
+			treasureCardPile.add(TreasureType.SYM_16);
+			treasureCardPile.add(TreasureType.SYM_17);
+			treasureCardPile.add(TreasureType.SYM_18);
+			treasureCardPile.add(TreasureType.SYM_19);
+			treasureCardPile.add(TreasureType.SYM_20);
+			treasureCardPile.add(TreasureType.SYM_21);
+			treasureCardPile.add(TreasureType.SYM_22);
+			treasureCardPile.add(TreasureType.SYM_23);
+			treasureCardPile.add(TreasureType.SYM_24);
+			if (!Settings.TESTBOARD)
+				Collections.shuffle(treasureCardPile);
+			if (spieler.size() == 0) {
+				System.err.println(Messages.getString("Game.noPlayersConnected")); //$NON-NLS-1$
+				System.exit(0);
+			}
+			int anzCards = treasureCardPile.size() / spieler.size();
 			i = 0;
 			for (Integer player : spieler.keySet()) {
 				ArrayList<TreasureType> cardsPerPlayer = new ArrayList<TreasureType>();
 				for (int j = i * anzCards; j < (i + 1) * anzCards; j++) {
-					cardsPerPlayer.add(tcp.get(j));
+					cardsPerPlayer.add(treasureCardPile.get(j));
 				}
 				spieler.get(player).setTreasure(cardsPerPlayer);
 				++i;
 			}
 		} catch (IOException e) {
-			System.err.println("Fehler beim Verbindungsaufbau (game.init()):");
+			System.err.println(Messages.getString("Game.errorWhileConnecting")); //$NON-NLS-1$
 			System.err.println(e.getMessage());
 		}
 
@@ -140,7 +149,7 @@ public class Game extends Thread {
 
 	public void closeServerSocket() {
 		try {
-			s.close();
+			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -160,14 +169,11 @@ public class Game extends Thread {
 		 * Zug
 		 */
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
-
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
-
 		Debug.print("Spielbrett vor Zug von Spieler " + currPlayer,
 				DebugLevel.VERBOSE);
 		Debug.print(spielBrett.toString(), DebugLevel.VERBOSE);
-
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
@@ -178,10 +184,12 @@ public class Game extends Thread {
 					winner = currPlayer;
 				}
 			}
-			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY, Settings.SHIFTDELAY);
+			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY,
+					Settings.SHIFTDELAY);
 
 		} else {
-			Debug.print("Keinen Move erhalten!", DebugLevel.DEFAULT);
+			Debug.print(
+					Messages.getString("Game.gotNoMove"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		}
 	}
 
@@ -210,7 +218,6 @@ public class Game extends Thread {
 			// Player s = spieler.get(playerID.next());
 			// s.getConToClient().disconnect(ErrorType.NOERROR);
 			// }
-
 			while (spieler.size() > 0) {
 				Player s = spieler.get(spieler.keySet().iterator().next());
 				s.getConToClient().disconnect(ErrorType.NOERROR);
@@ -226,10 +233,11 @@ public class Game extends Thread {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(Integer.MAX_VALUE);
+		Locale.setDefault(Settings.LOCALE);
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
 		currentGame.userinterface = Settings.USERINTERFACE;
+		// FIXME: Muesste das nicht start sein? Nope
 		currentGame.run();
 	}
 
@@ -246,17 +254,13 @@ public class Game extends Thread {
 						.valueOf(arg.substring(playerFlag.length()));
 			}
 		}
-
 	}
 
 	public void run() {
-
 		init(playerCount);
-
 		userinterface.init(spielBrett);
 		Integer currPlayer = 1;
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
-
 		while (!somebodyWon()) {
 			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);
 			singleTurn(currPlayer);

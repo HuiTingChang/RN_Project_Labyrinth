@@ -30,16 +30,6 @@ import server.Game;
 import server.Player;
 import server.Position;
 
-/**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
- */
 public class GraphicalUI extends javax.swing.JFrame implements UI {
 	
 	private static final long serialVersionUID = -3985631697359900852L;
@@ -69,9 +59,6 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	protected static String[] arguments;
 	private Game g;
 
-	/**
-	 * Auto-generated main method to display this JFrame
-	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
