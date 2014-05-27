@@ -323,9 +323,9 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	}
 
 	@Override
-	public void displayMove(MoveMessageType mm, Board gb, long millis) {
-		long pause = (long) (millis * (2.0 / 3.0));
-		long animation = millis - pause;
+	public void displayMove(MoveMessageType mm, Board gb, long moveDelay, long shiftDelay) {
+		long pause = (long) (moveDelay * (2.0 / 3.0));
+		long animation = moveDelay - pause;
 		server.Position insertPos = new Position(mm.getShiftPosition());
 		BoardPane.blink(insertPos, animation);
 		updateBoard(gb);

@@ -178,7 +178,7 @@ public class Game extends Thread {
 					winner = currPlayer;
 				}
 			}
-			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY);
+			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY, Settings.SHIFTDELAY);
 
 		} else {
 			Debug.print("Keinen Move erhalten!", DebugLevel.DEFAULT);
@@ -226,6 +226,7 @@ public class Game extends Thread {
 	}
 
 	public static void main(String[] args) {
+		System.out.println(Integer.MAX_VALUE);
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
 		currentGame.userinterface = Settings.USERINTERFACE;
