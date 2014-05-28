@@ -1,7 +1,6 @@
 package config;
 
 import java.util.Locale;
-
 import server.userInterface.*;
 
 public class Settings {

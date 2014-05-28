@@ -21,10 +21,15 @@ import java.util.List;
 import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -32,11 +37,13 @@ import javax.swing.Timer;
 import config.Settings;
 import server.Board;
 import server.Card;
+import server.Game;
 import server.Player;
 import server.Position;
 
 @SuppressWarnings("serial")
 public class BetterUI extends JFrame implements UI {
+
 	int currentPlayer;
 	UIBoard uiboard = new UIBoard();
 	StatsPanel statPanel = new StatsPanel();
@@ -48,6 +55,15 @@ public class BetterUI extends JFrame implements UI {
 	Timer animationTimer;
 	AnimationProperties animationProperties = null;
 	JSplitPane splitPane;
+	private JRadioButtonMenuItem MI4Spieler;
+	private JRadioButtonMenuItem MI3Spieler;
+	private JRadioButtonMenuItem MI2Spieler;
+	private JRadioButtonMenuItem MI1Spieler;
+	private JMenu MPlayerSettings;
+	private JMenuItem MIStart;
+	private JMenuItem MIStop;
+	private JMenu jMenu1;
+	private JMenuBar jMenuBar1;
 
 	private static class ImageRessources {
 		private static HashMap<String, Image> images = new HashMap<String, Image>();
@@ -272,8 +288,92 @@ public class BetterUI extends JFrame implements UI {
 		}
 	}
 
+
 	public BetterUI() {
 		super("Better MazeNet UI");
+		{
+			jMenuBar1 = new JMenuBar();
+			setJMenuBar(jMenuBar1);
+			{
+				jMenu1 = new JMenu();
+				jMenuBar1.add(jMenu1);
+				jMenu1.setText("Server");
+				{
+					MIStart = new JMenuItem();
+					jMenu1.add(MIStart);
+					MIStart.setText("Start");
+					MIStart.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							MIStartActionPerformed(evt);
+						}
+					});
+					// MIStart.addActionListener(new StartAction(this) );
+				}
+				{
+					MIStop = new JMenuItem();
+					jMenu1.add(MIStop);
+					MIStop.setText("Stop");
+					MIStop.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							MIStopActionPerformed(evt);
+						}
+					});
+					// MIStop.addActionListener(new StartAction(this) );
+				}
+			}
+			{
+				MPlayerSettings = new JMenu();
+				jMenuBar1.add(MPlayerSettings);
+				MPlayerSettings.setText("Spieleranzahl");
+				{
+					MI1Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI1Spieler);
+					MI1Spieler.setText("1 Spieler");
+					MI1Spieler.setSelected(true);
+					MI1Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 1;
+						}
+					});
+				}
+				{
+					MI2Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI2Spieler);
+					MI2Spieler.setText("2 Spieler");
+					MI2Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 2;
+						}
+					});
+				}
+				{
+					MI3Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI3Spieler);
+					MI3Spieler.setText("3 Spieler");
+					MI3Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 3;
+						}
+					});
+				}
+				{
+					MI4Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI4Spieler);
+					MI4Spieler.setText("4 Spieler");
+					MI4Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 4;
+						}
+					});
+				}
+				ButtonGroup spielerAnz = new ButtonGroup();
+				spielerAnz.add(MI1Spieler);
+				spielerAnz.add(MI2Spieler);
+				spielerAnz.add(MI3Spieler);
+				spielerAnz.add(MI4Spieler);
+
+			}
+		}
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, uiboard,
@@ -288,6 +388,25 @@ public class BetterUI extends JFrame implements UI {
 				splitPane.setDividerLocation(0.8);
 			}
 		});
+	}
+
+	protected static String[] arguments;
+	private Game g;
+
+	private void MIStopActionPerformed(ActionEvent evt) {
+		System.out.println("MIStop.actionPerformed, event=" + evt);
+		g.stopGame();
+	}
+
+	private void MIStartActionPerformed(ActionEvent evt) {
+		System.out.println("MIStart.actionPerformed, event=" + evt);
+		if(g==null){
+			setGame(new Game());
+		}
+		arguments=new String[0];
+		g.parsArgs(arguments);
+		g.setUserinterface(this);
+		g.start();
 	}
 
 	private class AnimationProperties {
@@ -536,6 +655,12 @@ public class BetterUI extends JFrame implements UI {
 			throw new IllegalArgumentException(
 					"UI is not prepared for this playerId");
 		}
+	}
+
+	@Override
+	public void setGame(Game g) {
+		this.g = g;
+
 	}
 
 }

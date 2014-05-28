@@ -237,8 +237,10 @@ public class Game extends Thread {
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
 		currentGame.userinterface = Settings.USERINTERFACE;
-		// FIXME: Muesste das nicht start sein? Nope
 		currentGame.run();
+		currentGame.userinterface.init(new Board());
+		currentGame.userinterface.setGame(currentGame);
+		//currentGame.run();
 	}
 
 	public void setUserinterface(UI userinterface) {
