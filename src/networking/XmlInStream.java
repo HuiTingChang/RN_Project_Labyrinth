@@ -25,8 +25,8 @@ public class XmlInStream extends UTFInputStream {
 			JAXBContext jc = JAXBContext.newInstance(MazeCom.class);
 			this.unmarshaller = jc.createUnmarshaller();
 		} catch (JAXBException e) {
-			Debug.print(
-					"[ERROR]: Fehler beim initialisieren der JAXB-Komponenten",
+			Debug.print(Messages
+					.getString("XmlInStream.errorInitialisingJAXBComponent"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
 		}
 	}
@@ -41,7 +41,8 @@ public class XmlInStream extends UTFInputStream {
 		MazeCom result = null;
 		try {
 			String xml = this.readUTF8();
-			Debug.print("Empfangen", DebugLevel.DEBUG);
+			Debug.print(
+					Messages.getString("XmlInStream.received"), DebugLevel.DEBUG); //$NON-NLS-1$
 			Debug.print(xml, DebugLevel.DEBUG);
 			bytes = xml.getBytes();
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -49,20 +50,18 @@ public class XmlInStream extends UTFInputStream {
 			result = (MazeCom) this.unmarshaller.unmarshal(bais);
 		} catch (JAXBException e) {
 			e.printStackTrace();
-			Debug.print("[ERROR]: Fehler beim unmarshallen der Nachricht",
+			Debug.print(Messages.getString("XmlInStream.errorUnmarshalling"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
 		} catch (IOException e1) {
-			//weiterleiten der Exception => damit Spieler korrekt entfernt wird
+			// weiterleiten der Exception => damit Spieler korrekt entfernt wird
 			if (e1 instanceof SocketException)
 				throw new SocketException();
-			else {
-				e1.printStackTrace();
-				Debug.print("[ERROR]: Fehler beim lesen der Nachricht",
-						DebugLevel.DEFAULT);
-			}
+			e1.printStackTrace();
+			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
+					DebugLevel.DEFAULT);
 		} catch (NullPointerException e) {
 			Debug.print(
-					"[ERROR]: Nullpointer beim lesen der Nachricht aufgrund weiterer Fehler",
+					Messages.getString("XmlInStream.nullpointerWhileReading"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
 		}
 		return result;

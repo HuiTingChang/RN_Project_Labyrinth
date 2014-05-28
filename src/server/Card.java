@@ -30,7 +30,7 @@ public class Card extends CardType {
 					return c;
 				}
 			}
-			throw new IllegalArgumentException(v + "");
+			throw new IllegalArgumentException(v + ""); //$NON-NLS-1$
 		}
 	}
 
@@ -45,9 +45,9 @@ public class Card extends CardType {
 
 		this.setTreasure(c.getTreasure());
 		this.setPin(new Pin());
-		if(c.getPin()!=null){
+		if (c.getPin() != null) {
 			this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
-		}else{
+		} else {
 			this.setPin(null);
 		}
 	}
@@ -157,17 +157,20 @@ public class Card extends CardType {
 			return false;
 		Card other = new Card((CardType) obj);
 		if (this.treasure != other.getTreasure()) {
-			Debug.print("Schatz ungleich", DebugLevel.DEBUG);
+			Debug.print(
+					Messages.getString("Card.treasureUnequal"), DebugLevel.DEBUG); //$NON-NLS-1$
 			return false;
 		}
 		for (Integer ID : this.getPin().getPlayerID()) {
 			if (!other.getPin().getPlayerID().contains(ID)) {
-				Debug.print("Spieler ungleich", DebugLevel.DEBUG);
+				Debug.print(
+						Messages.getString("Card.playerUnequal"), DebugLevel.DEBUG); //$NON-NLS-1$
 				return false;
 			}
 		}
-		if(other.getShape()!=this.getShape()){
-			Debug.print("Form ungleich", DebugLevel.DEBUG);
+		if (other.getShape() != this.getShape()) {
+			Debug.print(
+					Messages.getString("Card.shapeUnequal"), DebugLevel.DEBUG); //$NON-NLS-1$
 			return false;
 		}
 		return true;
@@ -178,75 +181,75 @@ public class Card extends CardType {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(" ------ \n");
+		sb.append(" ------ \n"); //$NON-NLS-1$
 
-		StringBuilder line1 = new StringBuilder("|");
-		StringBuilder line2 = new StringBuilder("|");
-		StringBuilder line3 = new StringBuilder("|");
-		StringBuilder line4 = new StringBuilder("|");
-		StringBuilder line5 = new StringBuilder("|");
-		StringBuilder line6 = new StringBuilder("|");
+		StringBuilder line1 = new StringBuilder("|"); //$NON-NLS-1$
+		StringBuilder line2 = new StringBuilder("|"); //$NON-NLS-1$
+		StringBuilder line3 = new StringBuilder("|"); //$NON-NLS-1$
+		StringBuilder line4 = new StringBuilder("|"); //$NON-NLS-1$
+		StringBuilder line5 = new StringBuilder("|"); //$NON-NLS-1$
+		StringBuilder line6 = new StringBuilder("|"); //$NON-NLS-1$
 
 		Card c = new Card(this);
 		if (c.getOpenings().isTop()) {
-			line1.append("##  ##|");
-			line2.append("##  ##|");
+			line1.append("##  ##|"); //$NON-NLS-1$
+			line2.append("##  ##|"); //$NON-NLS-1$
 		} else {
-			line1.append("######|");
-			line2.append("######|");
+			line1.append("######|"); //$NON-NLS-1$
+			line2.append("######|"); //$NON-NLS-1$
 		}
 		if (c.getOpenings().isLeft()) {
-			line3.append("  ");
-			line4.append("  ");
+			line3.append("  "); //$NON-NLS-1$
+			line4.append("  "); //$NON-NLS-1$
 		} else {
-			line3.append("##");
-			line4.append("##");
+			line3.append("##"); //$NON-NLS-1$
+			line4.append("##"); //$NON-NLS-1$
 		}
 		if (c.getPin().getPlayerID().size() != 0) {
-			line3.append("S");
+			line3.append("S"); //$NON-NLS-1$
 		} else {
-			line3.append(" ");
+			line3.append(" "); //$NON-NLS-1$
 		}
 		if (c.getTreasure() != null) {
 			String name = c.getTreasure().name();
 			switch (name.charAt(1)) {
 			case 'Y':
 				// Symbol
-				line3.append("T");
+				line3.append("T"); //$NON-NLS-1$
 				break;
 			case 'T':
 				// Startpunkt
-				line3.append("S");
+				line3.append("S"); //$NON-NLS-1$
 				break;
 			}
 
 			line4.append(name.substring(name.length() - 2));
 		} else {
-			line3.append(" ");
-			line4.append("  ");
+			line3.append(" "); //$NON-NLS-1$
+			line4.append("  "); //$NON-NLS-1$
 		}
 		if (c.getOpenings().isRight()) {
-			line3.append("  |");
-			line4.append("  |");
+			line3.append("  |"); //$NON-NLS-1$
+			line4.append("  |"); //$NON-NLS-1$
 		} else {
-			line3.append("##|");
-			line4.append("##|");
+			line3.append("##|"); //$NON-NLS-1$
+			line4.append("##|"); //$NON-NLS-1$
 		}
 		if (c.getOpenings().isBottom()) {
-			line5.append("##  ##|");
-			line6.append("##  ##|");
+			line5.append("##  ##|"); //$NON-NLS-1$
+			line6.append("##  ##|"); //$NON-NLS-1$
 		} else {
-			line5.append("######|");
-			line6.append("######|");
+			line5.append("######|"); //$NON-NLS-1$
+			line6.append("######|"); //$NON-NLS-1$
 		}
 
-		sb.append(line1.toString() + "\n");
-		sb.append(line2.toString() + "\n");
-		sb.append(line3.toString() + "\n");
-		sb.append(line4.toString() + "\n");
-		sb.append(line5.toString() + "\n");
-		sb.append(line6.toString() + "\n");
-		sb.append(" ------ \n");
+		sb.append(line1.toString() + "\n"); //$NON-NLS-1$
+		sb.append(line2.toString() + "\n"); //$NON-NLS-1$
+		sb.append(line3.toString() + "\n"); //$NON-NLS-1$
+		sb.append(line4.toString() + "\n"); //$NON-NLS-1$
+		sb.append(line5.toString() + "\n"); //$NON-NLS-1$
+		sb.append(line6.toString() + "\n"); //$NON-NLS-1$
+		sb.append(" ------ \n"); //$NON-NLS-1$
 
 		return sb.toString();
 	}
@@ -275,38 +278,38 @@ public class Card extends CardType {
 			return CardShape.T;
 		}
 	}
-	public Orientation getOrientation(){
-		switch(getShape()){
+
+	public Orientation getOrientation() {
+		switch (getShape()) {
 		case I:
-			if(getOpenings().isTop()){
+			if (getOpenings().isTop()) {
 				return Orientation.D0;
-			}else{
-				return Orientation.D90;
 			}
+			return Orientation.D90;
 		case L:
-			if(getOpenings().isTop() && getOpenings().isRight()){
+			if (getOpenings().isTop() && getOpenings().isRight()) {
 				return Orientation.D0;
-			}else if(getOpenings().isRight() && getOpenings().isBottom()){
+			} else if (getOpenings().isRight() && getOpenings().isBottom()) {
 				return Orientation.D90;
-			}else if(getOpenings().isBottom() && getOpenings().isLeft()){
+			} else if (getOpenings().isBottom() && getOpenings().isLeft()) {
 				return Orientation.D180;
-			}else { //if(getOpenings().isLeft() && getOpenings().isTop()){
+			} else { // if(getOpenings().isLeft() && getOpenings().isTop()){
 				return Orientation.D270;
 			}
 		case T:
-			if(!getOpenings().isTop()){
+			if (!getOpenings().isTop()) {
 				return Orientation.D0;
-			}else if(!getOpenings().isRight()){
+			} else if (!getOpenings().isRight()) {
 				return Orientation.D90;
-			}else if(!getOpenings().isBottom()){
+			} else if (!getOpenings().isBottom()) {
 				return Orientation.D180;
-			}else {//if(!getOpenings().isLeft()){
+			} else {// if(!getOpenings().isLeft()){
 				return Orientation.D270;
 			}
 		default:
-			return null;					
+			return null;
 		}
-		
+
 	}
 
 }

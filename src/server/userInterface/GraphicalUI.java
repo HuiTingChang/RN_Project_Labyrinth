@@ -29,9 +29,11 @@ import server.Card;
 import server.Game;
 import server.Player;
 import server.Position;
+import tools.Debug;
+import tools.DebugLevel;
 
 public class GraphicalUI extends javax.swing.JFrame implements UI {
-	
+
 	private static final long serialVersionUID = -3985631697359900852L;
 	private JPanel shiftCardContainer;
 	private JLabel jLShiftCard;
@@ -68,7 +70,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 				inst.setVisible(true);
 			}
 		});
-		arguments=args;
+		arguments = args;
 	}
 
 	public GraphicalUI() {
@@ -86,88 +88,92 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			thisLayout.columnWidths = new int[] { 70, 30 };
 
 			getContentPane().setLayout(thisLayout);
-			this.setTitle("MazeCom");
+			this.setTitle("MazeCom"); //$NON-NLS-1$
 			{
 				jMenuBar1 = new JMenuBar();
 				setJMenuBar(jMenuBar1);
 				{
 					jMenu1 = new JMenu();
 					jMenuBar1.add(jMenu1);
-					jMenu1.setText("Server");
+					jMenu1.setText(Messages.getString("GraphicalUI.server")); //$NON-NLS-1$
 					{
 						MIStart = new JMenuItem();
 						jMenu1.add(MIStart);
-						MIStart.setText("Start");
+						MIStart.setText(Messages.getString("GraphicalUI.start")); //$NON-NLS-1$
 						MIStart.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
 								MIStartActionPerformed(evt);
 							}
 						});
-						//MIStart.addActionListener(new StartAction(this) );
+						// MIStart.addActionListener(new StartAction(this) );
 					}
 					{
 						MIStop = new JMenuItem();
 						jMenu1.add(MIStop);
-						MIStop.setText("Stop");
+						MIStop.setText(Messages.getString("GraphicalUI.stop")); //$NON-NLS-1$
 						MIStop.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
 								MIStopActionPerformed(evt);
 							}
 						});
-						//MIStop.addActionListener(new StartAction(this) );
+						// MIStop.addActionListener(new StartAction(this) );
 					}
 				}
 				{
 					MPlayerSettings = new JMenu();
 					jMenuBar1.add(MPlayerSettings);
-					MPlayerSettings.setText("Spieleranzahl");
+					MPlayerSettings.setText(Messages
+							.getString("GraphicalUI.playerCount")); //$NON-NLS-1$
 					{
 						MI1Spieler = new JRadioButtonMenuItem();
 						MPlayerSettings.add(MI1Spieler);
-						MI1Spieler.setText("1 Spieler");
+						MI1Spieler.setText(Messages
+								.getString("GraphicalUI.onePlayer")); //$NON-NLS-1$
 						MI1Spieler.setSelected(true);
 						MI1Spieler.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								Settings.DEFAULT_PLAYERS=1;
+								Settings.DEFAULT_PLAYERS = 1;
 							}
 						});
 					}
 					{
 						MI2Spieler = new JRadioButtonMenuItem();
 						MPlayerSettings.add(MI2Spieler);
-						MI2Spieler.setText("2 Spieler");
+						MI2Spieler.setText(Messages
+								.getString("GraphicalUI.twoPlayer")); //$NON-NLS-1$
 						MI2Spieler.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								Settings.DEFAULT_PLAYERS=2;
+								Settings.DEFAULT_PLAYERS = 2;
 							}
 						});
 					}
 					{
 						MI3Spieler = new JRadioButtonMenuItem();
 						MPlayerSettings.add(MI3Spieler);
-						MI3Spieler.setText("3 Spieler");
+						MI3Spieler.setText(Messages
+								.getString("GraphicalUI.threePlayer")); //$NON-NLS-1$
 						MI3Spieler.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								Settings.DEFAULT_PLAYERS=3;
+								Settings.DEFAULT_PLAYERS = 3;
 							}
 						});
 					}
 					{
 						MI4Spieler = new JRadioButtonMenuItem();
 						MPlayerSettings.add(MI4Spieler);
-						MI4Spieler.setText("4 Spieler");
+						MI4Spieler.setText(Messages
+								.getString("GraphicalUI.fourPlayer")); //$NON-NLS-1$
 						MI4Spieler.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								Settings.DEFAULT_PLAYERS=4;
+								Settings.DEFAULT_PLAYERS = 4;
 							}
 						});
 					}
-					ButtonGroup spielerAnz=new ButtonGroup();
+					ButtonGroup spielerAnz = new ButtonGroup();
 					spielerAnz.add(MI1Spieler);
 					spielerAnz.add(MI2Spieler);
 					spielerAnz.add(MI3Spieler);
 					spielerAnz.add(MI4Spieler);
-					
 
 				}
 			}
@@ -184,7 +190,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 			}
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosed(WindowEvent evt) {
-					System.out.println("this.windowClosed, event=" + evt);
+					Debug.print("this.windowClosed, event=" + evt, //$NON-NLS-1$
+							DebugLevel.VERBOSE);
 					System.exit(0);
 				}
 			});
@@ -207,7 +214,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 							0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
 							0));
-					jLShiftCard.setText("freie Karte:");
+					jLShiftCard.setText(Messages
+							.getString("GraphicalUI.freeCard")); //$NON-NLS-1$
 				}
 				{
 					shiftCard = new GraphicalCardBuffered();
@@ -248,7 +256,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 									GridBagConstraints.CENTER,
 									GridBagConstraints.NONE, new Insets(0, 0,
 											0, 0), 0, 0));
-					jLcurrentTreasure.setText("gesuchter Schatz:");
+					jLcurrentTreasure.setText(Messages
+							.getString("GraphicalUI.searchedTreasure")); //$NON-NLS-1$
 				}
 				{
 					currentTreasure = new JLabel();
@@ -256,6 +265,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 							0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
 							0));
+					// FIXME: sym05 ist Tux, sollte kaum fest kodiert werden!
 					currentTreasure
 							.setIcon(new ImageIcon(
 									getClass()
@@ -269,7 +279,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 							1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
 							0));
-					jLSpieler.setText("Spieler");
+					jLSpieler.setText(Messages.getString("GraphicalUI.player")); //$NON-NLS-1$
 				}
 				{
 					jLName = new JLabel();
@@ -277,7 +287,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 							1, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
 							0));
-					jLName.setText("Name");
+					jLName.setText(Messages.getString("GraphicalUI.name")); //$NON-NLS-1$
 				}
 				{
 					jLTreasuresToGo = new JLabel();
@@ -285,7 +295,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 							1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
 							0));
-					jLTreasuresToGo.setText("übrige Schätze");
+					jLTreasuresToGo.setText(Messages
+							.getString("GraphicalUI.remainingTreasures")); //$NON-NLS-1$
 				}
 			}
 			stats = new JLabel[4][2];
@@ -294,13 +305,14 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 				statisticsPane.add(stats[i][0], new GridBagConstraints(0,
 						4 + i, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-				stats[i][0].setText((i + 1) + ": Nicht Verbunden");
-
+				stats[i][0]
+						.setText(String.format(Messages
+								.getString("GraphicalUI.IDnotConnected"), i + 1)); //$NON-NLS-1$
 				stats[i][1] = new JLabel();
 				statisticsPane.add(stats[i][1], new GridBagConstraints(1,
 						4 + i, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 						GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-				stats[i][1].setText("" + 0);
+				stats[i][1].setText(String.valueOf(0));
 			}
 			pack();
 			this.setSize(1000, 700);
@@ -311,7 +323,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	}
 
 	@Override
-	public void displayMove(MoveMessageType mm, Board gb, long moveDelay, long shiftDelay) {
+	public void displayMove(MoveMessageType mm, Board gb, long moveDelay,
+			long shiftDelay) {
 		long pause = (long) (moveDelay * (2.0 / 3.0));
 		long animation = moveDelay - pause;
 		server.Position insertPos = new Position(mm.getShiftPosition());
@@ -341,8 +354,8 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		if (t != null) {
 			currentTreasure.setIcon(new ImageIcon(getClass().getClassLoader()
 					.getResource(
-							"server/userInterface/resources/" + t.value()
-									+ ".png")));
+							Settings.IMAGEPATH + t.value()
+									+ Settings.IMAGEFILEEXTENSION)));
 		} else {
 			currentTreasure.setIcon(null);
 		}
@@ -350,35 +363,37 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 
 	@Override
 	public void updatePlayerStatistics(List<Player> stats, Integer current) {
-		currentPlayer=current;
+		currentPlayer = current;
 		for (int i = 0; i < 4; ++i) {
-			this.stats[i][0].setText((i + 1) + ": nicht verbunden");
-			this.stats[i][1].setText("");
+			this.stats[i][0].setText(String.format(
+					Messages.getString("GraphicalUI.IDnotConnected"), i + 1)); //$NON-NLS-1$
+			this.stats[i][1].setText(""); //$NON-NLS-1$
 		}
 		for (Player p : stats) {
 			if (p.getID() == current) {
-				this.stats[p.getID() - 1][0].setText(">" + p.getID() + ": "
-						+ p.getName());
+				this.stats[p.getID() - 1][0].setText(String.format(">%d: %s", //$NON-NLS-1$
+						p.getID(), p.getName()));
 			} else {
-				this.stats[p.getID() - 1][0].setText(p.getID() + ": "
-						+ p.getName());
+				this.stats[p.getID() - 1][0].setText(String.format("%d: %s", //$NON-NLS-1$
+						p.getID(), p.getName()));
 			}
-			this.stats[p.getID() - 1][1].setText("" + p.treasuresToGo());
+			this.stats[p.getID() - 1][1].setText(String.valueOf(p
+					.treasuresToGo()));
 		}
 
 	}
-	
+
 	private void MIStopActionPerformed(ActionEvent evt) {
-		System.out.println("MIStop.actionPerformed, event="+evt);
+		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.VERBOSE); //$NON-NLS-1$
 		g.stopGame();
 	}
-	
+
 	private void MIStartActionPerformed(ActionEvent evt) {
-		System.out.println("MIStart.actionPerformed, event="+evt);
-		if(g==null){
+		Debug.print("MIStart.actionPerformed, event=" + evt, DebugLevel.VERBOSE); //$NON-NLS-1$
+		if (g == null) {
 			setGame(new Game());
 		}
-		arguments=new String[0];
+		arguments = new String[0];
 		g.parsArgs(arguments);
 		g.setUserinterface(this);
 		g.start();
@@ -386,8 +401,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 
 	@Override
 	public void setGame(Game g) {
-		this.g=g;
-		
+		this.g = g;
 	}
 
 }

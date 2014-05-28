@@ -17,11 +17,7 @@ import server.Position;
 
 public class GraphicalBoard extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8826989344981510486L;
-
 	private GraphicalCardBuffered[][] boardDisplay = null;
 	private TexturePaint paintBuffer = null;
 	@SuppressWarnings("unused")
@@ -69,7 +65,7 @@ public class GraphicalBoard extends JPanel {
 		}
 		updatePaint();
 		repaint();
-		this.b=b;
+		this.b = b;
 	}
 
 	private void updatePaint() {
@@ -77,21 +73,16 @@ public class GraphicalBoard extends JPanel {
 			paintBuffer = null;
 			return;
 		}
-
 		int w = getWidth();
 		int h = getHeight();
-
 		if (w <= 0 || h <= 0) {
 			paintBuffer = null;
 			return;
 		}
-
 		BufferedImage buff = new BufferedImage(w, h,
 				BufferedImage.TYPE_INT_ARGB_PRE);
-
 		Graphics2D g2 = buff.createGraphics();
 		super.paintComponent(g2);
-
 		paintBuffer = new TexturePaint(buff, new Rectangle(0, 0, w, h));
 		g2.dispose();
 	}
@@ -116,13 +107,14 @@ public class GraphicalBoard extends JPanel {
 		}
 	}
 
-	public void blink(Position insertPos,long millis) {
-		boardDisplay[insertPos.getRow()][insertPos.getCol()].blinkCard(millis, 3);
+	public void blink(Position insertPos, long millis) {
+		boardDisplay[insertPos.getRow()][insertPos.getCol()].blinkCard(millis,
+				3);
 	}
-	
-//	public void blink(Integer playerID,long millis) {
-//		Position p=new Position( b.findPlayer(playerID) );
-//		boardDisplay[p.getRow()][p.getCol()].blinkPlayer(millis, 3);
-//	}
+
+	// public void blink(Integer playerID,long millis) {
+	// Position p=new Position( b.findPlayer(playerID) );
+	// boardDisplay[p.getRow()][p.getCol()].blinkPlayer(millis, 3);
+	// }
 
 }

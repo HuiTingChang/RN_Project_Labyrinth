@@ -46,7 +46,10 @@ public class Settings {
 	 * BetterUI(), GraphicalUI()
 	 */
 	public final static UI USERINTERFACE = new BetterUI();
-	public final static String IMAGEPATH = "/server/userInterface/resources/";
-	public final static String IMAGEFILEEXTENSION = ".png";
-	public final static Locale LOCALE = new Locale("de");
+	/**
+	 * Auf das angehaengte / achten
+	 */
+	public final static String IMAGEPATH = "/server/userInterface/resources/"; //$NON-NLS-1$
+	public final static String IMAGEFILEEXTENSION = ".png"; //$NON-NLS-1$
+	public final static Locale LOCALE = new Locale("de"); //$NON-NLS-1$
 }

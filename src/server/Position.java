@@ -21,7 +21,9 @@ public class Position extends PositionType {
 		this.col = col;
 	}
 
-	// checkt ob an dieser Stelle ein Schieben moeglich ist
+	/**
+	 * Checkt, ob an dieser Stelle ein Schieben moeglich ist
+	 */
 	public boolean isLoosePosition() {
 		return ((row % 6 == 0 && col % 2 == 1) || (col % 6 == 0 && row % 2 == 1));
 	}
@@ -31,8 +33,9 @@ public class Position extends PositionType {
 		return this.getOpposite().equals(op);
 	}
 
-	// gibt die gegenüberliegende
-	// Position auf dem Spielbrett wieder
+	/**
+	 * Gibt die gegenueberliegende Position auf dem Spielbrett wieder
+	 */
 	public Position getOpposite() {
 		if (row % 6 == 0) {
 			return new Position((row + 6) % 12, col);

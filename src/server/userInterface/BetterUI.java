@@ -40,6 +40,8 @@ import server.Card;
 import server.Game;
 import server.Player;
 import server.Position;
+import tools.Debug;
+import tools.DebugLevel;
 
 @SuppressWarnings("serial")
 public class BetterUI extends JFrame implements UI {
@@ -71,18 +73,17 @@ public class BetterUI extends JFrame implements UI {
 		public static Image getImage(String name) {
 			if (images.containsKey(name)) {
 				return images.get(name);
-			} else {
-				URL u = ImageRessources.class.getResource(Settings.IMAGEPATH
-						+ name + Settings.IMAGEFILEEXTENSION);
-				Image img = null;
-				try {
-					img = ImageIO.read(u);
-					images.put(name, img);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return img;
 			}
+			URL u = ImageRessources.class.getResource(Settings.IMAGEPATH + name
+					+ Settings.IMAGEFILEEXTENSION);
+			Image img = null;
+			try {
+				img = ImageIO.read(u);
+				images.put(name, img);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return img;
 		}
 	}
 
@@ -175,8 +176,9 @@ public class BetterUI extends JFrame implements UI {
 											+ pixelsPerField / 4
 											* ((playerID - 1) % 2),
 									pixelsPerField / 4, pixelsPerField / 4);
-							centerStringInRect((Graphics2D) g, "" + playerID,
-									topLeftX + pixelsPerField / 4
+							centerStringInRect((Graphics2D) g,
+									playerID.toString(), topLeftX
+											+ pixelsPerField / 4
 											+ pixelsPerField / 4
 											* ((playerID - 1) / 2), topLeftY
 											+ pixelsPerField / 4
@@ -185,8 +187,9 @@ public class BetterUI extends JFrame implements UI {
 									pixelsPerField / 4, pixelsPerField / 4);
 						}
 					} else {
-						System.out.println("Card at " + x + " " + y
-								+ " is null");
+						System.out
+								.println(String.format(Messages
+										.getString("BetterUI.cardIsNull"), x, y)); //$NON-NLS-1$
 					}
 				}
 			}
@@ -240,11 +243,12 @@ public class BetterUI extends JFrame implements UI {
 
 		public void update(List<Player> stats, int current) {
 			if (initiated) {
-				currentPlayerLabels.get(currentPlayer).setText("");
+				currentPlayerLabels.get(currentPlayer).setText(""); //$NON-NLS-1$
 				currentPlayer = current;
-				currentPlayerLabels.get(currentPlayer).setText(">");
+				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
 				for (Player p : stats) {
-					statLabels.get(p.getID()).setText("" + p.treasuresToGo());
+					statLabels.get(p.getID()).setText(
+							String.valueOf(p.treasuresToGo()));
 					treasureImages.get(p.getID()).setIcon(
 							new ImageIcon(ImageRessources.getImage(p
 									.getCurrentTreasure().value())));
@@ -262,11 +266,12 @@ public class BetterUI extends JFrame implements UI {
 					JLabel currentPlayerLabel = new JLabel();
 					currentPlayerLabels.put(p.getID(), currentPlayerLabel);
 
-					JLabel playerIDLabel = new JLabel("" + p.getID());
+					JLabel playerIDLabel = new JLabel(String.valueOf(p.getID()));
 					JLabel playerNameLabel = new JLabel(p.getName());
 					playerNameLabel.setForeground(colorForPlayer(p.getID()));
 
-					JLabel statLabel = new JLabel("" + p.treasuresToGo());
+					JLabel statLabel = new JLabel(String.valueOf(p
+							.treasuresToGo()));
 					statLabels.put(p.getID(), statLabel);
 
 					JLabel treasureImage = new JLabel(new ImageIcon(
@@ -283,25 +288,25 @@ public class BetterUI extends JFrame implements UI {
 					this.add(statLabel, gc);
 				}
 				currentPlayer = current;
-				currentPlayerLabels.get(currentPlayer).setText(">");
+				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
 			}
 		}
 	}
 
-
 	public BetterUI() {
-		super("Better MazeNet UI");
+		// Eigenname
+		super("Better MazeNet UI"); //$NON-NLS-1$
 		{
 			jMenuBar1 = new JMenuBar();
 			setJMenuBar(jMenuBar1);
 			{
 				jMenu1 = new JMenu();
 				jMenuBar1.add(jMenu1);
-				jMenu1.setText("Server");
+				jMenu1.setText(Messages.getString("BetterUI.server")); //$NON-NLS-1$
 				{
 					MIStart = new JMenuItem();
 					jMenu1.add(MIStart);
-					MIStart.setText("Start");
+					MIStart.setText(Messages.getString("BetterUI.start")); //$NON-NLS-1$
 					MIStart.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							MIStartActionPerformed(evt);
@@ -312,7 +317,7 @@ public class BetterUI extends JFrame implements UI {
 				{
 					MIStop = new JMenuItem();
 					jMenu1.add(MIStop);
-					MIStop.setText("Stop");
+					MIStop.setText(Messages.getString("BetterUI.stop")); //$NON-NLS-1$
 					MIStop.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							MIStopActionPerformed(evt);
@@ -324,11 +329,13 @@ public class BetterUI extends JFrame implements UI {
 			{
 				MPlayerSettings = new JMenu();
 				jMenuBar1.add(MPlayerSettings);
-				MPlayerSettings.setText("Spieleranzahl");
+				MPlayerSettings.setText(Messages
+						.getString("BetterUI.playerCount")); //$NON-NLS-1$
 				{
 					MI1Spieler = new JRadioButtonMenuItem();
 					MPlayerSettings.add(MI1Spieler);
-					MI1Spieler.setText("1 Spieler");
+					MI1Spieler
+							.setText(Messages.getString("BetterUI.OnePlayer")); //$NON-NLS-1$
 					MI1Spieler.setSelected(true);
 					MI1Spieler.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
@@ -339,7 +346,8 @@ public class BetterUI extends JFrame implements UI {
 				{
 					MI2Spieler = new JRadioButtonMenuItem();
 					MPlayerSettings.add(MI2Spieler);
-					MI2Spieler.setText("2 Spieler");
+					MI2Spieler
+							.setText(Messages.getString("BetterUI.TwoPlayer")); //$NON-NLS-1$
 					MI2Spieler.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 2;
@@ -349,7 +357,8 @@ public class BetterUI extends JFrame implements UI {
 				{
 					MI3Spieler = new JRadioButtonMenuItem();
 					MPlayerSettings.add(MI3Spieler);
-					MI3Spieler.setText("3 Spieler");
+					MI3Spieler.setText(Messages
+							.getString("BetterUI.ThreePlayer")); //$NON-NLS-1$
 					MI3Spieler.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 3;
@@ -359,7 +368,8 @@ public class BetterUI extends JFrame implements UI {
 				{
 					MI4Spieler = new JRadioButtonMenuItem();
 					MPlayerSettings.add(MI4Spieler);
-					MI4Spieler.setText("4 Spieler");
+					MI4Spieler.setText(Messages
+							.getString("BetterUI.FourPlayer")); //$NON-NLS-1$
 					MI4Spieler.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 4;
@@ -394,16 +404,16 @@ public class BetterUI extends JFrame implements UI {
 	private Game g;
 
 	private void MIStopActionPerformed(ActionEvent evt) {
-		System.out.println("MIStop.actionPerformed, event=" + evt);
+		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.VERBOSE); //$NON-NLS-1$
 		g.stopGame();
 	}
 
 	private void MIStartActionPerformed(ActionEvent evt) {
-		System.out.println("MIStart.actionPerformed, event=" + evt);
-		if(g==null){
+		Debug.print("MIStart.actionPerformed, event=" + evt, DebugLevel.VERBOSE); //$NON-NLS-1$
+		if (g == null) {
 			setGame(new Game());
 		}
-		arguments=new String[0];
+		arguments = new String[0];
 		g.parsArgs(arguments);
 		g.setUserinterface(this);
 		g.start();
@@ -424,7 +434,8 @@ public class BetterUI extends JFrame implements UI {
 				vertikal = true;
 				direction = shiftPosition.getRow() == 0 ? 1 : -1;
 			} else {
-				throw new IllegalArgumentException("Can not shift like that");
+				throw new IllegalArgumentException(
+						Messages.getString("BetterUI.cantShift")); //$NON-NLS-1$
 			}
 		}
 	}
@@ -596,6 +607,8 @@ public class BetterUI extends JFrame implements UI {
 		Position oldPlayerPos = new Position(
 				uiboard.board.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
+		// XXX: Von Matthias (alte Karten waren vorher noch sichtbar)
+		uiboard.repaint();
 		if (animateMove) {
 			// Falls unser Spieler sich selbst verschoben hat.
 			AnimationProperties props = new AnimationProperties(new Position(
@@ -653,7 +666,7 @@ public class BetterUI extends JFrame implements UI {
 			return Color.BLUE;
 		default:
 			throw new IllegalArgumentException(
-					"UI is not prepared for this playerId");
+					Messages.getString("BetterUI.UInotPreparedForPlayerID")); //$NON-NLS-1$
 		}
 	}
 

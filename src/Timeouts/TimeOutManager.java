@@ -13,7 +13,7 @@ public class TimeOutManager extends Timer {
 	private HashMap<Integer, SendMessageTimeout> sendMessageTimeout;
 
 	public TimeOutManager() {
-		super("TimeOuts", true);
+		super("TimeOuts", true); //$NON-NLS-1$
 		this.sendMessageTimeout = new HashMap<Integer, SendMessageTimeout>();
 	}
 

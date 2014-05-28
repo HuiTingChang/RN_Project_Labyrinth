@@ -18,6 +18,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import config.Settings;
 import server.Card;
 import server.Card.CardShape;
 import server.Card.Orientation;
@@ -26,20 +27,15 @@ import tools.DebugLevel;
 
 public class GraphicalCardBuffered extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7583185643671311612L;
 	private Image shape;
 	private Image treasure;
 	private List<Integer> pin;
-
 	private TexturePaint paintBuffer = null;
-
 	private CardShape cardShape;
 	private Orientation cardOrientation;
 	private TreasureType cardTreasure;
-	
+
 	@Override
 	public void setSize(Dimension d) {
 		if (shape != null) {
@@ -62,7 +58,7 @@ public class GraphicalCardBuffered extends JPanel {
 		loadShape(CardShape.T, Orientation.D0);
 		treasure = null;
 		pin = null;
-		//setSize(new Dimension(100, 100));
+		// setSize(new Dimension(100, 100));
 	}
 
 	public void setCard(Card c) {
@@ -78,11 +74,10 @@ public class GraphicalCardBuffered extends JPanel {
 		this.cardShape = cs;
 		this.cardOrientation = co;
 		try {
-
 			URL url = GraphicalCardBuffered.class
-					.getResource("/server/userInterface/resources/"
-							+ cs.toString() + co.value() + ".png");
-			Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
+					.getResource(Settings.IMAGEPATH + cs.toString()
+							+ co.value() + Settings.IMAGEFILEEXTENSION);
+			Debug.print(Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
 			shape = ImageIO.read(url);
 			updatePaint();
 
@@ -98,9 +93,9 @@ public class GraphicalCardBuffered extends JPanel {
 		try {
 			if (t != null) {
 				URL url = GraphicalCardBuffered.class
-						.getResource("/server/userInterface/resources/"
-								+ t.value() + ".png");
-				Debug.print("Load: " + url.toString(), DebugLevel.DEBUG);
+						.getResource(Settings.IMAGEPATH + t.value()
+								+ Settings.IMAGEFILEEXTENSION);
+				Debug.print(Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
 				treasure = ImageIO.read(url);
 			} else {
 				treasure = null;
@@ -126,10 +121,10 @@ public class GraphicalCardBuffered extends JPanel {
 			return;
 		}
 
-		 int w = shape.getWidth(null);
-		 int h = shape.getHeight(null);
-//		int w = this.getWidth();
-//		int h = this.getHeight();
+		int w = shape.getWidth(null);
+		int h = shape.getHeight(null);
+		// int w = this.getWidth();
+		// int h = this.getHeight();
 
 		if (w <= 0 || h <= 0) {
 			paintBuffer = null;
@@ -153,7 +148,7 @@ public class GraphicalCardBuffered extends JPanel {
 			int width = 20;
 			int zentrum = h / 2 - height / 2;
 			g2.fillOval(zentrum, zentrum, height, width);
-			char[] number = { (pin.get(0) + "").charAt(0) };
+			char[] number = { (pin.get(0).toString()).charAt(0) };
 			g2.drawChars(number, 0, 1, zentrum, zentrum);
 		}
 		paintBuffer = new TexturePaint(buff, new Rectangle(0, 0, w, h));
@@ -180,35 +175,35 @@ public class GraphicalCardBuffered extends JPanel {
 			}
 		}
 	}
-	
-	public void blinkCard(long millis, int n){
-		Image save=shape;
-		for (int i = 0; i < n; i++) {			
-			shape=null;
+
+	public void blinkCard(long millis, int n) {
+		Image save = shape;
+		for (int i = 0; i < n; i++) {
+			shape = null;
 			updatePaint();
 			try {
-				Thread.sleep(millis/n);
+				Thread.sleep(millis / n);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			shape=save;
+			shape = save;
 			updatePaint();
 		}
 	}
 
-	public void blinkPlayer(long millis, int n){
-		List<Integer> save=pin;
-		for (int i = 0; i < n; i++) {			
-			pin=null;
+	public void blinkPlayer(long millis, int n) {
+		List<Integer> save = pin;
+		for (int i = 0; i < n; i++) {
+			pin = null;
 			updatePaint();
 			try {
-				Thread.sleep(millis/n);
+				Thread.sleep(millis / n);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			pin=save;
+			pin = save;
 			updatePaint();
 		}
 	}
-	
+
 }

@@ -26,7 +26,7 @@ public class XmlOutStream extends UTFOutputStream{
 			this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
 					Boolean.TRUE);
 		} catch (JAXBException e) {
-			Debug.print("[ERROR]: Fehler beim Initialisieren der JAXB-Komponenten",DebugLevel.DEFAULT);
+			Debug.print(Messages.getString("XmlOutStream.ErrorInitialisingJAXBComponent"),DebugLevel.DEFAULT); //$NON-NLS-1$
 		}
 	}
 
@@ -40,13 +40,13 @@ public class XmlOutStream extends UTFOutputStream{
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			this.marshaller.marshal(mc, baos);
-			Debug.print("Geschrieben",DebugLevel.DEBUG);
+			Debug.print(Messages.getString("XmlOutStream.Written"),DebugLevel.DEBUG); //$NON-NLS-1$
 			Debug.print(new String(baos.toByteArray()),DebugLevel.DEBUG);
 			// Versenden des XML
 			this.writeUTF8(new String(baos.toByteArray()));
 			this.flush();
 		} catch (IOException e) {
-			Debug.print("[ERROR]: Fehler beim versendern der Nachricht",DebugLevel.DEFAULT);
+			Debug.print(Messages.getString("XmlOutStream.errorSendingMessage"),DebugLevel.DEFAULT); //$NON-NLS-1$
 		} catch (JAXBException e1) {
 			e1.printStackTrace();
 		}

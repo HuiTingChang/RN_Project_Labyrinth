@@ -12,8 +12,9 @@ public class Debug {
 		liste.put(stream, level);
 	}
 
+	//TODO erlaeuterndes Javadoc
 	public static void print(String str, DebugLevel level) {
-		str+="\n";
+		str += "\n"; //$NON-NLS-1$
 		for (OutputStream out : liste.keySet()) {
 			DebugLevel streamLevel = liste.get(out);
 			try {

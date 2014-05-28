@@ -30,14 +30,13 @@ public class LoginThread extends Thread {
 						.getID()),false);
 				this.p.init(loginMes.getLoginMessage().getName());
 				return;// verlassen des Threads
-			} else {
-				// Sende Fehler
-				this.con.sendMessage(this.mcmf.createAcceptMessage(-1,
-						ErrorType.AWAIT_LOGIN),true);
-				failCounter++;
-				// nach einem Fehler auf den nächsten Versuch warten
-				loginMes = this.con.receiveMessage();
 			}
+			// Sende Fehler
+			this.con.sendMessage(this.mcmf.createAcceptMessage(-1,
+					ErrorType.AWAIT_LOGIN),true);
+			failCounter++;
+			// nach einem Fehler auf den nächsten Versuch warten
+			loginMes = this.con.receiveMessage();
 		}
 		// Verlassen mit schwerem Fehlerfall
 		this.con.disconnect(ErrorType.TOO_MANY_TRIES);

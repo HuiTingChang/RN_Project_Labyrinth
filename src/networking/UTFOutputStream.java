@@ -14,7 +14,7 @@ public class UTFOutputStream {
 
 	public void writeUTF8(String text) throws IOException
 	{
-		byte[] bytes = text.getBytes("UTF-8");
+		byte[] bytes = text.getBytes("UTF-8"); //$NON-NLS-1$
 		int len=bytes.length;
 
 		byte[] lenbuf = new byte[4];

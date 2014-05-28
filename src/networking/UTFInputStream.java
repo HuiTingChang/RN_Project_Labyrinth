@@ -26,7 +26,7 @@ public class UTFInputStream {
 		len |= (tmp[0] & 0xff);
 
 		byte[] bytes = this.readNBytes(len);
-		String message = new String(bytes, "UTF-8");
+		String message = new String(bytes, "UTF-8"); //$NON-NLS-1$
 		return message;
 	}
 
@@ -47,7 +47,7 @@ public class UTFInputStream {
 			if (lastreadcount == -1) {
 				throw new EOFException(
 						String.format(
-								"Could only get %d of %d requested bytes",
+								Messages.getString("UTFInputStream.EOFException"), //$NON-NLS-1$
 								readcount, n));
 			}
 			readcount += lastreadcount;

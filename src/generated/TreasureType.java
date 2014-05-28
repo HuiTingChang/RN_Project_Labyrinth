@@ -59,61 +59,61 @@ import javax.xml.bind.annotation.XmlType;
 public enum TreasureType {
 
     @XmlEnumValue("Start01")
-    START_01("Start01"),
+    START_01("Start01"), //$NON-NLS-1$
     @XmlEnumValue("Start02")
-    START_02("Start02"),
+    START_02("Start02"), //$NON-NLS-1$
     @XmlEnumValue("Start03")
-    START_03("Start03"),
+    START_03("Start03"), //$NON-NLS-1$
     @XmlEnumValue("Start04")
-    START_04("Start04"),
+    START_04("Start04"), //$NON-NLS-1$
     @XmlEnumValue("sym01")
-    SYM_01("sym01"),
+    SYM_01("sym01"), //$NON-NLS-1$
     @XmlEnumValue("sym02")
-    SYM_02("sym02"),
+    SYM_02("sym02"), //$NON-NLS-1$
     @XmlEnumValue("sym03")
-    SYM_03("sym03"),
+    SYM_03("sym03"), //$NON-NLS-1$
     @XmlEnumValue("sym04")
-    SYM_04("sym04"),
+    SYM_04("sym04"), //$NON-NLS-1$
     @XmlEnumValue("sym05")
-    SYM_05("sym05"),
+    SYM_05("sym05"), //$NON-NLS-1$
     @XmlEnumValue("sym06")
-    SYM_06("sym06"),
+    SYM_06("sym06"), //$NON-NLS-1$
     @XmlEnumValue("sym07")
-    SYM_07("sym07"),
+    SYM_07("sym07"), //$NON-NLS-1$
     @XmlEnumValue("sym08")
-    SYM_08("sym08"),
+    SYM_08("sym08"), //$NON-NLS-1$
     @XmlEnumValue("sym09")
-    SYM_09("sym09"),
+    SYM_09("sym09"), //$NON-NLS-1$
     @XmlEnumValue("sym10")
-    SYM_10("sym10"),
+    SYM_10("sym10"), //$NON-NLS-1$
     @XmlEnumValue("sym11")
-    SYM_11("sym11"),
+    SYM_11("sym11"), //$NON-NLS-1$
     @XmlEnumValue("sym12")
-    SYM_12("sym12"),
+    SYM_12("sym12"), //$NON-NLS-1$
     @XmlEnumValue("sym13")
-    SYM_13("sym13"),
+    SYM_13("sym13"), //$NON-NLS-1$
     @XmlEnumValue("sym14")
-    SYM_14("sym14"),
+    SYM_14("sym14"), //$NON-NLS-1$
     @XmlEnumValue("sym15")
-    SYM_15("sym15"),
+    SYM_15("sym15"), //$NON-NLS-1$
     @XmlEnumValue("sym16")
-    SYM_16("sym16"),
+    SYM_16("sym16"), //$NON-NLS-1$
     @XmlEnumValue("sym17")
-    SYM_17("sym17"),
+    SYM_17("sym17"), //$NON-NLS-1$
     @XmlEnumValue("sym18")
-    SYM_18("sym18"),
+    SYM_18("sym18"), //$NON-NLS-1$
     @XmlEnumValue("sym19")
-    SYM_19("sym19"),
+    SYM_19("sym19"), //$NON-NLS-1$
     @XmlEnumValue("sym20")
-    SYM_20("sym20"),
+    SYM_20("sym20"), //$NON-NLS-1$
     @XmlEnumValue("sym21")
-    SYM_21("sym21"),
+    SYM_21("sym21"), //$NON-NLS-1$
     @XmlEnumValue("sym22")
-    SYM_22("sym22"),
+    SYM_22("sym22"), //$NON-NLS-1$
     @XmlEnumValue("sym23")
-    SYM_23("sym23"),
+    SYM_23("sym23"), //$NON-NLS-1$
     @XmlEnumValue("sym24")
-    SYM_24("sym24");
+    SYM_24("sym24"); //$NON-NLS-1$
     private final String value;
 
     TreasureType(String v) {

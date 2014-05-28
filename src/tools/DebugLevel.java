@@ -18,6 +18,6 @@ public enum DebugLevel {
 				return c;
 			}
 		}
-		throw new IllegalArgumentException(v + "");
+		throw new IllegalArgumentException(v + ""); //$NON-NLS-1$
 	}
 }

@@ -17,26 +17,28 @@ public class Player {
 	private Connection conToClient;
 	private boolean initialized;
 
-	/*
-	 * Player darf nicht selber generiert werden nur vom Login erzeugt!
+	/**
+	 * Player darf nicht selber generiert werden, sondern nur vom Login erzeugt!
 	 */
 	public Player(int id, Connection c) {
 		ID = id;
-		this.name = "Player0" + ID;
+		this.name = "Player0" + ID; //$NON-NLS-1$
 		conToClient = c;
 		currentTreasure = null;
 		initialized = false;
 		treasures = new Stack<TreasureType>();
 		// Hinzufuegen des Starts als letzter zu holender Schatz
 		// z.B.: TreasureType.START_01
-		treasures.push(TreasureType.fromValue("Start0" + this.ID));
+		treasures.push(TreasureType.fromValue("Start0" + this.ID)); //$NON-NLS-1$
 	}
 
 	public TreasureType getCurrentTreasure() {
 		return currentTreasure;
 	}
 
-	// returns remaing treasures
+	/**
+	 * returns remaing treasures
+	 */
 	public int foundTreasure() {
 		try {
 			currentTreasure = treasures.pop();

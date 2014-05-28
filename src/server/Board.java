@@ -1,7 +1,6 @@
 package server;
 
 import generated.BoardType;
-
 import generated.CardType;
 import generated.CardType.Openings;
 import generated.CardType.Pin;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 
 import config.Settings;
-
 import server.Card.CardShape;
 import server.Card.Orientation;
 import tools.Debug;
@@ -154,75 +152,75 @@ public class Board extends BoardType {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Board [currentTreasure=" + currentTreasure + "]\n");
-		sb.append("SpielBrett:\n");
-		sb.append(" ------ ------ ------ ------ ------ ------ ------ \n");
+		sb.append(Messages.getString("Board.Board")); //$NON-NLS-1$
+		sb.append(" ------ ------ ------ ------ ------ ------ ------ \n"); //$NON-NLS-1$
 		for (int i = 0; i < getRow().size(); i++) {
-			StringBuilder line1 = new StringBuilder("|");
-			StringBuilder line2 = new StringBuilder("|");
-			StringBuilder line3 = new StringBuilder("|");
-			StringBuilder line4 = new StringBuilder("|");
-			StringBuilder line5 = new StringBuilder("|");
-			StringBuilder line6 = new StringBuilder("|");
+			StringBuilder line1 = new StringBuilder("|"); //$NON-NLS-1$
+			StringBuilder line2 = new StringBuilder("|"); //$NON-NLS-1$
+			StringBuilder line3 = new StringBuilder("|"); //$NON-NLS-1$
+			StringBuilder line4 = new StringBuilder("|"); //$NON-NLS-1$
+			StringBuilder line5 = new StringBuilder("|"); //$NON-NLS-1$
+			StringBuilder line6 = new StringBuilder("|"); //$NON-NLS-1$
 			for (int j = 0; j < getRow().get(i).getCol().size(); j++) {
 				Card c = new Card(getCard(i, j));
 				if (c.getOpenings().isTop()) {
-					line1.append("##  ##|");
-					line2.append("##  ##|");
+					line1.append("##  ##|"); //$NON-NLS-1$
+					line2.append("##  ##|"); //$NON-NLS-1$
 				} else {
-					line1.append("######|");
-					line2.append("######|");
+					line1.append("######|"); //$NON-NLS-1$
+					line2.append("######|"); //$NON-NLS-1$
 				}
 				if (c.getOpenings().isLeft()) {
-					line3.append("  ");
-					line4.append("  ");
+					line3.append("  "); //$NON-NLS-1$
+					line4.append("  "); //$NON-NLS-1$
 				} else {
-					line3.append("##");
-					line4.append("##");
+					line3.append("##"); //$NON-NLS-1$
+					line4.append("##"); //$NON-NLS-1$
 				}
 				if (c.getPin().getPlayerID().size() != 0) {
-					line3.append("S");
+					line3.append("S"); //$NON-NLS-1$
 				} else {
-					line3.append(" ");
+					line3.append(" "); //$NON-NLS-1$
 				}
 				if (c.getTreasure() != null) {
 					String name = c.getTreasure().name();
 					switch (name.charAt(1)) {
 					case 'Y':
 						// Symbol
-						line3.append("T");
+						line3.append("T"); //$NON-NLS-1$
 						break;
 					case 'T':
 						// Startpunkt
-						line3.append("S");
+						line3.append("S"); //$NON-NLS-1$
 						break;
 					}
 					line4.append(name.substring(name.length() - 2));
 				} else {
-					line3.append(" ");
-					line4.append("  ");
+					line3.append(" "); //$NON-NLS-1$
+					line4.append("  "); //$NON-NLS-1$
 				}
 				if (c.getOpenings().isRight()) {
-					line3.append("  |");
-					line4.append("  |");
+					line3.append("  |"); //$NON-NLS-1$
+					line4.append("  |"); //$NON-NLS-1$
 				} else {
-					line3.append("##|");
-					line4.append("##|");
+					line3.append("##|"); //$NON-NLS-1$
+					line4.append("##|"); //$NON-NLS-1$
 				}
 				if (c.getOpenings().isBottom()) {
-					line5.append("##  ##|");
-					line6.append("##  ##|");
+					line5.append("##  ##|"); //$NON-NLS-1$
+					line6.append("##  ##|"); //$NON-NLS-1$
 				} else {
-					line5.append("######|");
-					line6.append("######|");
+					line5.append("######|"); //$NON-NLS-1$
+					line6.append("######|"); //$NON-NLS-1$
 				}
 			}
-			sb.append(line1.toString() + "\n");
-			sb.append(line2.toString() + "\n");
-			sb.append(line3.toString() + "\n");
-			sb.append(line4.toString() + "\n");
-			sb.append(line5.toString() + "\n");
-			sb.append(line6.toString() + "\n");
-			sb.append(" ------ ------ ------ ------ ------ ------ ------ \n");
+			sb.append(line1.toString() + "\n"); //$NON-NLS-1$
+			sb.append(line2.toString() + "\n"); //$NON-NLS-1$
+			sb.append(line3.toString() + "\n"); //$NON-NLS-1$
+			sb.append(line4.toString() + "\n"); //$NON-NLS-1$
+			sb.append(line5.toString() + "\n"); //$NON-NLS-1$
+			sb.append(line6.toString() + "\n"); //$NON-NLS-1$
+			sb.append(" ------ ------ ------ ------ ------ ------ ------ \n"); //$NON-NLS-1$
 		}
 
 		return sb.toString();
@@ -346,32 +344,35 @@ public class Board extends BoardType {
 
 		Position sm = new Position(move.getShiftPosition());
 		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
-			System.err.println("Warning: verbotene Position der Schiebekarte");
+			System.err.println(Messages
+					.getString("Board.forbiddenPostitionShiftCard")); //$NON-NLS-1$
 			return false;
 		}
 		Card sc = new Card(move.getShiftCard());
 		if (!sc.equals(shiftCard)) {
-			System.err.println("Warning: Schiebekarte wurde illegal verändert");
+			System.err.println(Messages
+					.getString("Board.shiftCardIllegallyChanged")); //$NON-NLS-1$
 			return false;
 		}
 		// Ueberpruefen ob der Spielzug gueltig ist
 		Board fake = this.fakeShift(move);
 		Position playerPosition = new Position(fake.findPlayer(playerID));
-		Debug.print("Spieler möchte von: (" + playerPosition.getRow() + ":"
-				+ playerPosition.getCol() + ")", DebugLevel.VERBOSE);
-		Debug.print("nach:               (" + move.getNewPinPos().getRow()
-				+ ":" + move.getNewPinPos().getCol() + ")", DebugLevel.VERBOSE);
-		Debug.print("Brett nach dem Schieben:", DebugLevel.VERBOSE);
+		Debug.print(
+				String.format(Messages
+						.getString("Board.playerWantsToMoveFromTo"), //$NON-NLS-1$
+						playerPosition.getRow(), playerPosition.getCol(), move
+								.getNewPinPos().getRow(), move.getNewPinPos()
+								.getCol()), DebugLevel.VERBOSE);
+		Debug.print(Messages.getString("Board.boardAfterShifting"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Debug.print(fake.toString(), DebugLevel.VERBOSE);
 		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
-			Debug.print("Zug gültig", DebugLevel.VERBOSE);
-			return true;
-		} else {
 			Debug.print(
-					"Warning: Die Angegebene Position ist nicht erreichbar",
-					DebugLevel.DEFAULT);
-			return false;
+					Messages.getString("Board.illegalMove"), DebugLevel.VERBOSE); //$NON-NLS-1$
+			return true;
 		}
+		Debug.print(Messages.getString("Board.positionNotReachable"), //$NON-NLS-1$
+				DebugLevel.DEFAULT);
+		return false;
 	}
 
 	public boolean pathpossible(PositionType oldPos, PositionType newPos) {

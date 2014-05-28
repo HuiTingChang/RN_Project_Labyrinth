@@ -15,9 +15,7 @@ import java.net.SocketException;
 import java.util.HashMap;
 
 import config.Settings;
-
 import Timeouts.TimeOutManager;
-
 import server.Board;
 import server.Game;
 import server.Player;
@@ -48,13 +46,13 @@ public class Connection {
 			this.inFromClient = new XmlInStream(this.socket.getInputStream());
 		} catch (IOException e) {
 			System.err
-					.println("[ERROR]: Inputstream konnte nicht geoeffnet werden");
+					.println(Messages.getString("Connection.couldNotOpenInputStream")); //$NON-NLS-1$
 		}
 		try {
 			this.outToClient = new XmlOutStream(this.socket.getOutputStream());
 		} catch (IOException e) {
 			System.err
-					.println("[ERROR]: Outputstream konnte nicht geoeffnet werden");
+					.println(Messages.getString("Connection.couldNotOpenOutputStream")); //$NON-NLS-1$
 		}
 		this.p = new Player(newId, this);
 		this.mcmf = new MazeComMessageFactory();
@@ -83,7 +81,7 @@ public class Connection {
 		try {
 			result = this.inFromClient.readMazeCom();
 		} catch (EOFException | SocketException e) {
-			Debug.print("[ERROR]: Spieler hat Spiel unerwartet beendet",
+			Debug.print(Messages.getString("Connection.playerExitedUnexpected"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
 			// entfernen des Spielers
 			this.currentGame.removePlayer(this.p.getID());
@@ -134,16 +132,13 @@ public class Connection {
 				return null;
 			}
 
-		} else {
-			this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-					ErrorType.AWAIT_MOVE), false);
-			if (tries < Settings.MOVETRIES)
-				return awaitMove(spieler, brett, ++tries);
-			else {
-				disconnect(ErrorType.TOO_MANY_TRIES);
-			}
-			return null;
 		}
+		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
+				ErrorType.AWAIT_MOVE), false);
+		if (tries < Settings.MOVETRIES)
+			return awaitMove(spieler, brett, ++tries);
+		disconnect(ErrorType.TOO_MANY_TRIES);
+		return null;
 	}
 
 	/**
@@ -160,10 +155,8 @@ public class Connection {
 				ErrorType.ILLEGAL_MOVE), false);
 		if (tries < Settings.MOVETRIES)
 			return this.awaitMove(spieler, brett, tries);
-		else {
-			disconnect(ErrorType.TOO_MANY_TRIES);
-			return null;
-		}
+		disconnect(ErrorType.TOO_MANY_TRIES);
+		return null;
 	}
 
 	/**

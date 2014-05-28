@@ -127,7 +127,8 @@ public class Game extends Thread {
 			if (!Settings.TESTBOARD)
 				Collections.shuffle(treasureCardPile);
 			if (spieler.size() == 0) {
-				System.err.println(Messages.getString("Game.noPlayersConnected")); //$NON-NLS-1$
+				System.err.println(Messages
+						.getString("Game.noPlayersConnected")); //$NON-NLS-1$
 				System.exit(0);
 			}
 			int anzCards = treasureCardPile.size() / spieler.size();
@@ -171,7 +172,8 @@ public class Game extends Thread {
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
-		Debug.print("Spielbrett vor Zug von Spieler " + currPlayer,
+		Debug.print(
+				Messages.getString("Game.boardBeforeMoveFromPlayerWithID") + currPlayer, //$NON-NLS-1$
 				DebugLevel.VERBOSE);
 		Debug.print(spielBrett.toString(), DebugLevel.VERBOSE);
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
@@ -208,10 +210,12 @@ public class Game extends Thread {
 						spieler.get(winner).getName(), spielBrett);
 			}
 			userinterface.updatePlayerStatistics(playerToList(), winner);
-			Debug.print(spieler.get(winner).getName() + "(" + winner
-					+ ") hat das Spiel gewonnen.", DebugLevel.DEFAULT);
-			JOptionPane.showMessageDialog(null, spieler.get(winner).getName()
-					+ "(" + winner + ") hat das Spiel gewonnen.");
+			Debug.print(String.format(
+					Messages.getString("Game.playernameIDWon"), spieler //$NON-NLS-1$
+							.get(winner).getName(), winner), DebugLevel.DEFAULT);
+			JOptionPane.showMessageDialog(null, String.format(
+					Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
+							.get(winner).getName(), winner));
 		} else {
 			// Iterator<Integer> playerID = spieler.keySet().iterator();
 			// while (playerID.hasNext() ) {
@@ -248,7 +252,7 @@ public class Game extends Thread {
 	public void parsArgs(String args[]) {
 		playerCount = Settings.DEFAULT_PLAYERS;
 		for (String arg : args) {
-			String playerFlag = "-n";
+			String playerFlag = "-n"; //$NON-NLS-1$
 			if (arg.startsWith(playerFlag)) {
 				playerCount = Integer
 						.valueOf(arg.substring(playerFlag.length()));
@@ -262,7 +266,8 @@ public class Game extends Thread {
 		Integer currPlayer = 1;
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		while (!somebodyWon()) {
-			Debug.print("Aktueller Spieler: " + currPlayer, DebugLevel.VERBOSE);
+			Debug.print(
+					Messages.getString("Game.currentPlayer") + currPlayer, DebugLevel.VERBOSE); //$NON-NLS-1$
 			singleTurn(currPlayer);
 			currPlayer = nextPlayer(currPlayer);
 		}
@@ -280,16 +285,15 @@ public class Game extends Thread {
 		}
 		if (iDIterator.hasNext()) {
 			return iDIterator.next();
-		} else {
-			// Erste ID zurueckgeben,
-			return spieler.keySet().iterator().next();
 		}
+		// Erste ID zurueckgeben,
+		return spieler.keySet().iterator().next();
 	}
 
 	public void removePlayer(int id) {
 		this.spieler.remove(id);
 		Debug.print(
-				"[INFO]: Spieler mit ID " + id + " hat das Spiel verlassen",
+				String.format(Messages.getString("Game.playerIDleftGame"), id), //$NON-NLS-1$
 				DebugLevel.DEFAULT);
 	}
 
