@@ -229,7 +229,9 @@ public class Game extends Thread {
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
 		currentGame.userinterface = Settings.USERINTERFACE;
-		currentGame.run();
+		currentGame.userinterface.init(new Board());
+		currentGame.userinterface.setGame(currentGame);
+		//currentGame.run();
 	}
 
 	public void setUserinterface(UI userinterface) {

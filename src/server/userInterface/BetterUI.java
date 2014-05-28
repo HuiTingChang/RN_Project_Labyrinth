@@ -1,9 +1,9 @@
 package server.userInterface;
- 
+
 import generated.BoardType.Row;
 import generated.CardType;
 import generated.MoveMessageType;
- 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,26 +19,33 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
- 
+
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.Timer;
- 
+
+import config.Settings;
 import server.Board;
 import server.Card;
+import server.Game;
 import server.Player;
 import server.Position;
- 
+
 @SuppressWarnings("serial")
 public class BetterUI extends JFrame implements UI {
- 
+
 	private static class ImageRessources {
 		private static HashMap<String, Image> images = new HashMap<String, Image>();
- 
+
 		public static Image getImage(String name) {
 			if (images.containsKey(name)) {
 				return images.get(name);
@@ -57,12 +64,12 @@ public class BetterUI extends JFrame implements UI {
 			}
 		}
 	}
- 
+
 	private class UIBoard extends JPanel {
 		Board b;
 		Image images[][] = new Image[7][7];
 		Card c[][] = new Card[7][7];
- 
+
 		public void setBoard(Board b) {
 			if (b == null) {
 				this.b = null;
@@ -85,7 +92,7 @@ public class BetterUI extends JFrame implements UI {
 				y++;
 			}
 		}
- 
+
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
@@ -96,7 +103,7 @@ public class BetterUI extends JFrame implements UI {
 			width = height = Math.min(width, height);
 			width = height -= width % 7;
 			int pixelsPerField = width / 7;
- 
+
 			for (int y = 0; y < 7; y++) {
 				for (int x = 0; x < 7; x++) {
 					int topLeftY = pixelsPerField * y;
@@ -112,11 +119,11 @@ public class BetterUI extends JFrame implements UI {
 									* (pixelsPerField * animationState / animationFrames);
 						}
 					}
- 
+
 					g.drawImage(images[y][x], topLeftX, topLeftY,
 							pixelsPerField, pixelsPerField, null);
 					if (c[y][x] != null) {
- 
+
 						if (c[y][x].getTreasure() != null) {
 							g.drawImage(ImageRessources.getImage(c[y][x]
 									.getTreasure().value()), topLeftX
@@ -124,7 +131,7 @@ public class BetterUI extends JFrame implements UI {
 									+ pixelsPerField / 4, pixelsPerField / 2,
 									pixelsPerField / 2, null);
 						}
-						//Zeichnen der SpielerPins
+						// Zeichnen der SpielerPins
 						for (Integer playerID : c[y][x].getPin().getPlayerID()) {
 							g.setColor(colorForPlayer(playerID));
 							g.fillOval(
@@ -135,7 +142,7 @@ public class BetterUI extends JFrame implements UI {
 											+ pixelsPerField / 4
 											* ((playerID - 1) % 2),
 									pixelsPerField / 4, pixelsPerField / 4);
- 
+
 							g.setColor(Color.WHITE);
 							g.drawOval(
 									topLeftX + pixelsPerField / 4
@@ -190,7 +197,7 @@ public class BetterUI extends JFrame implements UI {
 				g.drawRect(topLeftX, topLeftY, pixelsPerField, pixelsPerField);
 			}
 		}
- 
+
 		private void centerStringInRect(Graphics2D g2d, String s, int x, int y,
 				int height, int width) {
 			Rectangle size = g2d.getFontMetrics().getStringBounds(s, g2d)
@@ -199,17 +206,17 @@ public class BetterUI extends JFrame implements UI {
 			float startY = (float) (height / 2 - size.getHeight() / 2);
 			g2d.drawString(s, startX + x - size.x, startY + y - size.y);
 		}
- 
+
 	}
- 
+
 	int currentPlayer;
- 
+
 	private class StatsPanel extends JPanel {
 		boolean initiated = false;
 		TreeMap<Integer, JLabel> statLabels = new TreeMap<Integer, JLabel>();
 		TreeMap<Integer, JLabel> currentPlayerLabels = new TreeMap<Integer, JLabel>();
 		TreeMap<Integer, JLabel> treasureImages = new TreeMap<Integer, JLabel>();
- 
+
 		public void update(List<Player> stats, int current) {
 			if (initiated) {
 				currentPlayerLabels.get(currentPlayer).setText("");
@@ -221,9 +228,9 @@ public class BetterUI extends JFrame implements UI {
 							new ImageIcon(ImageRessources.getImage(p
 									.getCurrentTreasure().value())));
 				}
- 
+
 			} else {
-				//Beim ersten mal erzeugen wir die GUI.
+				// Beim ersten mal erzeugen wir die GUI.
 				initiated = true;
 				GridBagConstraints gc = new GridBagConstraints();
 				gc.gridx = GridBagConstraints.RELATIVE;
@@ -233,19 +240,19 @@ public class BetterUI extends JFrame implements UI {
 					gc.gridy = p.getID();
 					JLabel currentPlayerLabel = new JLabel();
 					currentPlayerLabels.put(p.getID(), currentPlayerLabel);
- 
+
 					JLabel playerIDLabel = new JLabel("" + p.getID());
 					JLabel playerNameLabel = new JLabel(p.getName());
 					playerNameLabel.setForeground(colorForPlayer(p.getID()));
- 
+
 					JLabel statLabel = new JLabel("" + p.treasuresToGo());
 					statLabels.put(p.getID(), statLabel);
- 
+
 					JLabel treasureImage = new JLabel(new ImageIcon(
 							ImageRessources.getImage(p.getCurrentTreasure()
 									.value())));
 					treasureImages.put(p.getID(), treasureImage);
- 
+
 					gc.ipadx = 5;
 					this.add(currentPlayerLabel, gc);
 					gc.ipadx = 0;
@@ -259,12 +266,104 @@ public class BetterUI extends JFrame implements UI {
 			}
 		}
 	}
- 
+
 	UIBoard uiboard = new UIBoard();
 	StatsPanel statPanel = new StatsPanel();
- 
+	private JRadioButtonMenuItem MI4Spieler;
+	private JRadioButtonMenuItem MI3Spieler;
+	private JRadioButtonMenuItem MI2Spieler;
+	private JRadioButtonMenuItem MI1Spieler;
+	private JMenu MPlayerSettings;
+	private JMenuItem MIStart;
+	private JMenuItem MIStop;
+	private JMenu jMenu1;
+	private JMenuBar jMenuBar1;
+
 	public BetterUI() {
 		super("Better MazeNet UI");
+		{
+			jMenuBar1 = new JMenuBar();
+			setJMenuBar(jMenuBar1);
+			{
+				jMenu1 = new JMenu();
+				jMenuBar1.add(jMenu1);
+				jMenu1.setText("Server");
+				{
+					MIStart = new JMenuItem();
+					jMenu1.add(MIStart);
+					MIStart.setText("Start");
+					MIStart.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							MIStartActionPerformed(evt);
+						}
+					});
+					// MIStart.addActionListener(new StartAction(this) );
+				}
+				{
+					MIStop = new JMenuItem();
+					jMenu1.add(MIStop);
+					MIStop.setText("Stop");
+					MIStop.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							MIStopActionPerformed(evt);
+						}
+					});
+					// MIStop.addActionListener(new StartAction(this) );
+				}
+			}
+			{
+				MPlayerSettings = new JMenu();
+				jMenuBar1.add(MPlayerSettings);
+				MPlayerSettings.setText("Spieleranzahl");
+				{
+					MI1Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI1Spieler);
+					MI1Spieler.setText("1 Spieler");
+					MI1Spieler.setSelected(true);
+					MI1Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 1;
+						}
+					});
+				}
+				{
+					MI2Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI2Spieler);
+					MI2Spieler.setText("2 Spieler");
+					MI2Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 2;
+						}
+					});
+				}
+				{
+					MI3Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI3Spieler);
+					MI3Spieler.setText("3 Spieler");
+					MI3Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 3;
+						}
+					});
+				}
+				{
+					MI4Spieler = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MI4Spieler);
+					MI4Spieler.setText("4 Spieler");
+					MI4Spieler.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent evt) {
+							Settings.DEFAULT_PLAYERS = 4;
+						}
+					});
+				}
+				ButtonGroup spielerAnz = new ButtonGroup();
+				spielerAnz.add(MI1Spieler);
+				spielerAnz.add(MI2Spieler);
+				spielerAnz.add(MI3Spieler);
+				spielerAnz.add(MI4Spieler);
+
+			}
+		}
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -274,14 +373,33 @@ public class BetterUI extends JFrame implements UI {
 		this.setSize(800, 700);
 
 		splitPane.setDividerLocation(0.8);
- 
+
 	}
- 
+
+	protected static String[] arguments;
+	private Game g;
+
+	private void MIStopActionPerformed(ActionEvent evt) {
+		System.out.println("MIStop.actionPerformed, event=" + evt);
+		g.stopGame();
+	}
+
+	private void MIStartActionPerformed(ActionEvent evt) {
+		System.out.println("MIStart.actionPerformed, event=" + evt);
+		if(g==null){
+			setGame(new Game());
+		}
+		arguments=new String[0];
+		g.parsArgs(arguments);
+		g.setUserinterface(this);
+		g.start();
+	}
+
 	private class AnimationProperties {
 		public final boolean vertikal;
 		public final Position shiftPosition;
 		public final int direction;
- 
+
 		public AnimationProperties(Position shiftPosition) {
 			this.shiftPosition = shiftPosition;
 			if (shiftPosition.getCol() == 6 || shiftPosition.getCol() == 0) {
@@ -294,15 +412,15 @@ public class BetterUI extends JFrame implements UI {
 			} else {
 				throw new IllegalArgumentException("Can not shift like that");
 			}
- 
+
 		}
 	}
- 
+
 	private static final boolean animateMove = true;
 	private static final boolean animateShift = true;
 	private static final int animationFrames = 10;
 	private int animationState = 0;
- 
+
 	private class ShiftAnimationTimerOperation implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -316,16 +434,16 @@ public class BetterUI extends JFrame implements UI {
 				synchronized (animationFinished) {
 					animationFinished.notify();
 				}
- 
+
 			}
 		}
 	}
- 
+
 	private static class Pathfinding {
 		public static int[][] findShortestPath(Board b, Position startPos,
 				Position endPos) {
-			
-			//Dijkstra
+
+			// Dijkstra
 			boolean[][] visited = new boolean[7][7];
 			int[][] weglen = new int[7][7];
 			int[][] pfad = new int[7][7];
@@ -334,7 +452,7 @@ public class BetterUI extends JFrame implements UI {
 					weglen[y][x] = Integer.MAX_VALUE;
 				}
 			}
- 
+
 			int currentX = startPos.getCol();
 			int currentY = startPos.getRow();
 			weglen[currentY][currentX] = 0;
@@ -358,7 +476,7 @@ public class BetterUI extends JFrame implements UI {
 						pfad[currentY - 1][currentX] = currentY * 7 + currentX;
 					}
 				}
- 
+
 				if (currentX < 6
 						&& b.getCard(currentY, currentX).getOpenings()
 								.isRight()
@@ -379,7 +497,7 @@ public class BetterUI extends JFrame implements UI {
 						pfad[currentY + 1][currentX] = currentY * 7 + currentX;
 					}
 				}
- 
+
 				{
 					int currentMinWegLen = Integer.MAX_VALUE;
 					for (int y = 6; y >= 0; --y) {
@@ -399,7 +517,7 @@ public class BetterUI extends JFrame implements UI {
 			currentX = endPos.getCol();
 			currentY = endPos.getRow();
 			int anzahlWegpunkte = weglen[currentY][currentX] + 1;
-			//Weg ist ein Array von x und y werten
+			// Weg ist ein Array von x und y werten
 			int weg[][] = new int[anzahlWegpunkte][2];
 			int i = anzahlWegpunkte - 1;
 			while (i > 0) {
@@ -412,21 +530,21 @@ public class BetterUI extends JFrame implements UI {
 			return weg;
 		}
 	}
- 
+
 	private class MoveAnimationTimerOperation implements ActionListener {
 		int[][] points;
- 
+
 		public MoveAnimationTimerOperation(Board b, Position startPos,
 				Position endPos) {
 			points = Pathfinding.findShortestPath(b, startPos, endPos);
 			uiboard.c[endPos.getRow()][endPos.getCol()].getPin().getPlayerID()
-			.remove(new Integer(currentPlayer));
-			uiboard.c[startPos.getRow()][startPos.getCol()].getPin().getPlayerID()
-			.add(new Integer(currentPlayer));
+					.remove(new Integer(currentPlayer));
+			uiboard.c[startPos.getRow()][startPos.getCol()].getPin()
+					.getPlayerID().add(new Integer(currentPlayer));
 		}
- 
+
 		int i = 0;
- 
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (i + 1 == points.length) {
@@ -443,16 +561,16 @@ public class BetterUI extends JFrame implements UI {
 			uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID()
 					.add(new Integer(currentPlayer));
 			uiboard.repaint();
- 
+
 		}
 	}
- 
+
 	Object animationFinished = new Object();
 	Timer animationTimer;
 	AnimationProperties animProps = null;
- 
+
 	@Override
-	public void displayMove(MoveMessageType mm, Board b,long millis) {
+	public void displayMove(MoveMessageType mm, Board b, long millis) {
 		if (animateShift) {
 			uiboard.b.setShiftCard(mm.getShiftCard());
 			animationTimer = new Timer(150, new ShiftAnimationTimerOperation());
@@ -471,7 +589,7 @@ public class BetterUI extends JFrame implements UI {
 				uiboard.b.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
 		if (animateMove) {
-			//Falls unser Spieler sich selbst verschoben hat.
+			// Falls unser Spieler sich selbst verschoben hat.
 			AnimationProperties props = new AnimationProperties(new Position(
 					mm.getShiftPosition()));
 			if (props.vertikal) {
@@ -499,19 +617,19 @@ public class BetterUI extends JFrame implements UI {
 			uiboard.repaint();
 		}
 	}
- 
+
 	@Override
 	public void updatePlayerStatistics(List<Player> stats, Integer current) {
 		statPanel.update(stats, current);
 	}
- 
+
 	@Override
 	public void init(Board b) {
 		uiboard.setBoard(b);
 		uiboard.repaint();
 		this.setVisible(true);
 	}
- 
+
 	private static Color colorForPlayer(int playerID) {
 		switch (playerID) {
 		case 0:
@@ -529,5 +647,11 @@ public class BetterUI extends JFrame implements UI {
 					"UI is not prepared for this playerId");
 		}
 	}
- 
+
+	@Override
+	public void setGame(Game g) {
+		this.g = g;
+
+	}
+
 }

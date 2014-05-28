@@ -23,7 +23,7 @@ public class Settings {
 													// Testfälle Anpassen
 													// (Pseudozufallszahlen)
 	public static UI USERINTERFACE = new BetterUI();
-	// public static UI USERINTERFACE = new GraphicalUI(); // Hierüber kann das
+	//public static UI USERINTERFACE = new GraphicalUI(); // Hierüber kann das
 	// Usserinterface
 	// bestimmt werden
 }

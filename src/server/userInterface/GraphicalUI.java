@@ -387,10 +387,19 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	
 	private void MIStartActionPerformed(ActionEvent evt) {
 		System.out.println("MIStart.actionPerformed, event="+evt);
-		g = new Game();
+		if(g==null){
+			setGame(new Game());
+		}
+		arguments=new String[0];
 		g.parsArgs(arguments);
 		g.setUserinterface(this);
 		g.start();
+	}
+
+	@Override
+	public void setGame(Game g) {
+		this.g=g;
+		
 	}
 
 }
