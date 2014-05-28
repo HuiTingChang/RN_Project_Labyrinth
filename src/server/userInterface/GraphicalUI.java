@@ -59,6 +59,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	protected static String[] arguments;
 	private Game g;
 
+	@Deprecated
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
