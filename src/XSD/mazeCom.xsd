@@ -90,7 +90,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<!-- Auf den Server wird ueberprueft ob die karte passt -->
+	<!-- Auf dem Server wird ueberprueft, ob die Karte passt -->
 	<!-- <xs:simpleType name="orientationType"> <xs:restriction base="xs:int"> 
 		<xs:enumeration value="0" /> <xs:enumeration value="1" /> <xs:enumeration 
 		value="2" /> <xs:enumeration value="3" /> </xs:restriction> </xs:simpleType> -->
