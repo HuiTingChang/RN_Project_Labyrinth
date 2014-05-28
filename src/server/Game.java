@@ -237,7 +237,7 @@ public class Game extends Thread {
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
 		currentGame.userinterface = Settings.USERINTERFACE;
-		currentGame.run();
+		//currentGame.run();
 		currentGame.userinterface.init(new Board());
 		currentGame.userinterface.setGame(currentGame);
 		//currentGame.run();
@@ -297,5 +297,6 @@ public class Game extends Thread {
 
 	public void stopGame() {
 		winner = -2;
+		userinterface.setGame(null);
 	}
 }
