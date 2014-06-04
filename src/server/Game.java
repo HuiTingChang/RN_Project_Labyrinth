@@ -42,7 +42,8 @@ public class Game extends Thread {
 	private int playerCount;
 
 	public Game() {
-		Debug.addDebugger(System.out, DebugLevel.DEFAULT);
+		Debug.print(Messages.getString("Game.Constructor"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.addDebugger(System.out, Settings.DEBUGLEVEL);
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutManager = new TimeOutManager();
@@ -57,6 +58,7 @@ public class Game extends Thread {
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
 	public void init(int playerCount) {
+		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		try {
 			int i = 1;
 			boolean accepting = true;
@@ -157,6 +159,7 @@ public class Game extends Thread {
 	}
 
 	private List<Player> playerToList() {
+		Debug.print(Messages.getString("Game.playerToListFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<Player> erg = new ArrayList<Player>();
 		for (Integer id : spieler.keySet()) {
 			erg.add(spieler.get(id));
@@ -169,13 +172,14 @@ public class Game extends Thread {
 		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
 		 * Zug
 		 */
+		Debug.print(Messages.getString("Game.singleTurnFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
 		Debug.print(
 				Messages.getString("Game.boardBeforeMoveFromPlayerWithID") + currPlayer, //$NON-NLS-1$
 				DebugLevel.VERBOSE);
-		Debug.print(spielBrett.toString(), DebugLevel.VERBOSE);
+		Debug.print(spielBrett.toString(), DebugLevel.DEBUG);
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
@@ -203,6 +207,7 @@ public class Game extends Thread {
 	 * Aufraeumen nach einem Spiel
 	 */
 	public void cleanUp() {
+		Debug.print(Messages.getString("Game.cleanUpFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		if (winner > 0) {
 			for (Integer playerID : spieler.keySet()) {
 				Player s = spieler.get(playerID);
@@ -229,6 +234,7 @@ public class Game extends Thread {
 			}
 		}
 		closeServerSocket();
+		stopGame();
 	}
 
 	public boolean somebodyWon() {
@@ -261,13 +267,12 @@ public class Game extends Thread {
 	}
 
 	public void run() {
+		Debug.print(Messages.getString("Game.runFkt"),DebugLevel.DEBUG); //$NON-NLS-1$
 		init(playerCount);
 		userinterface.init(spielBrett);
 		Integer currPlayer = 1;
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		while (!somebodyWon()) {
-			Debug.print(
-					Messages.getString("Game.currentPlayer") + currPlayer, DebugLevel.VERBOSE); //$NON-NLS-1$
 			singleTurn(currPlayer);
 			currPlayer = nextPlayer(currPlayer);
 		}
@@ -275,6 +280,7 @@ public class Game extends Thread {
 	}
 
 	private Integer nextPlayer(Integer currPlayer) {
+		Debug.print(Messages.getString("Game.nextPlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Iterator<Integer> iDIterator = spieler.keySet().iterator();
 		Integer id = -1;
 		while (iDIterator.hasNext()) {
@@ -291,6 +297,7 @@ public class Game extends Thread {
 	}
 
 	public void removePlayer(int id) {
+		Debug.print(Messages.getString("Game.removePlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		this.spieler.remove(id);
 		Debug.print(
 				String.format(Messages.getString("Game.playerIDleftGame"), id), //$NON-NLS-1$
@@ -298,6 +305,7 @@ public class Game extends Thread {
 	}
 
 	public void stopGame() {
+		Debug.print(Messages.getString("Game.stopFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		winner = -2;
 		userinterface.setGame(null);
 	}

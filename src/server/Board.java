@@ -151,7 +151,7 @@ public class Board extends BoardType {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Board [currentTreasure=" + currentTreasure + "]\n");
+		sb.append("Board [currentTreasure=" + currentTreasure + "]\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		sb.append(Messages.getString("Board.Board")); //$NON-NLS-1$
 		sb.append(" ------ ------ ------ ------ ------ ------ ------ \n"); //$NON-NLS-1$
 		for (int i = 0; i < getRow().size(); i++) {
@@ -226,7 +226,7 @@ public class Board extends BoardType {
 		return sb.toString();
 	}
 
-	protected void setCard(int row, int col, Card c) {
+	public void setCard(int row, int col, Card c) {
 		// Muss ueberschrieben werden, daher zuerst entfernen und dann...
 		this.getRow().get(row).getCol().remove(col);
 		// ...hinzufuegen
@@ -239,6 +239,7 @@ public class Board extends BoardType {
 
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
 	protected void proceedShift(MoveMessageType move) {
+		Debug.print(Messages.getString("Board.proceedShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Position sm = new Position(move.getShiftPosition());
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
@@ -296,8 +297,14 @@ public class Board extends BoardType {
 		setCard(sm.getRow(), sm.getCol(), c);
 	}
 
-	// gibt zurueck ob mit dem Zug der aktuelle Schatz erreicht wurde
+	/**
+	 *  gibt zurueck ob mit dem Zug der aktuelle Schatz erreicht wurde
+	 * @param move
+	 * @param currPlayer
+	 * @return
+	 */
 	public boolean proceedTurn(MoveMessageType move, Integer currPlayer) {
+		Debug.print(Messages.getString("Board.proceedTurnFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		// XXX ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
 		this.proceedShift(move);
 		Position target = new Position(move.getNewPinPos());
@@ -309,6 +316,7 @@ public class Board extends BoardType {
 
 	protected void movePlayer(PositionType oldPos, PositionType newPos,
 			Integer playerID) {
+		Debug.print(Messages.getString("Board.movePlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
 				.remove(playerID);
 		getCard(newPos.getRow(), newPos.getCol()).getPin().getPlayerID()
@@ -316,6 +324,7 @@ public class Board extends BoardType {
 	}
 
 	protected Board fakeShift(MoveMessageType move) {
+		Debug.print(Messages.getString("Board.fakeShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Board fake = (Board) this.clone();
 		fake.proceedShift(move);
 		return fake;
@@ -341,7 +350,7 @@ public class Board extends BoardType {
 
 	public boolean validateTransition(MoveMessageType move, Integer playerID) {
 		// Ueberpruefen ob das Reinschieben der Karte gueltig ist
-
+		Debug.print(Messages.getString("Board.validateTransitionFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Position sm = new Position(move.getShiftPosition());
 		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
 			System.err.println(Messages
@@ -355,8 +364,8 @@ public class Board extends BoardType {
 			return false;
 		}
 		// Ueberpruefen ob der Spielzug gueltig ist
-		Board fake = this.fakeShift(move);
-		Position playerPosition = new Position(fake.findPlayer(playerID));
+		Board fakeBoard = this.fakeShift(move);
+		Position playerPosition = new Position(fakeBoard.findPlayer(playerID));
 		Debug.print(
 				String.format(Messages
 						.getString("Board.playerWantsToMoveFromTo"), //$NON-NLS-1$
@@ -364,8 +373,8 @@ public class Board extends BoardType {
 								.getNewPinPos().getRow(), move.getNewPinPos()
 								.getCol()), DebugLevel.VERBOSE);
 		Debug.print(Messages.getString("Board.boardAfterShifting"), DebugLevel.VERBOSE); //$NON-NLS-1$
-		Debug.print(fake.toString(), DebugLevel.VERBOSE);
-		if (fake.pathpossible(playerPosition, move.getNewPinPos())) {
+		Debug.print(fakeBoard.toString(), DebugLevel.VERBOSE);
+		if (fakeBoard.pathPossible(playerPosition, move.getNewPinPos())) {
 			Debug.print(
 					Messages.getString("Board.illegalMove"), DebugLevel.VERBOSE); //$NON-NLS-1$
 			return true;
@@ -375,20 +384,22 @@ public class Board extends BoardType {
 		return false;
 	}
 
-	public boolean pathpossible(PositionType oldPos, PositionType newPos) {
+	public boolean pathPossible(PositionType oldPos, PositionType newPos) {
+		Debug.print(Messages.getString("Board.pathPossibleFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		if (oldPos == null || newPos == null)
 			return false;
 		Position oldP = new Position(oldPos);
 		Position newP = new Position(newPos);
-		return getAlleEreichbarenNachbarn(oldP).contains(newP);
+		return getAllReachablePositions(oldP).contains(newP);
 	}
 
-	protected List<PositionType> getAlleEreichbarenNachbarn(
+	protected List<PositionType> getAllReachablePositions(
 			PositionType position) {
+		Debug.print(Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
 		int[][] erreichbar = new int[7][7];
 		erreichbar[position.getRow()][position.getCol()] = 1;
-		erreichbar = getAlleErreichbarenNachbarnMatrix(position, erreichbar);
+		erreichbar = getAllReachablePositionsMatrix(position, erreichbar);
 		for (int i = 0; i < erreichbar.length; i++) {
 			for (int j = 0; j < erreichbar[0].length; j++) {
 				if (erreichbar[i][j] == 1) {
@@ -399,18 +410,18 @@ public class Board extends BoardType {
 		return erreichbarePositionen;
 	}
 
-	private int[][] getAlleErreichbarenNachbarnMatrix(PositionType position,
+	private int[][] getAllReachablePositionsMatrix(PositionType position,
 			int[][] erreichbar) {
-		for (PositionType p1 : getDirektErreichbareNachbarn(position)) {
+		for (PositionType p1 : getDirectReachablePositions(position)) {
 			if (erreichbar[p1.getRow()][p1.getCol()] == 0) {
 				erreichbar[p1.getRow()][p1.getCol()] = 1;
-				getAlleErreichbarenNachbarnMatrix(p1, erreichbar);
+				getAllReachablePositionsMatrix(p1, erreichbar);
 			}
 		}
 		return erreichbar;
 	}
 
-	private List<PositionType> getDirektErreichbareNachbarn(
+	private List<PositionType> getDirectReachablePositions(
 			PositionType position) {
 		List<PositionType> positionen = new ArrayList<PositionType>();
 		CardType k = this.getCard(position.getRow(), position.getCol());

@@ -265,13 +265,15 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 							0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0,
 							0));
-					// FIXME: sym05 ist Tux, sollte kaum fest kodiert werden!
+					// XXX: sym05 ist Tux, sollte kaum fest kodiert werden!
+					// Irgendwas muss halt initialisiert werden also:
+					// All Hail to the all mighty TUX!
 					currentTreasure
 							.setIcon(new ImageIcon(
 									getClass()
 											.getClassLoader()
 											.getResource(
-													"server/userInterface/resources/sym05.png")));
+													"server/userInterface/resources/sym05.png"))); //$NON-NLS-1$
 				}
 				{
 					jLSpieler = new JLabel();
@@ -382,14 +384,14 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		}
 
 	}
-
 	private void MIStopActionPerformed(ActionEvent evt) {
-		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.VERBOSE); //$NON-NLS-1$
-		g.stopGame();
+		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.DEBUG); //$NON-NLS-1$
+		if (g != null)
+			g.stopGame();
 	}
 
 	private void MIStartActionPerformed(ActionEvent evt) {
-		Debug.print("MIStart.actionPerformed, event=" + evt, DebugLevel.VERBOSE); //$NON-NLS-1$
+		Debug.print("MIStart.actionPerformed, event=" + evt, DebugLevel.DEBUG); //$NON-NLS-1$
 		if (g == null) {
 			setGame(new Game());
 		}

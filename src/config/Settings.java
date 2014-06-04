@@ -1,7 +1,9 @@
 package config;
 
 import java.util.Locale;
+
 import server.userInterface.*;
+import tools.DebugLevel;
 
 public class Settings {
 	private Settings() {
@@ -14,7 +16,8 @@ public class Settings {
 	 */
 	public static int DEFAULT_PLAYERS = 1;
 	/**
-	 * Die Zeit in Milisekunden, die die Animation eines Zug (die Bewegung des Pins) benoetigen soll
+	 * Die Zeit in Milisekunden, die die Animation eines Zug (die Bewegung des
+	 * Pins) benoetigen soll
 	 */
 	public final static int MOVEDELAY = 1000;
 	/**
@@ -52,4 +55,5 @@ public class Settings {
 	public final static String IMAGEPATH = "/server/userInterface/resources/"; //$NON-NLS-1$
 	public final static String IMAGEFILEEXTENSION = ".png"; //$NON-NLS-1$
 	public final static Locale LOCALE = new Locale("de"); //$NON-NLS-1$
+	public final static DebugLevel DEBUGLEVEL = DebugLevel.DEFAULT;
 }
