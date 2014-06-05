@@ -27,7 +27,7 @@ import server.Card.Orientation;
 import tools.Debug;
 import tools.DebugLevel;
 
-public class GraphicalCardBuffered extends JPanel implements ComponentListener{
+public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
 	private static final long serialVersionUID = 7583185643671311612L;
 	private Image shape;
@@ -37,21 +37,23 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener{
 	private CardShape cardShape;
 	private Orientation cardOrientation;
 	private TreasureType cardTreasure;
-
-
+	private int maxSize;
 
 	public GraphicalCardBuffered() {
 		super();
+//		setBackground(Color.blue);
 		loadShape(CardShape.T, Orientation.D0);
 		loadTreasure(null);
 		loadPins(null);
 		addComponentListener(this);
+		maxSize=150;
 	}
 
 	public void setCard(Card c) {
 		loadShape(c.getShape(), c.getOrientation());
 		loadTreasure(c.getTreasure());
 		loadPins(c.getPin().getPlayerID());
+		componentResized(new ComponentEvent(this, -1));
 	}
 
 	public void loadShape(CardShape cs, Orientation co) {
@@ -104,12 +106,12 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener{
 	}
 
 	private void updatePaint() {
-		int w=0,h=0;
+		int w = 0, h = 0;
 		if (shape == null) {
 			paintBuffer = null;
 			return;
 		}
-		w = h = Math.min(shape.getWidth(null),shape.getHeight(null));
+		w = h = Math.min(shape.getWidth(null), shape.getHeight(null));
 
 		if (w <= 0 || h <= 0) {
 			paintBuffer = null;
@@ -195,26 +197,28 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener{
 	@Override
 	public void componentHidden(ComponentEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		Dimension d=new Dimension(100, 100);
+		System.out.println("h"+getSize().height + " w" + getSize().width);
+		Dimension d = getSize();
+		int size = Math.min(maxSize,Math.min(d.height, d.width));
 		if (shape != null) {
 			Image temp = shape;
-			shape = new BufferedImage(d.width, d.height,
+			shape = new BufferedImage(size, size,
 					BufferedImage.TYPE_INT_ARGB);
-			shape = temp.getScaledInstance(d.width, d.height,
+			shape = temp.getScaledInstance(size, size,
 					Image.SCALE_DEFAULT);
 		}
-		updatePaint();		
+		updatePaint();
 	}
 
 	@Override

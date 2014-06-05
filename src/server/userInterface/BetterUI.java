@@ -93,6 +93,7 @@ public class BetterUI extends JFrame implements UI {
 		Board board;
 		Image images[][] = new Image[7][7];
 		Card c[][] = new Card[7][7];
+		private int pixelsPerField;
 
 		public void setBoard(Board b) {
 			if (b == null) {
@@ -126,7 +127,7 @@ public class BetterUI extends JFrame implements UI {
 			int height = this.getHeight();
 			width = height = Math.min(width, height);
 			width = height -= width % 7;
-			int pixelsPerField = width / 7;
+			pixelsPerField = width / 7;
 
 			for (int y = 0; y < 7; y++) {
 				for (int x = 0; x < 7; x++) {
@@ -226,6 +227,10 @@ public class BetterUI extends JFrame implements UI {
 			}
 		}
 
+		public int getPixelsPerField() {
+			return pixelsPerField;
+		}
+
 		private void centerStringInRect(Graphics2D g2d, String s, int x, int y,
 				int height, int width) {
 			Rectangle size = g2d.getFontMetrics().getStringBounds(s, g2d)
@@ -263,12 +268,20 @@ public class BetterUI extends JFrame implements UI {
 				gc.gridx = GridBagConstraints.RELATIVE;
 				gc.anchor = GridBagConstraints.WEST;
 				this.setLayout(new GridBagLayout());
-				
-				shiftCard=new GraphicalCardBuffered();
 
-				//GridBagConstraints(gridx, gridy, gridwidth, gridheight, weightx, weighty, anchor, fill, insets, ipadx, ipady);
-				this.add(shiftCard,new GridBagConstraints(0, 0,3 , 1, 0.5, 0.5, GridBagConstraints.BELOW_BASELINE, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
+				shiftCard = new GraphicalCardBuffered();
 
+				// GridBagConstraints(gridx, gridy, gridwidth, gridheight,
+				// weightx, weighty, anchor, fill, insets, ipadx, ipady);
+				this.add(
+						shiftCard,
+						new GridBagConstraints(0, 0, 5, 1, 0.5, 0.5,
+								GridBagConstraints.CENTER,
+								GridBagConstraints.NONE,
+								new Insets(0, 0, 0, 0), uiboard
+										.getPixelsPerField(), uiboard
+										.getPixelsPerField()));
+//				this.getComponentAt(0, 0).get
 				for (Player p : stats) {
 					gc.gridy = p.getID();
 					JLabel currentPlayerLabel = new JLabel();
@@ -416,7 +429,7 @@ public class BetterUI extends JFrame implements UI {
 		if (g != null)
 			g.stopGame();
 		this.statPanel.removeAll();
-		this.statPanel.initiated=false;
+		this.statPanel.initiated = false;
 		this.statPanel.repaint();
 	}
 
