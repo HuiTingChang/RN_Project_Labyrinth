@@ -38,6 +38,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 	private Orientation cardOrientation;
 	private TreasureType cardTreasure;
 	private int maxSize;
+	private int minSize;
 
 	public GraphicalCardBuffered() {
 		super();
@@ -47,6 +48,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		loadPins(null);
 		addComponentListener(this);
 		maxSize=150;
+		minSize=50;
 	}
 
 	public void setCard(Card c) {
@@ -211,6 +213,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		System.out.println("h"+getSize().height + " w" + getSize().width);
 		Dimension d = getSize();
 		int size = Math.min(maxSize,Math.min(d.height, d.width));
+		size=Math.max(minSize, size);
 		if (shape != null) {
 			Image temp = shape;
 			shape = new BufferedImage(size, size,
