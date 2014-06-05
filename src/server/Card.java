@@ -1,5 +1,8 @@
 package server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tools.Debug;
 import tools.DebugLevel;
 import generated.CardType;
@@ -30,25 +33,39 @@ public class Card extends CardType {
 					return c;
 				}
 			}
-			throw new IllegalArgumentException(v + ""); //$NON-NLS-1$
+			throw new IllegalArgumentException(String.valueOf(v));
 		}
 	}
 
 	public Card(CardType c) {
 		super();
-
 		this.setOpenings(new Openings());
 		this.getOpenings().setBottom(c.getOpenings().isBottom());
 		this.getOpenings().setLeft(c.getOpenings().isLeft());
 		this.getOpenings().setRight(c.getOpenings().isRight());
 		this.getOpenings().setTop(c.getOpenings().isTop());
-
 		this.setTreasure(c.getTreasure());
 		this.setPin(new Pin());
 		if (c.getPin() != null) {
 			this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
 		} else {
 			this.setPin(null);
+		}
+	}
+
+	public void getPossibleRotations() {
+		List<Card> cards = new ArrayList<Card>();
+		switch (getShape()) {
+		case I:
+			cards.add(new Card(getShape(), getOrientation(), getTreasure()));
+			break;
+		case L:
+			break;
+		case T:
+			break;
+		default:
+			System.err.print(Messages.getString("Card.invalidShape")); //$NON-NLS-1$
+			break;
 		}
 	}
 

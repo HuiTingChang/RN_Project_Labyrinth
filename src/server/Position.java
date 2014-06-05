@@ -1,5 +1,8 @@
 package server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import generated.PositionType;
 
 public class Position extends PositionType {
@@ -44,7 +47,6 @@ public class Position extends PositionType {
 		} else {
 			return null;
 		}
-
 	}
 
 	@Override
@@ -68,6 +70,27 @@ public class Position extends PositionType {
 		if (row != other.row)
 			return false;
 		return true;
+	}
+
+	/**
+	 * 
+	 * @return Gibt eine Liste der moeglichen Positionen fuer die Schiebekarte
+	 *         zurueck. Hat jedesmal das gleiche Ergebnis
+	 */
+	static public List<Position> getPossiblePositionsForShiftcard() {
+		List<Position> positions = new ArrayList<Position>();
+		for (int a : new int[] { 0, 6 }) {
+			for (int b : new int[] { 1, 3, 5 }) {
+				positions.add(new Position(a, b));
+				positions.add(new Position(b, a));
+			}
+		}
+		return positions;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + col + "," + row + ")"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 	}
 
 }
