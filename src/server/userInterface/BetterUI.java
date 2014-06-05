@@ -66,6 +66,7 @@ public class BetterUI extends JFrame implements UI {
 	private JMenuItem MIStop;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar1;
+	public GraphicalCardBuffered shiftCard;
 
 	private static class ImageRessources {
 		private static HashMap<String, Image> images = new HashMap<String, Image>();
@@ -261,6 +262,11 @@ public class BetterUI extends JFrame implements UI {
 				gc.gridx = GridBagConstraints.RELATIVE;
 				gc.anchor = GridBagConstraints.WEST;
 				this.setLayout(new GridBagLayout());
+				
+				shiftCard=new GraphicalCardBuffered();
+				gc.gridy=0;
+				this.add(shiftCard,gc);
+				
 				for (Player p : stats) {
 					gc.gridy = p.getID();
 					JLabel currentPlayerLabel = new JLabel();
@@ -407,6 +413,9 @@ public class BetterUI extends JFrame implements UI {
 		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.DEBUG); //$NON-NLS-1$
 		if (g != null)
 			g.stopGame();
+		this.statPanel.removeAll();
+		this.statPanel.initiated=false;
+		this.statPanel.repaint();
 	}
 
 	private void MIStartActionPerformed(ActionEvent evt) {
@@ -590,6 +599,7 @@ public class BetterUI extends JFrame implements UI {
 		// Die Dauer von shiftDelay bezieht sich auf den kompletten Shift und
 		// nicht auf einen einzelnen Frame
 		shiftDelay /= animationFrames;
+		shiftCard.setCard(new Card(mm.getShiftCard()));
 		if (animateShift) {
 			uiboard.board.setShiftCard(mm.getShiftCard());
 			animationTimer = new Timer((int) shiftDelay,

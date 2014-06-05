@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +27,7 @@ import server.Card.Orientation;
 import tools.Debug;
 import tools.DebugLevel;
 
-public class GraphicalCardBuffered extends JPanel {
+public class GraphicalCardBuffered extends JPanel implements ComponentListener{
 
 	private static final long serialVersionUID = 7583185643671311612L;
 	private Image shape;
@@ -38,14 +40,7 @@ public class GraphicalCardBuffered extends JPanel {
 
 	@Override
 	public void setSize(Dimension d) {
-		if (shape != null) {
-			Image temp = shape;
-			shape = new BufferedImage(d.width, d.height,
-					BufferedImage.TYPE_INT_ARGB);
-			shape = temp.getScaledInstance(d.width, d.height,
-					Image.SCALE_DEFAULT);
-		}
-		updatePaint();
+	
 	}
 
 	@Override
@@ -56,9 +51,9 @@ public class GraphicalCardBuffered extends JPanel {
 	public GraphicalCardBuffered() {
 		super();
 		loadShape(CardShape.T, Orientation.D0);
-		treasure = null;
-		pin = null;
-		// setSize(new Dimension(100, 100));
+		loadTreasure(null);
+		loadPins(null);
+		addComponentListener(this);
 	}
 
 	public void setCard(Card c) {
@@ -77,12 +72,13 @@ public class GraphicalCardBuffered extends JPanel {
 			URL url = GraphicalCardBuffered.class
 					.getResource(Settings.IMAGEPATH + cs.toString()
 							+ co.value() + Settings.IMAGEFILEEXTENSION);
-			Debug.print(Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
+			Debug.print(
+					Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
 			shape = ImageIO.read(url);
-			updatePaint();
 
 		} catch (IOException e) {
 		}
+		updatePaint();
 	}
 
 	public void loadTreasure(TreasureType t) {
@@ -95,7 +91,8 @@ public class GraphicalCardBuffered extends JPanel {
 				URL url = GraphicalCardBuffered.class
 						.getResource(Settings.IMAGEPATH + t.value()
 								+ Settings.IMAGEFILEEXTENSION);
-				Debug.print(Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
+				Debug.print(
+						Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
 				treasure = ImageIO.read(url);
 			} else {
 				treasure = null;
@@ -104,11 +101,10 @@ public class GraphicalCardBuffered extends JPanel {
 			e.printStackTrace();
 		}
 		updatePaint();
-
 	}
 
 	public void loadPins(List<Integer> list) {
-		if (list.size() != 0)
+		if (list != null && list.size() != 0)
 			pin = list;
 		else
 			pin = null;
@@ -116,15 +112,12 @@ public class GraphicalCardBuffered extends JPanel {
 	}
 
 	private void updatePaint() {
+		int w=0,h=0;
 		if (shape == null) {
 			paintBuffer = null;
 			return;
 		}
-
-		int w = shape.getWidth(null);
-		int h = shape.getHeight(null);
-		// int w = this.getWidth();
-		// int h = this.getHeight();
+		w = h = Math.min(shape.getWidth(null),shape.getHeight(null));
 
 		if (w <= 0 || h <= 0) {
 			paintBuffer = null;
@@ -156,8 +149,9 @@ public class GraphicalCardBuffered extends JPanel {
 		repaint();
 	}
 
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
 		if (paintBuffer != null) {
 			int w = shape.getWidth(null);
 			int h = shape.getHeight(null);
@@ -204,6 +198,36 @@ public class GraphicalCardBuffered extends JPanel {
 			pin = save;
 			updatePaint();
 		}
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		Dimension d=new Dimension(100, 100);
+		if (shape != null) {
+			Image temp = shape;
+			shape = new BufferedImage(d.width, d.height,
+					BufferedImage.TYPE_INT_ARGB);
+			shape = temp.getScaledInstance(d.width, d.height,
+					Image.SCALE_DEFAULT);
+		}
+		updatePaint();		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		componentResized(e);
 	}
 
 }
