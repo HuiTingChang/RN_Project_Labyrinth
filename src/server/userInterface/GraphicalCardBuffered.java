@@ -38,15 +38,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener{
 	private Orientation cardOrientation;
 	private TreasureType cardTreasure;
 
-	@Override
-	public void setSize(Dimension d) {
-	
-	}
 
-	@Override
-	public void setSize(int width, int height) {
-		setSize(new Dimension(width, height));
-	}
 
 	public GraphicalCardBuffered() {
 		super();

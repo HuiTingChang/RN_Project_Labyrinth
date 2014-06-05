@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -264,9 +265,10 @@ public class BetterUI extends JFrame implements UI {
 				this.setLayout(new GridBagLayout());
 				
 				shiftCard=new GraphicalCardBuffered();
-				gc.gridy=0;
-				this.add(shiftCard,gc);
-				
+
+				//GridBagConstraints(gridx, gridy, gridwidth, gridheight, weightx, weighty, anchor, fill, insets, ipadx, ipady);
+				this.add(shiftCard,new GridBagConstraints(0, 0,3 , 1, 0.5, 0.5, GridBagConstraints.BELOW_BASELINE, GridBagConstraints.VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
+
 				for (Player p : stats) {
 					gc.gridy = p.getID();
 					JLabel currentPlayerLabel = new JLabel();
