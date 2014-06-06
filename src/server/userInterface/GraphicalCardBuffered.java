@@ -20,12 +20,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import config.Settings;
 import server.Card;
 import server.Card.CardShape;
 import server.Card.Orientation;
 import tools.Debug;
 import tools.DebugLevel;
+import config.Settings;
 
 public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
@@ -42,6 +42,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
 	public GraphicalCardBuffered() {
 		super();
+//		Debuging mit Hintergrundfarbe um Framegröße besser erkennen zu können
 //		setBackground(Color.blue);
 		loadShape(CardShape.T, Orientation.D0);
 		loadTreasure(null);
@@ -49,6 +50,14 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		addComponentListener(this);
 		maxSize=150;
 		minSize=50;
+	}
+
+	public void setMaxSize(int maxSize) {
+		this.maxSize = maxSize;
+	}
+
+	public void setMinSize(int minSize) {
+		this.minSize = minSize;
 	}
 
 	public void setCard(Card c) {
@@ -221,6 +230,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 			shape = temp.getScaledInstance(size, size,
 					Image.SCALE_DEFAULT);
 		}
+		setSize(size, size);
 		updatePaint();
 	}
 
