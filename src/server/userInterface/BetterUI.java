@@ -31,11 +31,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import config.Settings;
 import server.Board;
 import server.Card;
 import server.Game;
@@ -43,6 +45,7 @@ import server.Player;
 import server.Position;
 import tools.Debug;
 import tools.DebugLevel;
+import config.Settings;
 
 @SuppressWarnings("serial")
 public class BetterUI extends JFrame implements UI {
@@ -68,6 +71,7 @@ public class BetterUI extends JFrame implements UI {
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar1;
 	public GraphicalCardBuffered shiftCard;
+	private StreamToTextArea log;
 
 	private static class ImageRessources {
 		private static HashMap<String, Image> images = new HashMap<String, Image>();
@@ -281,7 +285,7 @@ public class BetterUI extends JFrame implements UI {
 								new Insets(0, 0, 0, 0), uiboard
 										.getPixelsPerField(), uiboard
 										.getPixelsPerField()));
-//				this.getComponentAt(0, 0).get
+				// this.getComponentAt(0, 0).get
 				for (Player p : stats) {
 					gc.gridy = p.getID();
 					JLabel currentPlayerLabel = new JLabel();
@@ -310,6 +314,15 @@ public class BetterUI extends JFrame implements UI {
 				}
 				currentPlayer = current;
 				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
+	
+			    JScrollPane scrollPane = new JScrollPane(log.getTextArea());
+			    JPanel panel = new JPanel(new BorderLayout());
+			    panel.add(scrollPane);
+
+				this.add(panel, new GridBagConstraints(0, 5, 5, 1, 0.5, 0.5,
+						GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+						new Insets(0, 0, 0, 0), uiboard.getPixelsPerField(),
+						uiboard.getPixelsPerField()));
 			}
 		}
 	}
@@ -417,8 +430,13 @@ public class BetterUI extends JFrame implements UI {
 			public void run() {
 				// hatte ohne InvokeLater keinen Effekt
 				splitPane.setDividerLocation(0.8);
+				log = new StreamToTextArea(new JTextArea());
+				log.getTextArea().setEditable(false);
+				log.getTextArea().add(new JScrollBar());
+				Debug.addDebugger(log, Settings.DEBUGLEVEL);
 			}
 		});
+
 	}
 
 	protected static String[] arguments;
