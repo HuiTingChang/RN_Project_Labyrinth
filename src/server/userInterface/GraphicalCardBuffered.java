@@ -219,7 +219,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		System.out.println("h"+getSize().height + " w" + getSize().width);
+		//System.out.println("h"+getSize().height + " w" + getSize().width);
 		Dimension d = getSize();
 		int size = Math.min(maxSize,Math.min(d.height, d.width));
 		size=Math.max(minSize, size);
