@@ -159,7 +159,8 @@ public class Game extends Thread {
 	}
 
 	private List<Player> playerToList() {
-		Debug.print(Messages.getString("Game.playerToListFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(
+				Messages.getString("Game.playerToListFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<Player> erg = new ArrayList<Player>();
 		for (Integer id : spieler.keySet()) {
 			erg.add(spieler.get(id));
@@ -184,6 +185,7 @@ public class Game extends Thread {
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
 			if (spielBrett.proceedTurn(move, currPlayer)) {
+				Debug.print(String.format(Messages.getString("Game.foundTreasure"),spieler.get(currPlayer).getName(),currPlayer), DebugLevel.DEFAULT); //$NON-NLS-1$
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
@@ -216,8 +218,8 @@ public class Game extends Thread {
 			}
 			userinterface.updatePlayerStatistics(playerToList(), winner);
 			Debug.print(String.format(
-					Messages.getString("Game.playernameIDWon"), spieler //$NON-NLS-1$
-							.get(winner).getName(), winner), DebugLevel.DEFAULT);
+					Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
+					.get(winner).getName(), winner),DebugLevel.DEFAULT);
 			JOptionPane.showMessageDialog(null, String.format(
 					Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
 							.get(winner).getName(), winner));
@@ -267,12 +269,15 @@ public class Game extends Thread {
 	}
 
 	public void run() {
-		Debug.print(Messages.getString("Game.runFkt"),DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		init(playerCount);
 		userinterface.init(spielBrett);
 		Integer currPlayer = 1;
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		while (!somebodyWon()) {
+			Debug.print(
+					currPlayer + Messages.getString("Game.playersTurn"), DebugLevel.VERBOSE); //$NON-NLS-1$
 			singleTurn(currPlayer);
 			currPlayer = nextPlayer(currPlayer);
 		}
@@ -297,7 +302,8 @@ public class Game extends Thread {
 	}
 
 	public void removePlayer(int id) {
-		Debug.print(Messages.getString("Game.removePlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(
+				Messages.getString("Game.removePlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		this.spieler.remove(id);
 		Debug.print(
 				String.format(Messages.getString("Game.playerIDleftGame"), id), //$NON-NLS-1$
@@ -306,6 +312,7 @@ public class Game extends Thread {
 
 	public void stopGame() {
 		Debug.print(Messages.getString("Game.stopFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.stopGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		winner = -2;
 		userinterface.setGame(null);
 	}

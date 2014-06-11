@@ -55,5 +55,8 @@ public class Settings {
 	public final static String IMAGEPATH = "/server/userInterface/resources/"; //$NON-NLS-1$
 	public final static String IMAGEFILEEXTENSION = ".png"; //$NON-NLS-1$
 	public final static Locale LOCALE = new Locale("de"); //$NON-NLS-1$
+	/**
+	 * Den Detailgrad der Ausgaben festlegen
+	 */
 	public final static DebugLevel DEBUGLEVEL = DebugLevel.DEFAULT;
 }
