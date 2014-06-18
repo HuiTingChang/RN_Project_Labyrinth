@@ -393,7 +393,7 @@ public class Board extends BoardType {
 		return getAllReachablePositions(oldP).contains(newP);
 	}
 
-	protected List<PositionType> getAllReachablePositions(
+	public List<PositionType> getAllReachablePositions(
 			PositionType position) {
 		Debug.print(Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
