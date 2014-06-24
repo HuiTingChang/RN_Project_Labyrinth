@@ -265,9 +265,8 @@ public class Board extends BoardType {
 	}
 
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
-	protected void proceedShift(MoveMessageType move) {
-		Debug.print(
-				Messages.getString("Board.proceedShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+	public void proceedShift(MoveMessageType move) {
+		Debug.print(Messages.getString("Board.proceedShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Position sm = new Position(move.getShiftPosition());
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
@@ -353,7 +352,6 @@ public class Board extends BoardType {
 				.add(playerID);
 	}
 
-	// XXX: von protected auf public geaendert
 	public Board fakeShift(MoveMessageType move) {
 		Debug.print(Messages.getString("Board.fakeShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Board fake = (Board) this.clone();
@@ -427,10 +425,9 @@ public class Board extends BoardType {
 		return getAllReachablePositions(oldP).contains(newP);
 	}
 
-	// XXX: protected to public
-	public List<PositionType> getAllReachablePositions(PositionType position) {
-		Debug.print(
-				Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+	public List<PositionType> getAllReachablePositions(
+			PositionType position) {
+		Debug.print(Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
 		int[][] erreichbar = new int[7][7];
 		erreichbar[position.getRow()][position.getCol()] = 1;
