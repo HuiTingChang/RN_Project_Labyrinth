@@ -13,9 +13,7 @@ public class UTFInputStream {
 	}
 
 	public String readUTF8() throws IOException {
-
 		byte[] tmp = this.readNBytes(4);
-
 		int len = 0;
 		len |= (tmp[3] & 0xff);
 		len <<= 8;
@@ -24,7 +22,6 @@ public class UTFInputStream {
 		len |= (tmp[1] & 0xff);
 		len <<= 8;
 		len |= (tmp[0] & 0xff);
-
 		byte[] bytes = this.readNBytes(len);
 		String message = new String(bytes, "UTF-8"); //$NON-NLS-1$
 		return message;
@@ -39,7 +36,6 @@ public class UTFInputStream {
 			throw new IllegalArgumentException();
 		}
 		byte buf[] = new byte[n];
-
 		int readcount = 0;
 		int lastreadcount;
 		while (readcount < n) {

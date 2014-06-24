@@ -3,10 +3,8 @@ package networking;
 import generated.MazeCom;
 
 import java.io.ByteArrayInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -35,8 +33,9 @@ public class XmlInStream extends UTFInputStream {
 	 * Liest eine Nachricht und gibt die entsprechende Instanz zurueck
 	 * 
 	 * @return
+	 * @throws IOException
 	 */
-	public MazeCom readMazeCom() throws EOFException, SocketException {
+	public MazeCom readMazeCom() throws IOException {
 		byte[] bytes = null;
 		MazeCom result = null;
 		try {
@@ -52,13 +51,17 @@ public class XmlInStream extends UTFInputStream {
 			e.printStackTrace();
 			Debug.print(Messages.getString("XmlInStream.errorUnmarshalling"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
-		} catch (IOException e1) {
-			// weiterleiten der Exception => damit Spieler korrekt entfernt wird
-			if (e1 instanceof SocketException)
-				throw new SocketException();
-			e1.printStackTrace();
-			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
-					DebugLevel.DEFAULT);
+			// } catch (IOException e1) {
+			// // weiterleiten der Exception => damit Spieler korrekt entfernt
+			// wird
+			// if (e1 instanceof SocketException)
+			// throw new SocketException();
+			// // XXX: WICHTIG!
+			// if (e1 instanceof EOFException)
+			// throw new EOFException();
+			// e1.printStackTrace();
+			//			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
+			// DebugLevel.DEFAULT);
 		} catch (NullPointerException e) {
 			Debug.print(
 					Messages.getString("XmlInStream.nullpointerWhileReading"), //$NON-NLS-1$

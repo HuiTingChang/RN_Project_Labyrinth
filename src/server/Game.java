@@ -235,7 +235,6 @@ public class Game extends Thread {
 
 			}
 		}
-		closeServerSocket();
 		stopGame();
 	}
 
@@ -315,5 +314,6 @@ public class Game extends Thread {
 		Debug.print(Messages.getString("Game.stopGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		winner = -2;
 		userinterface.setGame(null);
+		closeServerSocket();
 	}
 }

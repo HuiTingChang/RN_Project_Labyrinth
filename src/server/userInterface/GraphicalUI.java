@@ -406,4 +406,10 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 		this.g = g;
 	}
 
+	@Override
+	public void clearGUIElements() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

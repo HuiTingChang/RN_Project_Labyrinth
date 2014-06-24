@@ -8,19 +8,17 @@ import generated.MazeCom;
 import generated.MazeComType;
 import generated.MoveMessageType;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashMap;
 
-import config.Settings;
-import Timeouts.TimeOutManager;
 import server.Board;
 import server.Game;
 import server.Player;
 import tools.Debug;
 import tools.DebugLevel;
+import Timeouts.TimeOutManager;
+import config.Settings;
 
 public class Connection {
 
@@ -45,14 +43,14 @@ public class Connection {
 		try {
 			this.inFromClient = new XmlInStream(this.socket.getInputStream());
 		} catch (IOException e) {
-			System.err
-					.println(Messages.getString("Connection.couldNotOpenInputStream")); //$NON-NLS-1$
+			System.err.println(Messages
+					.getString("Connection.couldNotOpenInputStream")); //$NON-NLS-1$
 		}
 		try {
 			this.outToClient = new XmlOutStream(this.socket.getOutputStream());
 		} catch (IOException e) {
-			System.err
-					.println(Messages.getString("Connection.couldNotOpenOutputStream")); //$NON-NLS-1$
+			System.err.println(Messages
+					.getString("Connection.couldNotOpenOutputStream")); //$NON-NLS-1$
 		}
 		this.p = new Player(newId, this);
 		this.mcmf = new MazeComMessageFactory();
@@ -80,8 +78,11 @@ public class Connection {
 		MazeCom result = null;
 		try {
 			result = this.inFromClient.readMazeCom();
-		} catch (EOFException | SocketException e) {
-			Debug.print(Messages.getString("Connection.playerExitedUnexpected"), //$NON-NLS-1$
+		} catch (IOException e) {
+			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
+					DebugLevel.DEFAULT);
+			Debug.print(
+					Messages.getString("Connection.playerExitedUnexpected"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
 			// entfernen des Spielers
 			this.currentGame.removePlayer(this.p.getID());

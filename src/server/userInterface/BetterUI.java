@@ -251,6 +251,11 @@ public class BetterUI extends JFrame implements UI {
 		TreeMap<Integer, JLabel> statLabels = new TreeMap<Integer, JLabel>();
 		TreeMap<Integer, JLabel> currentPlayerLabels = new TreeMap<Integer, JLabel>();
 		TreeMap<Integer, JLabel> treasureImages = new TreeMap<Integer, JLabel>();
+		private JScrollPane scrollPane;
+
+		public JScrollPane getScrollPane() {
+			return scrollPane;
+		}
 
 		public void update(List<Player> stats, int current) {
 			if (initiated) {
@@ -315,7 +320,7 @@ public class BetterUI extends JFrame implements UI {
 				currentPlayer = current;
 				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
 	
-			    JScrollPane scrollPane = new JScrollPane(log.getTextArea());
+			    scrollPane = new JScrollPane(log.getTextArea());
 			    JPanel panel = new JPanel(new BorderLayout());
 			    panel.add(scrollPane);
 
@@ -717,6 +722,11 @@ public class BetterUI extends JFrame implements UI {
 	@Override
 	public void setGame(Game g) {
 		this.g = g;
+	}
+
+	@Override
+	public void clearGUIElements() {
+//		statPanel.getScrollPane().set
 	}
 
 }

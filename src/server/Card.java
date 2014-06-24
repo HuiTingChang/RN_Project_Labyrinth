@@ -53,20 +53,24 @@ public class Card extends CardType {
 		}
 	}
 
-	public void getPossibleRotations() {
+	//TODO
+	public List<Card> getPossibleRotations() {
 		List<Card> cards = new ArrayList<Card>();
+		// Reihenfolge und fehlende breaks wichtig
 		switch (getShape()) {
-		case I:
-			cards.add(new Card(getShape(), getOrientation(), getTreasure()));
-			break;
 		case L:
-			break;
 		case T:
+			cards.add(new Card(getShape(), Orientation.D180, getTreasure()));
+			cards.add(new Card(getShape(), Orientation.D270, getTreasure()));
+		case I:
+			cards.add(new Card(getShape(), Orientation.D0, getTreasure()));
+			cards.add(new Card(getShape(), Orientation.D90, getTreasure()));
 			break;
 		default:
 			System.err.print(Messages.getString("Card.invalidShape")); //$NON-NLS-1$
 			break;
 		}
+		return cards;
 	}
 
 	public Card(CardShape shape, Orientation o, TreasureType t) {

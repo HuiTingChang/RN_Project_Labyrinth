@@ -25,14 +25,19 @@ public class Board extends BoardType {
 
 	public Board(BoardType boardType) {
 		super();
-		forbidden = boardType.getForbidden();
+		PositionType forbiddenPositionType = boardType.getForbidden();
+		forbidden = (forbiddenPositionType != null) ? new Position(
+				forbiddenPositionType) : null;
+		// XXX Wurde vergessen!
+		shiftCard = new Card(boardType.getShiftCard());
 		// XXX: Warum? Initialisierung?
 		this.getRow();
 		for (int i = 0; i < 7; i++) {
 			this.getRow().add(i, new Row());
 			this.getRow().get(i).getCol();
 			for (int j = 0; j < 7; j++) {
-				// new Card, damit keine Referenzen, sondern richte Kopien erstellt werden
+				// new Card, damit keine Referenzen, sondern richte Kopien
+				// erstellt werden
 				this.getRow()
 						.get(i)
 						.getCol()
@@ -41,7 +46,8 @@ public class Board extends BoardType {
 										.get(j)));
 			}
 		}
-		// / es darf keine boardinitialisierung mehr durchgefuehrt werden
+		// es darf keine boardinitialisierung mehr durchgefuehrt werden, da
+		// diese unsere Kopie ueberschreiben wuerde
 	}
 
 	public Board() {
@@ -347,7 +353,8 @@ public class Board extends BoardType {
 				.add(playerID);
 	}
 
-	protected Board fakeShift(MoveMessageType move) {
+	// XXX: von protected auf public geaendert
+	public Board fakeShift(MoveMessageType move) {
 		Debug.print(Messages.getString("Board.fakeShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Board fake = (Board) this.clone();
 		fake.proceedShift(move);
@@ -420,7 +427,8 @@ public class Board extends BoardType {
 		return getAllReachablePositions(oldP).contains(newP);
 	}
 
-	protected List<PositionType> getAllReachablePositions(PositionType position) {
+	// XXX: protected to public
+	public List<PositionType> getAllReachablePositions(PositionType position) {
 		Debug.print(
 				Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
@@ -501,7 +509,8 @@ public class Board extends BoardType {
 				}
 			}
 		}
-		// Pin nicht gefunden
+		// Pin nicht gefunden.
+		// XXX: Darf eigentlich nicht vorkommen
 		return null;
 	}
 
