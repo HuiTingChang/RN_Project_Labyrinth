@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollBar;
@@ -253,9 +254,6 @@ public class BetterUI extends JFrame implements UI {
 		TreeMap<Integer, JLabel> treasureImages = new TreeMap<Integer, JLabel>();
 		private JScrollPane scrollPane;
 
-		public JScrollPane getScrollPane() {
-			return scrollPane;
-		}
 
 		public void update(List<Player> stats, int current) {
 			if (initiated) {
@@ -319,10 +317,10 @@ public class BetterUI extends JFrame implements UI {
 				}
 				currentPlayer = current;
 				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
-	
-			    scrollPane = new JScrollPane(log.getTextArea());
-			    JPanel panel = new JPanel(new BorderLayout());
-			    panel.add(scrollPane);
+
+				scrollPane = new JScrollPane(log.getTextArea());
+				JPanel panel = new JPanel(new BorderLayout());
+				panel.add(scrollPane);
 
 				this.add(panel, new GridBagConstraints(0, 5, 5, 1, 0.5, 0.5,
 						GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -362,7 +360,8 @@ public class BetterUI extends JFrame implements UI {
 							MIStopActionPerformed(evt);
 						}
 					});
-					// MIStop.addActionListener(new StartAction(this) );
+					MIStart.setEnabled(true);
+					MIStop.setEnabled(false);
 				}
 			}
 			{
@@ -451,9 +450,8 @@ public class BetterUI extends JFrame implements UI {
 		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.DEBUG); //$NON-NLS-1$
 		if (g != null)
 			g.stopGame();
-		this.statPanel.removeAll();
-		this.statPanel.initiated = false;
-		this.statPanel.repaint();
+		MIStart.setEnabled(true);
+		MIStop.setEnabled(false);
 	}
 
 	private void MIStartActionPerformed(ActionEvent evt) {
@@ -463,8 +461,14 @@ public class BetterUI extends JFrame implements UI {
 		}
 		arguments = new String[0];
 		g.parsArgs(arguments);
+		this.statPanel.removeAll();
+		this.statPanel.initiated = false;
+		this.statPanel.repaint();
 		g.setUserinterface(this);
+		log.getTextArea().setText(""); //$NON-NLS-1$
 		g.start();
+		MIStart.setEnabled(false);
+		MIStop.setEnabled(true);
 	}
 
 	private class AnimationProperties {
@@ -725,8 +729,13 @@ public class BetterUI extends JFrame implements UI {
 	}
 
 	@Override
-	public void clearGUIElements() {
-//		statPanel.getScrollPane().set
+	public void gameEnded(Player winner) {
+		if(winner!=null){
+			JOptionPane.showMessageDialog(this, String.format(
+				Messages.getString("BetterUI.playerIDwon"), winner.getName() //$NON-NLS-1$
+				, winner.getID()));
+		}
+		MIStart.setEnabled(true);
+		MIStop.setEnabled(false);
 	}
-
 }

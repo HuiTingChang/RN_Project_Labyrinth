@@ -14,8 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import javax.swing.JOptionPane;
+import java.util.NoSuchElementException;
 
 import networking.Connection;
 import server.userInterface.UI;
@@ -131,7 +130,8 @@ public class Game extends Thread {
 			if (spieler.size() == 0) {
 				System.err.println(Messages
 						.getString("Game.noPlayersConnected")); //$NON-NLS-1$
-				System.exit(0);
+				stopGame();
+				return;
 			}
 			int anzCards = treasureCardPile.size() / spieler.size();
 			i = 0;
@@ -185,7 +185,9 @@ public class Game extends Thread {
 				.awaitMove(spieler, this.spielBrett, 0);
 		if (move != null) {
 			if (spielBrett.proceedTurn(move, currPlayer)) {
-				Debug.print(String.format(Messages.getString("Game.foundTreasure"),spieler.get(currPlayer).getName(),currPlayer), DebugLevel.DEFAULT); //$NON-NLS-1$
+				Debug.print(
+						String.format(
+								Messages.getString("Game.foundTreasure"), spieler.get(currPlayer).getName(), currPlayer), DebugLevel.DEFAULT); //$NON-NLS-1$
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
@@ -219,10 +221,8 @@ public class Game extends Thread {
 			userinterface.updatePlayerStatistics(playerToList(), winner);
 			Debug.print(String.format(
 					Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
-					.get(winner).getName(), winner),DebugLevel.DEFAULT);
-			JOptionPane.showMessageDialog(null, String.format(
-					Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
-							.get(winner).getName(), winner));
+							.get(winner).getName(), winner), DebugLevel.DEFAULT);
+
 		} else {
 			// Iterator<Integer> playerID = spieler.keySet().iterator();
 			// while (playerID.hasNext() ) {
@@ -271,6 +271,9 @@ public class Game extends Thread {
 		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		init(playerCount);
+		if(spieler.isEmpty()){
+			return;
+		}
 		userinterface.init(spielBrett);
 		Integer currPlayer = 1;
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
@@ -278,13 +281,21 @@ public class Game extends Thread {
 			Debug.print(
 					currPlayer + Messages.getString("Game.playersTurn"), DebugLevel.VERBOSE); //$NON-NLS-1$
 			singleTurn(currPlayer);
-			currPlayer = nextPlayer(currPlayer);
+			try {
+				currPlayer = nextPlayer(currPlayer);
+			} catch (NoSuchElementException e) {
+				Debug.print(
+						Messages.getString("Game.AllPlayersLeft"), DebugLevel.DEFAULT); //$NON-NLS-1$
+				stopGame();
+			}
 		}
 		cleanUp();
 	}
 
-	private Integer nextPlayer(Integer currPlayer) {
+	private Integer nextPlayer(Integer currPlayer)
+			throws NoSuchElementException {
 		Debug.print(Messages.getString("Game.nextPlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+
 		Iterator<Integer> iDIterator = spieler.keySet().iterator();
 		Integer id = -1;
 		while (iDIterator.hasNext()) {
@@ -312,6 +323,7 @@ public class Game extends Thread {
 	public void stopGame() {
 		Debug.print(Messages.getString("Game.stopFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.stopGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
+		userinterface.gameEnded(spieler.get(winner));
 		winner = -2;
 		userinterface.setGame(null);
 		closeServerSocket();

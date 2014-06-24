@@ -21,5 +21,5 @@ public interface UI {
 
 	public void init(Board b);
 	public void setGame(Game g);
-	public void clearGUIElements();
+	public void gameEnded(Player winner);
 }

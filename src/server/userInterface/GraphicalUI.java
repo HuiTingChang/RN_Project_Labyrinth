@@ -407,7 +407,7 @@ public class GraphicalUI extends javax.swing.JFrame implements UI {
 	}
 
 	@Override
-	public void clearGUIElements() {
+	public void gameEnded(Player winner) {
 		// TODO Auto-generated method stub
 		
 	}
