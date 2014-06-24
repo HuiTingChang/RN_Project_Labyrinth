@@ -41,16 +41,11 @@ public class Game extends Thread {
 	private int playerCount;
 
 	public Game() {
-		Debug.print(Messages.getString("Game.Constructor"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Debug.addDebugger(System.out, Settings.DEBUGLEVEL);
+		Debug.print(Messages.getString("Game.Constructor"), DebugLevel.DEBUG); //$NON-NLS-1$
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutManager = new TimeOutManager();
-		try {
-			serverSocket = new ServerSocket(config.Settings.PORT);
-		} catch (IOException e) {
-			System.err.println(Messages.getString("Game.portUsed")); //$NON-NLS-1$
-		}
 	}
 
 	/**
@@ -58,6 +53,15 @@ public class Game extends Thread {
 	 */
 	public void init(int playerCount) {
 		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		// Socketinitialisierung aus dem Constructor in init verschoben. Sonst
+		// Errors wegen Thread.
+		// init wird von run (also vom Thread) aufgerufen, im Gegesatz zum
+		// Constructor
+		try {
+			serverSocket = new ServerSocket(config.Settings.PORT);
+		} catch (IOException e) {
+			System.err.println(Messages.getString("Game.portUsed")); //$NON-NLS-1$
+		}
 		try {
 			int i = 1;
 			boolean accepting = true;
@@ -152,7 +156,10 @@ public class Game extends Thread {
 
 	public void closeServerSocket() {
 		try {
-			serverSocket.close();
+			if (serverSocket != null) {
+				serverSocket.close();
+			} else
+				Debug.print("serverSocket==null", DebugLevel.DEFAULT); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -170,8 +177,8 @@ public class Game extends Thread {
 
 	public void singleTurn(Integer currPlayer) {
 		/**
-		 * Connection.awaitMove checken ->Bei Fehler illegalMove->liefert neuen
-		 * Zug
+		 * Connection.awaitMove checken -> Bei Fehler illegalMove -> liefert
+		 * neuen Zug
 		 */
 		Debug.print(Messages.getString("Game.singleTurnFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
@@ -271,7 +278,7 @@ public class Game extends Thread {
 		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		init(playerCount);
-		if(spieler.isEmpty()){
+		if (spieler.isEmpty()) {
 			return;
 		}
 		userinterface.init(spielBrett);
@@ -295,7 +302,6 @@ public class Game extends Thread {
 	private Integer nextPlayer(Integer currPlayer)
 			throws NoSuchElementException {
 		Debug.print(Messages.getString("Game.nextPlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
-
 		Iterator<Integer> iDIterator = spieler.keySet().iterator();
 		Integer id = -1;
 		while (iDIterator.hasNext()) {
@@ -326,6 +332,7 @@ public class Game extends Thread {
 		userinterface.gameEnded(spieler.get(winner));
 		winner = -2;
 		userinterface.setGame(null);
+		timeOutManager.cancel();
 		closeServerSocket();
 	}
 }

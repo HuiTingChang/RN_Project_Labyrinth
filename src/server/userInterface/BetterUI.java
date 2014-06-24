@@ -254,7 +254,6 @@ public class BetterUI extends JFrame implements UI {
 		TreeMap<Integer, JLabel> treasureImages = new TreeMap<Integer, JLabel>();
 		private JScrollPane scrollPane;
 
-
 		public void update(List<Player> stats, int current) {
 			if (initiated) {
 				currentPlayerLabels.get(currentPlayer).setText(""); //$NON-NLS-1$
@@ -294,7 +293,7 @@ public class BetterUI extends JFrame implements UI {
 					JLabel currentPlayerLabel = new JLabel();
 					currentPlayerLabels.put(p.getID(), currentPlayerLabel);
 
-					JLabel playerIDLabel = new JLabel(String.valueOf(p.getID()));
+					JLabel playerIDLabel = new JLabel(String.valueOf(p.getID())+".   "); //$NON-NLS-1$
 					JLabel playerNameLabel = new JLabel(p.getName());
 					playerNameLabel.setForeground(colorForPlayer(p.getID()));
 
@@ -448,8 +447,11 @@ public class BetterUI extends JFrame implements UI {
 
 	private void MIStopActionPerformed(ActionEvent evt) {
 		Debug.print("MIStop.actionPerformed, event=" + evt, DebugLevel.DEBUG); //$NON-NLS-1$
-		if (g != null)
+		if (g != null) {
 			g.stopGame();
+			g = null;
+		}
+		g = new Game();
 		MIStart.setEnabled(true);
 		MIStop.setEnabled(false);
 	}
@@ -730,10 +732,10 @@ public class BetterUI extends JFrame implements UI {
 
 	@Override
 	public void gameEnded(Player winner) {
-		if(winner!=null){
-			JOptionPane.showMessageDialog(this, String.format(
-				Messages.getString("BetterUI.playerIDwon"), winner.getName() //$NON-NLS-1$
-				, winner.getID()));
+		if (winner != null) {
+			JOptionPane.showMessageDialog(this, String.format(Messages
+					.getString("BetterUI.playerIDwon"), winner.getName() //$NON-NLS-1$
+					, winner.getID()));
 		}
 		MIStart.setEnabled(true);
 		MIStop.setEnabled(false);

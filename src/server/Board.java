@@ -266,7 +266,8 @@ public class Board extends BoardType {
 
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
 	public void proceedShift(MoveMessageType move) {
-		Debug.print(Messages.getString("Board.proceedShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(
+				Messages.getString("Board.proceedShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Position sm = new Position(move.getShiftPosition());
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
@@ -378,16 +379,20 @@ public class Board extends BoardType {
 	}
 
 	public boolean validateTransition(MoveMessageType move, Integer playerID) {
-		// Ueberpruefen ob das Reinschieben der Karte gueltig ist
 		Debug.print(
 				Messages.getString("Board.validateTransitionFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
-		Position sm = new Position(move.getShiftPosition());
+		PositionType movePosition = move.getShiftPosition();
+		CardType moveShiftCard = move.getShiftCard();
+		if (movePosition == null || moveShiftCard == null)
+			return false;
+		Position sm = new Position(movePosition);
+		// Ueberpruefen ob das Reinschieben der Karte gueltig ist
 		if (!sm.isLoosePosition() || sm.equals(forbidden)) {
 			System.err.println(Messages
 					.getString("Board.forbiddenPostitionShiftCard")); //$NON-NLS-1$
 			return false;
 		}
-		Card sc = new Card(move.getShiftCard());
+		Card sc = new Card(moveShiftCard);
 		if (!sc.equals(shiftCard)) {
 			System.err.println(Messages
 					.getString("Board.shiftCardIllegallyChanged")); //$NON-NLS-1$
@@ -425,9 +430,9 @@ public class Board extends BoardType {
 		return getAllReachablePositions(oldP).contains(newP);
 	}
 
-	public List<PositionType> getAllReachablePositions(
-			PositionType position) {
-		Debug.print(Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+	public List<PositionType> getAllReachablePositions(PositionType position) {
+		Debug.print(
+				Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
 		int[][] erreichbar = new int[7][7];
 		erreichbar[position.getRow()][position.getCol()] = 1;
