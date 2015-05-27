@@ -7,10 +7,12 @@ import generated.ErrorType;
 import generated.MazeCom;
 import generated.MazeComType;
 import generated.MoveMessageType;
+import generated.TreasureType;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 
 import server.Board;
 import server.Game;
@@ -113,9 +115,9 @@ public class Connection {
 	 * @return Valieder Zug des Spielers oder NULL
 	 */
 	public MoveMessageType awaitMove(HashMap<Integer, Player> spieler,
-			Board brett, int tries) {
+			Board brett, int tries, List<TreasureType> foundTreasures) {
 		this.sendMessage(this.mcmf.createAwaitMoveMessage(spieler,
-				this.p.getID(), brett), true);
+				this.p.getID(), brett, foundTreasures), true);
 		MazeCom result = this.receiveMessage();
 		if (result == null)
 			return null;
@@ -127,7 +129,7 @@ public class Connection {
 						ErrorType.NOERROR), false);
 				return result.getMoveMessage();
 			} else if (tries < Settings.MOVETRIES)
-				return illigalMove(spieler, brett, ++tries);
+				return illegalMove(spieler, brett, ++tries, foundTreasures);
 			else {
 				disconnect(ErrorType.TOO_MANY_TRIES);
 				return null;
@@ -137,7 +139,7 @@ public class Connection {
 		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 				ErrorType.AWAIT_MOVE), false);
 		if (tries < Settings.MOVETRIES)
-			return awaitMove(spieler, brett, ++tries);
+			return awaitMove(spieler, brett, ++tries, foundTreasures);
 		disconnect(ErrorType.TOO_MANY_TRIES);
 		return null;
 	}
@@ -150,12 +152,12 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Zug des Spielers
 	 */
-	public MoveMessageType illigalMove(HashMap<Integer, Player> spieler,
-			Board brett, int tries) {
+	public MoveMessageType illegalMove(HashMap<Integer, Player> spieler,
+			Board brett, int tries, List<TreasureType> foundTreasures) {
 		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
 				ErrorType.ILLEGAL_MOVE), false);
 		if (tries < Settings.MOVETRIES)
-			return this.awaitMove(spieler, brett, tries);
+			return this.awaitMove(spieler, brett, tries, foundTreasures);
 		disconnect(ErrorType.TOO_MANY_TRIES);
 		return null;
 	}
