@@ -47,7 +47,7 @@ public class Game extends Thread {
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutManager = new TimeOutManager();
-		foundTreasures= new ArrayList<TreasureType>();
+		foundTreasures = new ArrayList<TreasureType>();
 	}
 
 	/**
@@ -260,6 +260,7 @@ public class Game extends Thread {
 		currentGame.userinterface = Settings.USERINTERFACE;
 		currentGame.userinterface.init(new Board());
 		currentGame.userinterface.setGame(currentGame);
+		Debug.print("", DebugLevel.DEBUG.DEFAULT);
 	}
 
 	public void setUserinterface(UI userinterface) {
