@@ -14,6 +14,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.UnmarshalException;
+
 import server.Board;
 import server.Game;
 import server.Player;
@@ -25,10 +27,10 @@ import config.Settings;
 public class Connection {
 
 	private Socket socket;
-	private Player p;
+	private Player player;
 	private XmlInStream inFromClient;
 	private XmlOutStream outToClient;
-	private MazeComMessageFactory mcmf;
+	private MazeComMessageFactory mazeComMessageFactory;
 	private TimeOutManager tom;
 	private Game currentGame;
 
@@ -54,8 +56,8 @@ public class Connection {
 			System.err.println(Messages
 					.getString("Connection.couldNotOpenOutputStream")); //$NON-NLS-1$
 		}
-		this.p = new Player(newId, this);
-		this.mcmf = new MazeComMessageFactory();
+		this.player = new Player(newId, this);
+		this.mazeComMessageFactory = new MazeComMessageFactory();
 		this.tom = new TimeOutManager();
 
 	}
@@ -67,7 +69,7 @@ public class Connection {
 		// Timer starten, der beim lesen beendet wird
 		// Ablauf Timer = Problem User
 		if (withTimer)
-			this.tom.startSendMessageTimeOut(this.p.getID(), this);
+			this.tom.startSendMessageTimeOut(this.player.getID(), this);
 		this.outToClient.write(mc);
 	}
 
@@ -78,8 +80,12 @@ public class Connection {
 	 */
 	public MazeCom receiveMessage() {
 		MazeCom result = null;
+
 		try {
 			result = this.inFromClient.readMazeCom();
+		} catch (UnmarshalException e) {
+			Throwable xmle = e.getLinkedException();
+			Debug.print("[XML-Fehler] " + xmle.getMessage(), DebugLevel.DEFAULT);
 		} catch (IOException e) {
 			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
@@ -87,9 +93,9 @@ public class Connection {
 					Messages.getString("Connection.playerExitedUnexpected"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
 			// entfernen des Spielers
-			this.currentGame.removePlayer(this.p.getID());
+			this.currentGame.removePlayer(this.player.getID());
 		}
-		this.tom.stopSendMessageTimeOut(this.p.getID());
+		this.tom.stopSendMessageTimeOut(this.player.getID());
 		return result;
 
 	}
@@ -101,10 +107,10 @@ public class Connection {
 	 * @return Neuer Player, bei einem Fehler jedoch null
 	 */
 	public Player login(int newId) {
-		this.p = new Player(newId, this);
-		LoginThread lt = new LoginThread(this, this.p);
+		this.player = new Player(newId, this);
+		LoginThread lt = new LoginThread(this, this.player);
 		lt.start();
-		return this.p;
+		return this.player;
 	}
 
 	/**
@@ -116,17 +122,48 @@ public class Connection {
 	 */
 	public MoveMessageType awaitMove(HashMap<Integer, Player> spieler,
 			Board brett, int tries, List<TreasureType> foundTreasures) {
-		this.sendMessage(this.mcmf.createAwaitMoveMessage(spieler,
-				this.p.getID(), brett, foundTreasures), true);
+		if (tries < Settings.MOVETRIES) {
+			sendMessage(mazeComMessageFactory.createAwaitMoveMessage(spieler,
+					player.getID(), brett, foundTreasures), true);
+			MazeCom result = this.receiveMessage();
+			if (result != null && result.getMcType() == MazeComType.MOVE) {
+				if (currentGame.getBoard().validateTransition(
+						result.getMoveMessage(), player.getID())) {
+					sendMessage(
+							mazeComMessageFactory.createAcceptMessage(
+									player.getID(), ErrorType.NOERROR), false);
+					return result.getMoveMessage();
+				}
+				// nicht Regelkonform
+				sendMessage(
+						mazeComMessageFactory.createAcceptMessage(
+								player.getID(), ErrorType.ILLEGAL_MOVE), false);
+				return awaitMove(spieler, brett, ++tries, foundTreasures);
+			}
+			// XML nicht verwertbar
+			sendMessage(mazeComMessageFactory.createAcceptMessage(
+					player.getID(), ErrorType.AWAIT_MOVE), false);
+			return awaitMove(spieler, brett, ++tries, foundTreasures);
+
+		}
+		disconnect(ErrorType.TOO_MANY_TRIES);
+
+		return null;
+	}
+
+	@Deprecated
+	public MoveMessageType awaitMove3(HashMap<Integer, Player> spieler,
+			Board brett, int tries, List<TreasureType> foundTreasures) {
+		this.sendMessage(this.mazeComMessageFactory.createAwaitMoveMessage(
+				spieler, this.player.getID(), brett, foundTreasures), true);
 		MazeCom result = this.receiveMessage();
-		if (result == null)
-			return null;
-		if (result.getMcType() == MazeComType.MOVE) {
+		if (result != null && result.getMcType() == MazeComType.MOVE) {
 			// Antwort mit NOERROR
 			if (this.currentGame.getBoard().validateTransition(
-					result.getMoveMessage(), this.p.getID())) {
-				this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-						ErrorType.NOERROR), false);
+					result.getMoveMessage(), this.player.getID())) {
+				this.sendMessage(this.mazeComMessageFactory
+						.createAcceptMessage(this.player.getID(),
+								ErrorType.NOERROR), false);
 				return result.getMoveMessage();
 			} else if (tries < Settings.MOVETRIES)
 				return illegalMove(spieler, brett, ++tries, foundTreasures);
@@ -136,10 +173,14 @@ public class Connection {
 			}
 
 		}
-		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-				ErrorType.AWAIT_MOVE), false);
+		// else nicht benoetigt wegen return-Statements im then
+		this.sendMessage(
+				this.mazeComMessageFactory.createAcceptMessage(
+						this.player.getID(), ErrorType.AWAIT_MOVE), false);
+
 		if (tries < Settings.MOVETRIES)
-			return awaitMove(spieler, brett, ++tries, foundTreasures);
+			return awaitMove3(spieler, brett, ++tries, foundTreasures);
+
 		disconnect(ErrorType.TOO_MANY_TRIES);
 		return null;
 	}
@@ -152,12 +193,14 @@ public class Connection {
 	 *            aktuelles Spielbrett
 	 * @return Zug des Spielers
 	 */
+	@Deprecated
 	public MoveMessageType illegalMove(HashMap<Integer, Player> spieler,
 			Board brett, int tries, List<TreasureType> foundTreasures) {
-		this.sendMessage(this.mcmf.createAcceptMessage(this.p.getID(),
-				ErrorType.ILLEGAL_MOVE), false);
+		this.sendMessage(
+				this.mazeComMessageFactory.createAcceptMessage(
+						this.player.getID(), ErrorType.ILLEGAL_MOVE), false);
 		if (tries < Settings.MOVETRIES)
-			return this.awaitMove(spieler, brett, tries, foundTreasures);
+			return this.awaitMove3(spieler, brett, tries, foundTreasures);
 		disconnect(ErrorType.TOO_MANY_TRIES);
 		return null;
 	}
@@ -171,9 +214,8 @@ public class Connection {
 	 * @param b
 	 */
 	public void sendWin(int winnerId, String name, Board b) {
-		this.sendMessage(
-				this.mcmf.createWinMessage(this.p.getID(), winnerId, name, b),
-				false);
+		this.sendMessage(this.mazeComMessageFactory.createWinMessage(
+				this.player.getID(), winnerId, name, b), false);
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();
@@ -188,8 +230,8 @@ public class Connection {
 	 * */
 	public void disconnect(ErrorType et) {
 		this.sendMessage(
-				this.mcmf.createDisconnectMessage(this.p.getID(),
-						this.p.getName(), et), false);
+				this.mazeComMessageFactory.createDisconnectMessage(
+						this.player.getID(), this.player.getName(), et), false);
 		try {
 			this.inFromClient.close();
 			this.outToClient.close();
@@ -198,6 +240,6 @@ public class Connection {
 			e.printStackTrace();
 		}
 		// entfernen des Spielers
-		this.currentGame.removePlayer(this.p.getID());
+		this.currentGame.removePlayer(this.player.getID());
 	}
 }
