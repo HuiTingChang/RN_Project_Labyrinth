@@ -68,7 +68,6 @@ public class XmlInStream extends UTFInputStream {
 			bytes = xml.getBytes();
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 			result = (MazeCom) this.unmarshaller.unmarshal(bais);
-			System.out.println("Ich werde nur ohne Error ausgführt!");;
 		}catch(UnmarshalException e){
 			throw e;
 		}catch (JAXBException e) {
