@@ -26,7 +26,7 @@ public class Settings {
 	 * Die Zeit in Milisekunden, nach der ein Logintimeout eintritt LOGINTIMEOUT
 	 * = 60000 entspricht einer Minute
 	 */
-	public final static long LOGINTIMEOUT = 60*60000;
+	public final static long LOGINTIMEOUT = 60 * 60000;
 	public final static int LOGINTRIES = 3;
 	/**
 	 * Die Zeit in Milisekunden, die die Animation eines Zug (die Bewegung des
@@ -57,6 +57,7 @@ public class Settings {
 	 * BetterUI(), GraphicalUI()
 	 */
 	public final static UI USERINTERFACE = new BetterUI();
+
 	private Settings() {
 	}
 }

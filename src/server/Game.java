@@ -260,7 +260,6 @@ public class Game extends Thread {
 		currentGame.userinterface = Settings.USERINTERFACE;
 		currentGame.userinterface.init(new Board());
 		currentGame.userinterface.setGame(currentGame);
-		Debug.print("", DebugLevel.DEBUG.DEFAULT);
 	}
 
 	public void setUserinterface(UI userinterface) {
