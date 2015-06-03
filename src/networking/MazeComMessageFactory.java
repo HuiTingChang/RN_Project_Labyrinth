@@ -87,7 +87,7 @@ public class MazeComMessageFactory {
 		mc.setMcType(MazeComType.LOGIN);
 		mc.setId(-1);
 		mc.setLoginMessage(of.createLoginMessageType());
-//		mc.getLoginMessage().setName(string);
+		mc.getLoginMessage().setName(string);
 		return mc;
 	}
 }
