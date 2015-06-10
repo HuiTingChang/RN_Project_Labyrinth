@@ -23,12 +23,19 @@ public class Board extends BoardType {
 
 	private TreasureType currentTreasure;
 
+	/**
+	 * Erzeugt ein Board von einem BoardType. Dabei wird currentTreasure von
+	 * Board <b>nicht</b> gesetzt, da es keine Objektvariable von BoardType ist
+	 * 
+	 * @param boardType
+	 *            Instanz von BoardType, aus der eine Instanz von Board generiert
+	 *            wird
+	 */
 	public Board(BoardType boardType) {
 		super();
 		PositionType forbiddenPositionType = boardType.getForbidden();
 		forbidden = (forbiddenPositionType != null) ? new Position(
 				forbiddenPositionType) : null;
-		// XXX Wurde vergessen!
 		shiftCard = new Card(boardType.getShiftCard());
 		// XXX: Warum? Initialisierung?
 		this.getRow();
