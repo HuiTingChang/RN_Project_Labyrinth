@@ -3,7 +3,6 @@ package server.userInterface;
 import generated.BoardType.Row;
 import generated.CardType;
 import generated.MoveMessageType;
-import generated.TreasureType;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -49,9 +48,9 @@ import tools.Debug;
 import tools.DebugLevel;
 import config.Settings;
 
+@SuppressWarnings("serial")
 public class BetterUI extends JFrame implements UI {
 
-	private static final long serialVersionUID = 1L;
 	int currentPlayer;
 	UIBoard uiboard = new UIBoard();
 	StatsPanel statPanel = new StatsPanel();
@@ -111,7 +110,6 @@ public class BetterUI extends JFrame implements UI {
 	}
 
 	private class UIBoard extends JPanel {
-		private static final long serialVersionUID = 1L;
 		Board board;
 		Image images[][] = new Image[7][7];
 		Card c[][] = new Card[7][7];
@@ -266,7 +264,6 @@ public class BetterUI extends JFrame implements UI {
 	}
 
 	private class StatsPanel extends JPanel {
-		private static final long serialVersionUID = 1L;
 		boolean initiated = false;
 		TreeMap<Integer, JLabel> statLabels = new TreeMap<Integer, JLabel>();
 		TreeMap<Integer, JLabel> currentPlayerLabels = new TreeMap<Integer, JLabel>();
@@ -659,8 +656,7 @@ public class BetterUI extends JFrame implements UI {
 
 	@Override
 	public void displayMove(MoveMessageType mm, Board b, long moveDelay,
-			long shiftDelay, boolean treasureReached,
-			List<TreasureType> foundTreasures) {
+			long shiftDelay, boolean treasureReached) {
 		// Die Dauer von shiftDelay bezieht sich auf den kompletten Shift und
 		// nicht auf einen einzelnen Frame
 		shiftDelay /= animationFrames;
@@ -680,14 +676,11 @@ public class BetterUI extends JFrame implements UI {
 				}
 			}
 		}
-		Card card = new Card(b.getShiftCard());
-		if (foundTreasures.contains(card.getTreasure()))
-			shiftCard.setCard(card, true);
-		else
-			shiftCard.setCard(card, false);
+		shiftCard.setCard(new Card(b.getShiftCard()));
 		Position oldPlayerPos = new Position(
 				uiboard.board.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
+		// XXX: Von Matthias (alte Karten waren vorher noch sichtbar)
 		uiboard.repaint();
 		if (animateMove) {
 			// Falls unser Spieler sich selbst verschoben hat.

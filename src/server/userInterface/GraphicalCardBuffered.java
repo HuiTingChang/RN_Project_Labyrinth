@@ -29,7 +29,7 @@ import config.Settings;
 
 public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7583185643671311612L;
 	private Image shape;
 	private Image treasure;
 	private List<Integer> pin;
@@ -39,18 +39,17 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 	private TreasureType cardTreasure;
 	private int maxSize;
 	private int minSize;
-	private boolean found;
 
 	public GraphicalCardBuffered() {
 		super();
-		// Debuging mit Hintergrundfarbe um Framegröße besser erkennen zu können
-		// setBackground(Color.blue);
+//		Debuging mit Hintergrundfarbe um Framegröße besser erkennen zu können
+//		setBackground(Color.blue);
 		loadShape(CardShape.T, Orientation.D0);
 		loadTreasure(null);
 		loadPins(null);
 		addComponentListener(this);
-		maxSize = 150;
-		minSize = 50;
+		maxSize=150;
+		minSize=50;
 	}
 
 	public void setMaxSize(int maxSize) {
@@ -59,11 +58,6 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
 	public void setMinSize(int minSize) {
 		this.minSize = minSize;
-	}
-
-	public void setCard(Card c, boolean found) {
-		this.found = found;
-		setCard(c);
 	}
 
 	public void setCard(Card c) {
@@ -100,8 +94,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		try {
 			if (t != null) {
 				URL url = GraphicalCardBuffered.class
-						.getResource(Settings.IMAGEPATH
-								+ ((found) ? "found" : t.value()) //$NON-NLS-1$
+						.getResource(Settings.IMAGEPATH + t.value()
 								+ Settings.IMAGEFILEEXTENSION);
 				Debug.print(
 						Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
@@ -226,14 +219,16 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		// System.out.println("h"+getSize().height + " w" + getSize().width);
+		//System.out.println("h"+getSize().height + " w" + getSize().width);
 		Dimension d = getSize();
-		int size = Math.min(maxSize, Math.min(d.height, d.width));
-		size = Math.max(minSize, size);
+		int size = Math.min(maxSize,Math.min(d.height, d.width));
+		size=Math.max(minSize, size);
 		if (shape != null) {
 			Image temp = shape;
-			shape = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-			shape = temp.getScaledInstance(size, size, Image.SCALE_DEFAULT);
+			shape = new BufferedImage(size, size,
+					BufferedImage.TYPE_INT_ARGB);
+			shape = temp.getScaledInstance(size, size,
+					Image.SCALE_DEFAULT);
 		}
 		setSize(size, size);
 		updatePaint();
