@@ -15,13 +15,9 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -74,40 +70,6 @@ public class BetterUI extends JFrame implements UI {
 	public GraphicalCardBuffered shiftCard;
 	private StreamToTextArea log;
 
-	private static class ImageRessources {
-		private static HashMap<String, Image> images = new HashMap<String, Image>();
-
-		public static Image getImage(String name) {
-			if (images.containsKey(name)) {
-				return images.get(name);
-			}
-			URL u = ImageRessources.class.getResource(Settings.IMAGEPATH + name
-					+ Settings.IMAGEFILEEXTENSION);
-			Image img = null;
-			try {
-				img = ImageIO.read(u);
-				images.put(name, img);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return img;
-		}
-
-		public static void reset() {
-			images = new HashMap<String, Image>();
-		}
-
-		public static void treasureFound(String treasure) {
-			URL u = ImageRessources.class.getResource(Settings.IMAGEPATH
-					+ "found" //$NON-NLS-1$
-					+ Settings.IMAGEFILEEXTENSION);
-			try {
-				images.put(treasure, ImageIO.read(u));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 
 	private class UIBoard extends JPanel {
 		Board board;
@@ -127,10 +89,10 @@ public class BetterUI extends JFrame implements UI {
 				for (CardType ct : r.getCol()) {
 					Card card = new Card(ct);
 					c[y][x] = card;
-					images[y][x] = ImageRessources.getImage(card.getShape()
+					images[y][x] = ImageResources.getImage(card.getShape()
 							.toString() + card.getOrientation().value());
 					if (c[y][x].getTreasure() != null) {
-						ImageRessources.getImage(c[y][x].getTreasure().value());
+						ImageResources.getImage(c[y][x].getTreasure().value());
 					}
 					x++;
 				}
@@ -172,7 +134,7 @@ public class BetterUI extends JFrame implements UI {
 					if (c[y][x] != null) {
 
 						if (c[y][x].getTreasure() != null) {
-							g.drawImage(ImageRessources.getImage(c[y][x]
+							g.drawImage(ImageResources.getImage(c[y][x]
 									.getTreasure().value()), topLeftX
 									+ pixelsPerField / 4, topLeftY
 									+ pixelsPerField / 4, pixelsPerField / 2,
@@ -234,11 +196,11 @@ public class BetterUI extends JFrame implements UI {
 				}
 				Card card = new Card(board.getShiftCard());
 				g.drawImage(
-						ImageRessources.getImage(card.getShape().toString()
+						ImageResources.getImage(card.getShape().toString()
 								+ card.getOrientation().value()), topLeftX,
 						topLeftY, pixelsPerField, pixelsPerField, null);
 				if (card.getTreasure() != null) {
-					g.drawImage(ImageRessources.getImage(card.getTreasure()
+					g.drawImage(ImageResources.getImage(card.getTreasure()
 							.value()), topLeftX + pixelsPerField / 4, topLeftY
 							+ pixelsPerField / 4, pixelsPerField / 2,
 							pixelsPerField / 2, null);
@@ -279,7 +241,7 @@ public class BetterUI extends JFrame implements UI {
 					statLabels.get(p.getID()).setText(
 							String.valueOf(p.treasuresToGo()));
 					treasureImages.get(p.getID()).setIcon(
-							new ImageIcon(ImageRessources.getImage(p
+							new ImageIcon(ImageResources.getImage(p
 									.getCurrentTreasure().value())));
 				}
 
@@ -319,7 +281,7 @@ public class BetterUI extends JFrame implements UI {
 					statLabels.put(p.getID(), statLabel);
 
 					JLabel treasureImage = new JLabel(new ImageIcon(
-							ImageRessources.getImage(p.getCurrentTreasure()
+							ImageResources.getImage(p.getCurrentTreasure()
 									.value())));
 					treasureImages.put(p.getID(), treasureImage);
 
@@ -713,7 +675,7 @@ public class BetterUI extends JFrame implements UI {
 		}
 
 		if (treasureReached) {
-			ImageRessources.treasureFound(b.getTreasure().value());
+			ImageResources.treasureFound(b.getTreasure().value());
 		}
 	}
 
@@ -724,7 +686,7 @@ public class BetterUI extends JFrame implements UI {
 
 	@Override
 	public void init(Board b) {
-		ImageRessources.reset();
+		ImageResources.reset();
 		uiboard.setBoard(b);
 		uiboard.repaint();
 		this.setVisible(true);
