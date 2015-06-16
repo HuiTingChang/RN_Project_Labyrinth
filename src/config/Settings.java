@@ -32,7 +32,7 @@ public class Settings {
 	 * Die Zeit in Milisekunden, die die Animation eines Zug (die Bewegung des
 	 * Pins) benoetigen soll
 	 */
-	public final static int MOVEDELAY = 300;
+	public final static int MOVEDELAY = 10;
 	/**
 	 * Die maximale Anzahl der Versuche einen gueltigen Zug zu uebermitteln
 	 */
