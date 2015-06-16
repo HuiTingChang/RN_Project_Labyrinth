@@ -92,6 +92,21 @@ public class BetterUI extends JFrame implements UI {
 			}
 			return img;
 		}
+
+		public static void reset() {
+			images = new HashMap<String, Image>();
+		}
+
+		public static void treasureFound(String treasure) {
+			URL u = ImageRessources.class.getResource(Settings.IMAGEPATH
+					+ "found" //$NON-NLS-1$
+					+ Settings.IMAGEFILEEXTENSION);
+			try {
+				images.put(treasure, ImageIO.read(u));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private class UIBoard extends JPanel {
@@ -164,36 +179,37 @@ public class BetterUI extends JFrame implements UI {
 									pixelsPerField / 2, null);
 						}
 						// Zeichnen der SpielerPins
-						for (Integer playerID : c[y][x].getPin().getPlayerID()) {
-							g.setColor(colorForPlayer(playerID));
-							g.fillOval(
-									topLeftX + pixelsPerField / 4
-											+ pixelsPerField / 4
-											* ((playerID - 1) / 2), topLeftY
-											+ pixelsPerField / 4
-											+ pixelsPerField / 4
-											* ((playerID - 1) % 2),
-									pixelsPerField / 4, pixelsPerField / 4);
 
-							g.setColor(Color.WHITE);
-							g.drawOval(
-									topLeftX + pixelsPerField / 4
-											+ pixelsPerField / 4
-											* ((playerID - 1) / 2), topLeftY
-											+ pixelsPerField / 4
-											+ pixelsPerField / 4
-											* ((playerID - 1) % 2),
-									pixelsPerField / 4, pixelsPerField / 4);
-							centerStringInRect((Graphics2D) g,
-									playerID.toString(), topLeftX
-											+ pixelsPerField / 4
-											+ pixelsPerField / 4
-											* ((playerID - 1) / 2), topLeftY
-											+ pixelsPerField / 4
-											+ pixelsPerField / 4
-											* ((playerID - 1) % 2),
-									pixelsPerField / 4, pixelsPerField / 4);
+						List<Integer> pins = c[y][x].getPin().getPlayerID();
+						synchronized (pins) {
+							for (Integer playerID : pins) {
+								g.setColor(colorForPlayer(playerID));
+								g.fillOval(topLeftX + pixelsPerField / 4
+										+ pixelsPerField / 4
+										* ((playerID - 1) / 2), topLeftY
+										+ pixelsPerField / 4 + pixelsPerField
+										/ 4 * ((playerID - 1) % 2),
+										pixelsPerField / 4, pixelsPerField / 4);
+
+								g.setColor(Color.WHITE);
+								g.drawOval(topLeftX + pixelsPerField / 4
+										+ pixelsPerField / 4
+										* ((playerID - 1) / 2), topLeftY
+										+ pixelsPerField / 4 + pixelsPerField
+										/ 4 * ((playerID - 1) % 2),
+										pixelsPerField / 4, pixelsPerField / 4);
+								centerStringInRect((Graphics2D) g,
+										playerID.toString(), topLeftX
+												+ pixelsPerField / 4
+												+ pixelsPerField / 4
+												* ((playerID - 1) / 2),
+										topLeftY + pixelsPerField / 4
+												+ pixelsPerField / 4
+												* ((playerID - 1) % 2),
+										pixelsPerField / 4, pixelsPerField / 4);
+							}
 						}
+
 					} else {
 						System.out
 								.println(String.format(Messages
@@ -293,7 +309,8 @@ public class BetterUI extends JFrame implements UI {
 					JLabel currentPlayerLabel = new JLabel();
 					currentPlayerLabels.put(p.getID(), currentPlayerLabel);
 
-					JLabel playerIDLabel = new JLabel(String.valueOf(p.getID())+".   "); //$NON-NLS-1$
+					JLabel playerIDLabel = new JLabel(String.valueOf(p.getID())
+							+ ".   "); //$NON-NLS-1$
 					JLabel playerNameLabel = new JLabel(p.getName());
 					playerNameLabel.setForeground(colorForPlayer(p.getID()));
 
@@ -639,11 +656,11 @@ public class BetterUI extends JFrame implements UI {
 
 	@Override
 	public void displayMove(MoveMessageType mm, Board b, long moveDelay,
-			long shiftDelay) {
+			long shiftDelay, boolean treasureReached) {
 		// Die Dauer von shiftDelay bezieht sich auf den kompletten Shift und
 		// nicht auf einen einzelnen Frame
 		shiftDelay /= animationFrames;
-		shiftCard.setCard(new Card(mm.getShiftCard()));
+		// shiftCard.setCard(new Card(mm.getShiftCard()));
 		if (animateShift) {
 			uiboard.board.setShiftCard(mm.getShiftCard());
 			animationTimer = new Timer((int) shiftDelay,
@@ -659,6 +676,7 @@ public class BetterUI extends JFrame implements UI {
 				}
 			}
 		}
+		shiftCard.setCard(new Card(b.getShiftCard()));
 		Position oldPlayerPos = new Position(
 				uiboard.board.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
@@ -693,6 +711,10 @@ public class BetterUI extends JFrame implements UI {
 		} else {
 			uiboard.repaint();
 		}
+
+		if (treasureReached) {
+			ImageRessources.treasureFound(b.getTreasure().value());
+		}
 	}
 
 	@Override
@@ -702,6 +724,7 @@ public class BetterUI extends JFrame implements UI {
 
 	@Override
 	public void init(Board b) {
+		ImageRessources.reset();
 		uiboard.setBoard(b);
 		uiboard.repaint();
 		this.setVisible(true);
@@ -740,4 +763,5 @@ public class BetterUI extends JFrame implements UI {
 		MIStart.setEnabled(true);
 		MIStop.setEnabled(false);
 	}
+
 }
