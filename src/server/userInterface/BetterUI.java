@@ -70,7 +70,6 @@ public class BetterUI extends JFrame implements UI {
 	public GraphicalCardBuffered shiftCard;
 	private StreamToTextArea log;
 
-
 	private class UIBoard extends JPanel {
 		Board board;
 		Image images[][] = new Image[7][7];
@@ -200,9 +199,10 @@ public class BetterUI extends JFrame implements UI {
 								+ card.getOrientation().value()), topLeftX,
 						topLeftY, pixelsPerField, pixelsPerField, null);
 				if (card.getTreasure() != null) {
-					g.drawImage(ImageResources.getImage(card.getTreasure()
-							.value()), topLeftX + pixelsPerField / 4, topLeftY
-							+ pixelsPerField / 4, pixelsPerField / 2,
+					g.drawImage(
+							ImageResources.getImage(card.getTreasure().value()),
+							topLeftX + pixelsPerField / 4, topLeftY
+									+ pixelsPerField / 4, pixelsPerField / 2,
 							pixelsPerField / 2, null);
 				}
 				g.setColor(Color.YELLOW);
@@ -442,9 +442,9 @@ public class BetterUI extends JFrame implements UI {
 		}
 		arguments = new String[0];
 		g.parsArgs(arguments);
-		this.statPanel.removeAll();
-		this.statPanel.initiated = false;
-		this.statPanel.repaint();
+		statPanel.removeAll();
+		statPanel.initiated = false;
+		statPanel.repaint();
 		g.setUserinterface(this);
 		log.getTextArea().setText(""); //$NON-NLS-1$
 		g.start();
@@ -477,6 +477,7 @@ public class BetterUI extends JFrame implements UI {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			animationState++;
+			// ohne repaint keine Animation sondern sprunghaftes Schieben
 			uiboard.repaint();
 			if (animationState == animationFrames) {
 				animationState = 0;
@@ -584,6 +585,7 @@ public class BetterUI extends JFrame implements UI {
 
 	private class MoveAnimationTimerOperation implements ActionListener {
 		int[][] points;
+		int i = 0;
 
 		public MoveAnimationTimerOperation(Board b, Position startPos,
 				Position endPos) {
@@ -593,8 +595,6 @@ public class BetterUI extends JFrame implements UI {
 			uiboard.c[startPos.getRow()][startPos.getCol()].getPin()
 					.getPlayerID().add(new Integer(currentPlayer));
 		}
-
-		int i = 0;
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -611,8 +611,10 @@ public class BetterUI extends JFrame implements UI {
 			i++;
 			uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID()
 					.add(new Integer(currentPlayer));
-			uiboard.repaint();
-
+			// Wird zum animieren der Spielfigur benoetigt
+			if (i != 0) { //verbessert den Uebergang vom Schieben zum Ziehen
+				uiboard.repaint();
+			}
 		}
 	}
 
@@ -642,7 +644,8 @@ public class BetterUI extends JFrame implements UI {
 		Position oldPlayerPos = new Position(
 				uiboard.board.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
-		// XXX: Von Matthias (alte Karten waren vorher noch sichtbar)
+		// repaint benoetigt alte Karten bleiben sonst,
+		// bis zur nächsten Schiebe-Animation sichtbar
 		uiboard.repaint();
 		if (animateMove) {
 			// Falls unser Spieler sich selbst verschoben hat.
@@ -670,10 +673,7 @@ public class BetterUI extends JFrame implements UI {
 					e.printStackTrace();
 				}
 			}
-		} else {
-			uiboard.repaint();
 		}
-
 		if (treasureReached) {
 			ImageResources.treasureFound(b.getTreasure().value());
 		}
