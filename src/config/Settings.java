@@ -7,6 +7,11 @@ import tools.DebugLevel;
 
 public class Settings {
 	/**
+	 * Die maximal erlaubte Laenge des Loginnamens
+	 */
+	public final static int MAX_NAME_LENGTH = 30;
+
+	/**
 	 * Den Detailgrad der Ausgaben festlegen
 	 */
 	public final static DebugLevel DEBUGLEVEL = DebugLevel.DEFAULT;
