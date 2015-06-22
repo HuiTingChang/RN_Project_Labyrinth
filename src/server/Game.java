@@ -53,7 +53,8 @@ public class Game extends Thread {
 	/**
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
-	public void init(int playerCount) {
+	public void init(int playerCount, String settingPath) {
+		Settings.reload(settingPath); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		// Socketinitialisierung aus dem Constructor in init verschoben. Sonst
 		// Errors wegen Thread.
@@ -282,7 +283,7 @@ public class Game extends Thread {
 	public void run() {
 		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
-		init(playerCount);
+		init(playerCount,"/config/config.properties");
 		if (spieler.isEmpty()) {
 			return;
 		}
