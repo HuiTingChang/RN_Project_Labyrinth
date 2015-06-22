@@ -612,7 +612,7 @@ public class BetterUI extends JFrame implements UI {
 			uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID()
 					.add(new Integer(currentPlayer));
 			// Wird zum animieren der Spielfigur benoetigt
-			if (i != 0) { //verbessert den Uebergang vom Schieben zum Ziehen
+			if (i != 0) { // verbessert den Uebergang vom Schieben zum Ziehen
 				uiboard.repaint();
 			}
 		}
@@ -640,13 +640,14 @@ public class BetterUI extends JFrame implements UI {
 				}
 			}
 		}
-		shiftCard.setCard(new Card(b.getShiftCard()));
 		Position oldPlayerPos = new Position(
 				uiboard.board.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
 		// repaint benoetigt alte Karten bleiben sonst,
 		// bis zur nächsten Schiebe-Animation sichtbar
 		uiboard.repaint();
+		// muss nach repaint() stehen, sonst flickering!
+		shiftCard.setCard(new Card(b.getShiftCard()));
 		if (animateMove) {
 			// Falls unser Spieler sich selbst verschoben hat.
 			AnimationProperties props = new AnimationProperties(new Position(
