@@ -85,7 +85,7 @@ public class Connection {
 			result = this.inFromClient.readMazeCom();
 		} catch (UnmarshalException e) {
 			Throwable xmle = e.getLinkedException();
-			Debug.print("[XML-Fehler] " + xmle.getMessage(), DebugLevel.DEFAULT);
+			Debug.print(Messages.getString("Connection.XmlError") + xmle.getMessage(), DebugLevel.DEFAULT); //$NON-NLS-1$
 		} catch (IOException e) {
 			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);

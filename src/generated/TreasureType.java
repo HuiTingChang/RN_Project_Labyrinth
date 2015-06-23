@@ -56,9 +56,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "treasureType")
 @XmlEnum
+@SuppressWarnings("nls")
 public enum TreasureType {
 
-    @XmlEnumValue("Start01")
+	@XmlEnumValue("Start01")
     START_01("Start01"),
     @XmlEnumValue("Start02")
     START_02("Start02"),
