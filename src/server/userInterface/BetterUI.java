@@ -640,11 +640,15 @@ public class BetterUI extends JFrame implements UI {
 				}
 			}
 		}
+		uiboard.board.proceedShift(mm);
 		Position oldPlayerPos = new Position(
 				uiboard.board.findPlayer(currentPlayer));
 		uiboard.setBoard(b);
 		// repaint benoetigt alte Karten bleiben sonst,
 		// bis zur nächsten Schiebe-Animation sichtbar
+		animationTimer = new Timer((int) moveDelay,
+				new MoveAnimationTimerOperation(uiboard.board,
+						oldPlayerPos, new Position(mm.getNewPinPos())));
 		uiboard.repaint();
 		// muss nach repaint() stehen, sonst flickering!
 		shiftCard.setCard(new Card(b.getShiftCard()));
@@ -663,9 +667,6 @@ public class BetterUI extends JFrame implements UI {
 							.setCol((7 + oldPlayerPos.getCol() + props.direction) % 7);
 				}
 			}
-			animationTimer = new Timer((int) moveDelay,
-					new MoveAnimationTimerOperation(uiboard.board,
-							oldPlayerPos, new Position(mm.getNewPinPos())));
 			synchronized (animationFinished) {
 				animationTimer.start();
 				try {
