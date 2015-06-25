@@ -42,6 +42,7 @@ public class Settings {
 	 * Pins) benoetigen soll
 	 */
 	public static int MOVEDELAY = 300;
+
 	/**
 	 * Die maximale Anzahl der Versuche einen gueltigen Zug zu uebermitteln
 	 */
