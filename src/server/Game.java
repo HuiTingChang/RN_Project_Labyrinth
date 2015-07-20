@@ -53,7 +53,8 @@ public class Game extends Thread {
 	/**
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
-	public void init(int playerCount) {
+	public void init(int playerCount, String settingPath) {
+		Settings.reload(settingPath);
 		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		// Socketinitialisierung aus dem Constructor in init verschoben. Sonst
 		// Errors wegen Thread.
@@ -192,21 +193,24 @@ public class Game extends Thread {
 		Debug.print(spielBrett.toString(), DebugLevel.DEBUG);
 		MoveMessageType move = spieler.get(currPlayer).getConToClient()
 				.awaitMove(spieler, this.spielBrett, 0, foundTreasures);
+		boolean found = false;
 		if (move != null) {
+			// proceedTurn gibt zurueck ob der Spieler seinen Schatz erreicht
+			// hat
 			if (spielBrett.proceedTurn(move, currPlayer)) {
+				found = true;
 				Debug.print(
 						String.format(
 								Messages.getString("Game.foundTreasure"), spieler.get(currPlayer).getName(), currPlayer), DebugLevel.DEFAULT); //$NON-NLS-1$
+				foundTreasures.add(t);
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
-				foundTreasures.add(t);
 				if (spieler.get(currPlayer).foundTreasure() == 0) {
 					winner = currPlayer;
 				}
 			}
 			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY,
-					Settings.SHIFTDELAY);
-
+					Settings.SHIFTDELAY, found);
 		} else {
 			Debug.print(
 					Messages.getString("Game.gotNoMove"), DebugLevel.DEFAULT); //$NON-NLS-1$
@@ -280,7 +284,8 @@ public class Game extends Thread {
 	public void run() {
 		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
-		init(playerCount);
+		//TODO Configfile austauschbar machen
+		init(playerCount, "/config/config.properties"); //$NON-NLS-1$
 		if (spieler.isEmpty()) {
 			return;
 		}

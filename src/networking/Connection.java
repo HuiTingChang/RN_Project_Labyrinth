@@ -85,7 +85,7 @@ public class Connection {
 			result = this.inFromClient.readMazeCom();
 		} catch (UnmarshalException e) {
 			Throwable xmle = e.getLinkedException();
-			Debug.print("[XML-Fehler] " + xmle.getMessage(), DebugLevel.DEFAULT);
+			Debug.print(Messages.getString("Connection.XmlError") + xmle.getMessage(), DebugLevel.DEFAULT); //$NON-NLS-1$
 		} catch (IOException e) {
 			Debug.print(Messages.getString("XmlInStream.errorReadingMessage"), //$NON-NLS-1$
 					DebugLevel.DEFAULT);
@@ -122,7 +122,7 @@ public class Connection {
 	 */
 	public MoveMessageType awaitMove(HashMap<Integer, Player> spieler,
 			Board brett, int tries, List<TreasureType> foundTreasures) {
-		if (tries < Settings.MOVETRIES) {
+		if (spieler.get(player.getID()) != null && tries < Settings.MOVETRIES) {
 			sendMessage(mazeComMessageFactory.createAwaitMoveMessage(spieler,
 					player.getID(), brett, foundTreasures), true);
 			MazeCom result = this.receiveMessage();
