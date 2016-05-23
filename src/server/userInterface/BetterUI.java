@@ -249,10 +249,10 @@ public class BetterUI extends JFrame implements UI {
 				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
 				for (Player p : stats) {
 					statLabels.get(p.getID()).setText(
-							String.valueOf(p.treasuresToGo()));
+							String.valueOf(p.treasuresToGo()-1));
 					treasureImages.get(p.getID()).setIcon(
 							new ImageIcon(ImageResources.getImage(p
-									.getCurrentTreasure().value())));
+									.getCurrentTreasure().value()).getScaledInstance(40,40, Image.SCALE_SMOOTH)));
 				}
 
 			} else {
