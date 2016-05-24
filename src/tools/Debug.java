@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Debug {
 
-	static HashMap<OutputStream, DebugLevel> liste = (HashMap<OutputStream, DebugLevel>) Collections
+	static Map<OutputStream, DebugLevel> liste = Collections
 			.synchronizedMap(new HashMap<OutputStream, DebugLevel>());
 
 	public static void addDebugger(OutputStream stream, DebugLevel level) {

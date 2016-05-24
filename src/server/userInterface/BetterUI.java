@@ -1,9 +1,5 @@
 package server.userInterface;
 
-import generated.BoardType.Row;
-import generated.CardType;
-import generated.MoveMessageType;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,7 +12,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -37,6 +32,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import config.Settings;
+import generated.BoardType.Row;
+import generated.CardType;
+import generated.MoveMessageType;
 import server.Board;
 import server.Card;
 import server.Game;
@@ -44,7 +43,6 @@ import server.Player;
 import server.Position;
 import tools.Debug;
 import tools.DebugLevel;
-import config.Settings;
 
 @SuppressWarnings("serial")
 public class BetterUI extends JFrame implements UI {
