@@ -75,10 +75,8 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		this.cardOrientation = co;
 		try {
 			URL url = GraphicalCardBuffered.class
-					.getResource(Settings.IMAGEPATH + cs.toString()
-							+ co.value() + Settings.IMAGEFILEEXTENSION);
-			Debug.print(
-					Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
+					.getResource(Settings.IMAGEPATH + cs.toString() + co.value() + Settings.IMAGEFILEEXTENSION);
+			Debug.print(Messages.getString("GraphicalCardBuffered.Load") + url.toString(), DebugLevel.DEBUG); //$NON-NLS-1$
 			shape = ImageIO.read(url);
 
 		} catch (IOException e) {
@@ -92,7 +90,8 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		}
 		this.cardTreasure = t;
 		if (t != null) {
-			treasure = ImageResources.getImage(t.value());
+			treasure = ImageResources.getImage(t.value()).getScaledInstance((int) (this.getWidth() * 0.5) ,
+					(int) (this.getHeight() * 0.5), Image.SCALE_SMOOTH);
 		} else {
 			treasure = null;
 		}
@@ -120,8 +119,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 			return;
 		}
 
-		BufferedImage buff = new BufferedImage(w, h,
-				BufferedImage.TYPE_INT_ARGB_PRE);
+		BufferedImage buff = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB_PRE);
 
 		Graphics2D g2 = buff.createGraphics();
 		if (shape != null) {
