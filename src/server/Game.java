@@ -5,6 +5,7 @@ import generated.MoveMessageType;
 import generated.TreasureType;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -43,7 +44,7 @@ public class Game extends Thread {
 
 	public Game() {
 		Debug.addDebugger(System.out, Settings.DEBUGLEVEL);
-		Debug.print(Messages.getString("Game.Constructor"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.Constructor"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		winner = -1;
 		spieler = new HashMap<Integer, Player>();
 		timeOutManager = new TimeOutManager();
@@ -55,7 +56,7 @@ public class Game extends Thread {
 	 */
 	public void init(int playerCount, String settingPath) {
 		Settings.reload(settingPath);
-		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		// Socketinitialisierung aus dem Constructor in init verschoben. Sonst
 		// Errors wegen Thread.
 		// init wird von run (also vom Thread) aufgerufen, im Gegesatz zum
@@ -74,15 +75,13 @@ public class Game extends Thread {
 			while (accepting && i <= playerCount) {
 				try {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
-					Debug.print(
-							Messages.getString("Game.waitingForPlayer") + " (" + i + "/" + playerCount //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-									+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
+					Debug.print(Messages.getString("Game.waitingForPlayer") + " (" + i + "/" + playerCount //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+							+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
 					Socket mazeClient = serverSocket.accept();
 					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
 				} catch (SocketException e) {
-					Debug.print(
-							Messages.getString("Game.playerWaitingTimedOut"), //$NON-NLS-1$
+					Debug.print(Messages.getString("Game.playerWaitingTimedOut"), //$NON-NLS-1$
 							DebugLevel.DEFAULT);
 				}
 				++i;
@@ -135,8 +134,7 @@ public class Game extends Thread {
 			if (!Settings.TESTBOARD)
 				Collections.shuffle(treasureCardPile);
 			if (spieler.size() == 0) {
-				System.err.println(Messages
-						.getString("Game.noPlayersConnected")); //$NON-NLS-1$
+				System.err.println(Messages.getString("Game.noPlayersConnected")); //$NON-NLS-1$
 				stopGame();
 				return;
 			}
@@ -162,15 +160,14 @@ public class Game extends Thread {
 			if (serverSocket != null) {
 				serverSocket.close();
 			} else
-				Debug.print("serverSocket==null", DebugLevel.DEFAULT); //$NON-NLS-1$
+				Debug.print(Messages.getString("Game.serverSocketNull"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private List<Player> playerToList() {
-		Debug.print(
-				Messages.getString("Game.playerToListFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.playerToListFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		List<Player> erg = new ArrayList<Player>();
 		for (Integer id : spieler.keySet()) {
 			erg.add(spieler.get(id));
@@ -183,25 +180,23 @@ public class Game extends Thread {
 		 * Connection.awaitMove checken -> Bei Fehler illegalMove -> liefert
 		 * neuen Zug
 		 */
-		Debug.print(Messages.getString("Game.singleTurnFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.singleTurnFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		TreasureType t = spieler.get(currPlayer).getCurrentTreasure();
 		spielBrett.setTreasure(t);
-		Debug.print(
-				Messages.getString("Game.boardBeforeMoveFromPlayerWithID") + currPlayer, //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.boardBeforeMoveFromPlayerWithID") + currPlayer, //$NON-NLS-1$
 				DebugLevel.VERBOSE);
 		Debug.print(spielBrett.toString(), DebugLevel.DEBUG);
-		MoveMessageType move = spieler.get(currPlayer).getConToClient()
-				.awaitMove(spieler, this.spielBrett, 0, foundTreasures);
+		MoveMessageType move = spieler.get(currPlayer).getConToClient().awaitMove(spieler, this.spielBrett, 0,
+				foundTreasures);
 		boolean found = false;
 		if (move != null) {
 			// proceedTurn gibt zurueck ob der Spieler seinen Schatz erreicht
 			// hat
 			if (spielBrett.proceedTurn(move, currPlayer)) {
 				found = true;
-				Debug.print(
-						String.format(
-								Messages.getString("Game.foundTreasure"), spieler.get(currPlayer).getName(), currPlayer), DebugLevel.DEFAULT); //$NON-NLS-1$
+				Debug.print(String.format(Messages.getString("Game.foundTreasure"), spieler.get(currPlayer).getName(), //$NON-NLS-1$
+						currPlayer), DebugLevel.DEFAULT);
 				foundTreasures.add(t);
 				// foundTreasure gibt zurueck wieviele
 				// Schaetze noch zu finden sind
@@ -209,11 +204,9 @@ public class Game extends Thread {
 					winner = currPlayer;
 				}
 			}
-			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY,
-					Settings.SHIFTDELAY, found);
+			userinterface.displayMove(move, spielBrett, Settings.MOVEDELAY, Settings.SHIFTDELAY, found);
 		} else {
-			Debug.print(
-					Messages.getString("Game.gotNoMove"), DebugLevel.DEFAULT); //$NON-NLS-1$
+			Debug.print(Messages.getString("Game.gotNoMove"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		}
 	}
 
@@ -225,17 +218,15 @@ public class Game extends Thread {
 	 * Aufraeumen nach einem Spiel
 	 */
 	public void cleanUp() {
-		Debug.print(Messages.getString("Game.cleanUpFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.cleanUpFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		if (winner > 0) {
 			for (Integer playerID : spieler.keySet()) {
 				Player s = spieler.get(playerID);
-				s.getConToClient().sendWin(winner,
-						spieler.get(winner).getName(), spielBrett);
+				s.getConToClient().sendWin(winner, spieler.get(winner).getName(), spielBrett);
 			}
 			userinterface.updatePlayerStatistics(playerToList(), winner);
-			Debug.print(String.format(
-					Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
-							.get(winner).getName(), winner), DebugLevel.DEFAULT);
+			Debug.print(String.format(Messages.getString("Game.playerIDwon"), spieler //$NON-NLS-1$
+					.get(winner).getName(), winner), DebugLevel.DEFAULT);
 
 		} else {
 			// Iterator<Integer> playerID = spieler.keySet().iterator();
@@ -275,16 +266,15 @@ public class Game extends Thread {
 		for (String arg : args) {
 			String playerFlag = "-n"; //$NON-NLS-1$
 			if (arg.startsWith(playerFlag)) {
-				playerCount = Integer
-						.valueOf(arg.substring(playerFlag.length()));
+				playerCount = Integer.valueOf(arg.substring(playerFlag.length()));
 			}
 		}
 	}
 
 	public void run() {
-		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
-		//TODO Configfile austauschbar machen
+		// TODO Configfile austauschbar machen
 		init(playerCount, "/config/config.properties"); //$NON-NLS-1$
 		if (spieler.isEmpty()) {
 			return;
@@ -293,23 +283,21 @@ public class Game extends Thread {
 		Integer currPlayer = 1;
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		while (!somebodyWon()) {
-			Debug.print(
-					currPlayer + Messages.getString("Game.playersTurn"), DebugLevel.VERBOSE); //$NON-NLS-1$
+			Debug.print(String.format(Messages.getString("Game.playersTurn"), spieler.get(currPlayer).getName(), //$NON-NLS-1$
+					currPlayer), DebugLevel.DEFAULT);
 			singleTurn(currPlayer);
 			try {
 				currPlayer = nextPlayer(currPlayer);
 			} catch (NoSuchElementException e) {
-				Debug.print(
-						Messages.getString("Game.AllPlayersLeft"), DebugLevel.DEFAULT); //$NON-NLS-1$
+				Debug.print(Messages.getString("Game.AllPlayersLeft"), DebugLevel.DEFAULT); //$NON-NLS-1$
 				stopGame();
 			}
 		}
 		cleanUp();
 	}
 
-	private Integer nextPlayer(Integer currPlayer)
-			throws NoSuchElementException {
-		Debug.print(Messages.getString("Game.nextPlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+	private Integer nextPlayer(Integer currPlayer) throws NoSuchElementException {
+		Debug.print(Messages.getString("Game.nextPlayerFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Iterator<Integer> iDIterator = spieler.keySet().iterator();
 		Integer id = -1;
 		while (iDIterator.hasNext()) {
@@ -326,16 +314,14 @@ public class Game extends Thread {
 	}
 
 	public void removePlayer(int id) {
-		Debug.print(
-				Messages.getString("Game.removePlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.removePlayerFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		this.spieler.remove(id);
-		Debug.print(
-				String.format(Messages.getString("Game.playerIDleftGame"), id), //$NON-NLS-1$
+		Debug.print(String.format(Messages.getString("Game.playerIDleftGame"), id), //$NON-NLS-1$
 				DebugLevel.DEFAULT);
 	}
 
 	public void stopGame() {
-		Debug.print(Messages.getString("Game.stopFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Game.stopFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.stopGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		userinterface.gameEnded(spieler.get(winner));
 		winner = -2;
