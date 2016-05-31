@@ -18,7 +18,7 @@ public class Settings {
 	/**
 	 * Den Detailgrad der Ausgaben festlegen
 	 */
-	public final static DebugLevel DEBUGLEVEL = DebugLevel.VERBOSE;
+	public final static DebugLevel DEBUGLEVEL = DebugLevel.DEFAULT;
 
 	/**
 	 * Startwert fuer die Spieleranzahl Kann aber noch veraendert werden,
