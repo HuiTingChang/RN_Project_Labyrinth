@@ -212,10 +212,13 @@ public class BetterUI extends JFrame implements UI {
 
 			} else {
 				// Beim ersten mal erzeugen wir die GUI.
+				this.removeAll();
+				this.repaint();
 				initiated = true;
 				GridBagConstraints gc = new GridBagConstraints();
 				gc.gridx = GridBagConstraints.RELATIVE;
 				gc.anchor = GridBagConstraints.WEST;
+				gc.insets = new Insets(0, 0, 0, 0);
 				this.setLayout(new GridBagLayout());
 
 				shiftCard = new GraphicalCardBuffered();
@@ -223,7 +226,7 @@ public class BetterUI extends JFrame implements UI {
 				// GridBagConstraints(gridx, gridy, gridwidth, gridheight,
 				// weightx, weighty, anchor, fill, insets, ipadx, ipady);
 				this.add(shiftCard,
-						new GridBagConstraints(0, 0, 5, 1, 0.5, 0.5, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+						new GridBagConstraints(0, 0, 5, 1, 0.5, 0.3, GridBagConstraints.CENTER, GridBagConstraints.NONE,
 								new Insets(0, 0, 0, 0), uiboard.getPixelsPerField(), uiboard.getPixelsPerField()));
 				// this.getComponentAt(0, 0).get
 				for (Player p : stats) {
@@ -247,8 +250,14 @@ public class BetterUI extends JFrame implements UI {
 					gc.ipadx = 0;
 					this.add(playerIDLabel, gc);
 					this.add(playerNameLabel, gc);
+					//TODO find out how to realign Image inside the JLabel, 
+					// otherwise anchor has no effekt for alligning the
+					// treasure icon					
+					//gc.anchor = GridBagConstraints.EAST;
 					this.add(treasureImage, gc);
 					this.add(statLabel, gc);
+					//gc.anchor = GridBagConstraints.WEST;
+
 				}
 				currentPlayer = current;
 				currentPlayerLabels.get(currentPlayer).setText(">"); //$NON-NLS-1$
@@ -356,7 +365,8 @@ public class BetterUI extends JFrame implements UI {
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, uiboard, statPanel);
 		this.add(splitPane, BorderLayout.CENTER);
 		this.pack();
-		this.setSize(800, 700);
+		this.setSize(1000, 700);
+		splitPane.setResizeWeight(0.7);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -397,6 +407,8 @@ public class BetterUI extends JFrame implements UI {
 		statPanel.repaint();
 		g.setUserinterface(this);
 		log.getTextArea().setText(""); //$NON-NLS-1$
+		statPanel.setLayout(new BorderLayout());
+		statPanel.add(log.getTextArea());
 		g.start();
 		MIStart.setEnabled(false);
 		MIStop.setEnabled(true);
