@@ -212,6 +212,8 @@ public class BetterUI extends JFrame implements UI {
 
 			} else {
 				// Beim ersten mal erzeugen wir die GUI.
+				this.removeAll();
+				this.repaint();
 				initiated = true;
 				GridBagConstraints gc = new GridBagConstraints();
 				gc.gridx = GridBagConstraints.RELATIVE;
@@ -397,6 +399,8 @@ public class BetterUI extends JFrame implements UI {
 		statPanel.repaint();
 		g.setUserinterface(this);
 		log.getTextArea().setText(""); //$NON-NLS-1$
+		statPanel.setLayout(new BorderLayout());
+		statPanel.add(log.getTextArea());
 		g.start();
 		MIStart.setEnabled(false);
 		MIStop.setEnabled(true);
