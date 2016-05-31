@@ -19,7 +19,7 @@ change to the folder you store your projects and type:
 git clone https://git.noc.fh-aachen.de/rechnernetze/mazenet-server.git
 ```
 
-this will crete a `mazenet-server` folder and copies current files of the master branch. You can open/import the project with your favorite IDE.
+this will create a `mazenet-server` folder and copies current files of the master branch. You can open/import the project with your favorite IDE.
 
 ## Eclipse
 
