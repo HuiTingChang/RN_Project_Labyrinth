@@ -415,8 +415,8 @@ public class Board extends BoardType {
 								.getNewPinPos().getRow(), move.getNewPinPos()
 								.getCol()), DebugLevel.VERBOSE);
 		Debug.print(
-				Messages.getString("Board.boardAfterShifting"), DebugLevel.VERBOSE); //$NON-NLS-1$
-		Debug.print(fakeBoard.toString(), DebugLevel.VERBOSE);
+				Messages.getString("Board.boardAfterShifting"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(fakeBoard.toString(), DebugLevel.DEBUG);
 		if (fakeBoard.pathPossible(playerPosition, move.getNewPinPos())) {
 			Debug.print(
 					Messages.getString("Board.illegalMove"), DebugLevel.VERBOSE); //$NON-NLS-1$

@@ -1,11 +1,6 @@
 package server;
 
-import generated.ErrorType;
-import generated.MoveMessageType;
-import generated.TreasureType;
-
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -17,12 +12,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
+import Timeouts.TimeOutManager;
+import config.Settings;
+import generated.ErrorType;
+import generated.MoveMessageType;
+import generated.TreasureType;
 import networking.Connection;
 import server.userInterface.UI;
 import tools.Debug;
 import tools.DebugLevel;
-import Timeouts.TimeOutManager;
-import config.Settings;
 
 public class Game extends Thread {
 
