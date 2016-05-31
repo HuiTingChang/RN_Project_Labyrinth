@@ -179,19 +179,19 @@ public class Card extends CardType {
 		Card other = new Card((CardType) obj);
 		if (this.treasure != other.getTreasure()) {
 			Debug.print(
-					Messages.getString("Card.treasureUnequal"), DebugLevel.DEBUG); //$NON-NLS-1$
+					Messages.getString("Card.treasureUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
 			return false;
 		}
 		for (Integer ID : this.getPin().getPlayerID()) {
 			if (!other.getPin().getPlayerID().contains(ID)) {
 				Debug.print(
-						Messages.getString("Card.playerUnequal"), DebugLevel.DEBUG); //$NON-NLS-1$
+						Messages.getString("Card.playerUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
 				return false;
 			}
 		}
 		if (other.getShape() != this.getShape()) {
 			Debug.print(
-					Messages.getString("Card.shapeUnequal"), DebugLevel.DEBUG); //$NON-NLS-1$
+					Messages.getString("Card.shapeUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
 			return false;
 		}
 		return true;

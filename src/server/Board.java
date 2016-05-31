@@ -274,7 +274,7 @@ public class Board extends BoardType {
 	// Fuehrt nur das Hereinschieben der Karte aus!!!
 	public void proceedShift(MoveMessageType move) {
 		Debug.print(
-				Messages.getString("Board.proceedShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+				Messages.getString("Board.proceedShiftFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Position sm = new Position(move.getShiftPosition());
 		if (sm.getCol() % 6 == 0) { // Col=6 oder 0
 			if (sm.getRow() % 2 == 1) {
@@ -341,7 +341,7 @@ public class Board extends BoardType {
 	 */
 	public boolean proceedTurn(MoveMessageType move, Integer currPlayer) {
 		Debug.print(
-				Messages.getString("Board.proceedTurnFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+				Messages.getString("Board.proceedTurnFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		// XXX ACHTUNG wird nicht mehr auf Richtigkeit überprüft!!!
 		this.proceedShift(move);
 		Position target = new Position(move.getNewPinPos());
@@ -353,7 +353,7 @@ public class Board extends BoardType {
 
 	protected void movePlayer(PositionType oldPos, PositionType newPos,
 			Integer playerID) {
-		Debug.print(Messages.getString("Board.movePlayerFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Board.movePlayerFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		getCard(oldPos.getRow(), oldPos.getCol()).getPin().getPlayerID()
 				.remove(playerID);
 		getCard(newPos.getRow(), newPos.getCol()).getPin().getPlayerID()
@@ -361,7 +361,7 @@ public class Board extends BoardType {
 	}
 
 	public Board fakeShift(MoveMessageType move) {
-		Debug.print(Messages.getString("Board.fakeShiftFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(Messages.getString("Board.fakeShiftFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Board fake = (Board) this.clone();
 		fake.proceedShift(move);
 		return fake;
@@ -387,7 +387,7 @@ public class Board extends BoardType {
 
 	public boolean validateTransition(MoveMessageType move, Integer playerID) {
 		Debug.print(
-				Messages.getString("Board.validateTransitionFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+				Messages.getString("Board.validateTransitionFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		PositionType movePosition = move.getShiftPosition();
 		CardType moveShiftCard = move.getShiftCard();
 		if (movePosition == null || moveShiftCard == null)
@@ -415,8 +415,8 @@ public class Board extends BoardType {
 								.getNewPinPos().getRow(), move.getNewPinPos()
 								.getCol()), DebugLevel.VERBOSE);
 		Debug.print(
-				Messages.getString("Board.boardAfterShifting"), DebugLevel.VERBOSE); //$NON-NLS-1$
-		Debug.print(fakeBoard.toString(), DebugLevel.VERBOSE);
+				Messages.getString("Board.boardAfterShifting"), DebugLevel.DEBUG); //$NON-NLS-1$
+		Debug.print(fakeBoard.toString(), DebugLevel.DEBUG);
 		if (fakeBoard.pathPossible(playerPosition, move.getNewPinPos())) {
 			Debug.print(
 					Messages.getString("Board.illegalMove"), DebugLevel.VERBOSE); //$NON-NLS-1$
@@ -429,7 +429,7 @@ public class Board extends BoardType {
 
 	public boolean pathPossible(PositionType oldPos, PositionType newPos) {
 		Debug.print(
-				Messages.getString("Board.pathPossibleFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+				Messages.getString("Board.pathPossibleFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		if (oldPos == null || newPos == null)
 			return false;
 		Position oldP = new Position(oldPos);
@@ -439,7 +439,7 @@ public class Board extends BoardType {
 
 	public List<PositionType> getAllReachablePositions(PositionType position) {
 		Debug.print(
-				Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.DEBUG); //$NON-NLS-1$
+				Messages.getString("Board.getAllReachablePositionsFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		List<PositionType> erreichbarePositionen = new ArrayList<PositionType>();
 		int[][] erreichbar = new int[7][7];
 		erreichbar[position.getRow()][position.getCol()] = 1;
