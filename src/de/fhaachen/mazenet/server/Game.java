@@ -273,7 +273,7 @@ public class Game extends Thread {
 		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		// TODO Configfile austauschbar machen
-		init(playerCount, "/config/config.properties"); //$NON-NLS-1$
+		init(playerCount, "/de/fhaachen/mazenet/config/config.properties"); //$NON-NLS-1$
 		if (spieler.isEmpty()) {
 			return;
 		}
