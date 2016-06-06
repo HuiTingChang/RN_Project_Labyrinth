@@ -131,7 +131,7 @@ public class BetterUI extends JFrame implements UI {
 									topLeftX + pixelsPerField / 4, topLeftY + pixelsPerField / 4, pixelsPerField / 2,
 									pixelsPerField / 2, null);
 						}
-						// Zeichnen der SpielerPins
+						// paint player pins
 						// TODO should be getPlayerIDs()
 						List<Integer> pins = Collections.synchronizedList(c[y][x].getPin().getPlayerID());
 						synchronized (pins) {

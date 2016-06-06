@@ -1,6 +1,7 @@
 package de.fhaachen.mazenet.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhaachen.mazenet.generated.CardType;
@@ -47,13 +48,16 @@ public class Card extends CardType {
 		this.setTreasure(c.getTreasure());
 		this.setPin(new Pin());
 		if (c.getPin() != null) {
-			this.pin.getPlayerID().addAll(c.getPin().getPlayerID());
+			List<Integer> playerIDs = Collections.synchronizedList(this.pin.getPlayerID());
+			synchronized (playerIDs) {
+				playerIDs.addAll(c.getPin().getPlayerID());
+			}
 		} else {
 			this.setPin(null);
 		}
 	}
 
-	//TODO
+	// TODO
 	public List<Card> getPossibleRotations() {
 		List<Card> cards = new ArrayList<Card>();
 		// Reihenfolge und fehlende breaks wichtig
@@ -178,20 +182,20 @@ public class Card extends CardType {
 			return false;
 		Card other = new Card((CardType) obj);
 		if (this.treasure != other.getTreasure()) {
-			Debug.print(
-					Messages.getString("Card.treasureUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
+			Debug.print(Messages.getString("Card.treasureUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
 			return false;
 		}
-		for (Integer ID : this.getPin().getPlayerID()) {
-			if (!other.getPin().getPlayerID().contains(ID)) {
-				Debug.print(
-						Messages.getString("Card.playerUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
-				return false;
+		List<Integer> playerIDs = Collections.synchronizedList(this.getPin().getPlayerID());
+		synchronized (playerIDs) {
+			for (Integer ID : playerIDs) {
+				if (!other.getPin().getPlayerID().contains(ID)) {
+					Debug.print(Messages.getString("Card.playerUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
+					return false;
+				}
 			}
 		}
 		if (other.getShape() != this.getShape()) {
-			Debug.print(
-					Messages.getString("Card.shapeUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
+			Debug.print(Messages.getString("Card.shapeUnequal"), DebugLevel.DEFAULT); //$NON-NLS-1$
 			return false;
 		}
 		return true;

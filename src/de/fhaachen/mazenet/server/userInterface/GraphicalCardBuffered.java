@@ -13,6 +13,7 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -62,7 +63,10 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 	public void setCard(Card c) {
 		loadShape(c.getShape(), c.getOrientation());
 		loadTreasure(c.getTreasure());
-		loadPins(c.getPin().getPlayerID());
+		List<Integer> playerIDs = Collections.synchronizedList(c.getPin().getPlayerID());
+		synchronized (playerIDs) {
+			loadPins(playerIDs);
+		}
 		componentResized(new ComponentEvent(this, -1));
 	}
 
@@ -89,7 +93,7 @@ public class GraphicalCardBuffered extends JPanel implements ComponentListener {
 		}
 		this.cardTreasure = t;
 		if (t != null) {
-			treasure = ImageResources.getImage(t.value()).getScaledInstance((int) (this.getWidth() * 0.5) ,
+			treasure = ImageResources.getImage(t.value()).getScaledInstance((int) (this.getWidth() * 0.5),
 					(int) (this.getHeight() * 0.5), Image.SCALE_SMOOTH);
 		} else {
 			treasure = null;
