@@ -250,13 +250,13 @@ public class BetterUI extends JFrame implements UI {
 					gc.ipadx = 0;
 					this.add(playerIDLabel, gc);
 					this.add(playerNameLabel, gc);
-					//TODO find out how to realign Image inside the JLabel, 
+					// TODO find out how to realign Image inside the JLabel,
 					// otherwise anchor has no effekt for alligning the
-					// treasure icon					
-					//gc.anchor = GridBagConstraints.EAST;
+					// treasure icon
+					// gc.anchor = GridBagConstraints.EAST;
 					this.add(treasureImage, gc);
 					this.add(statLabel, gc);
-					//gc.anchor = GridBagConstraints.WEST;
+					// gc.anchor = GridBagConstraints.WEST;
 
 				}
 				currentPlayer = current;
@@ -537,8 +537,12 @@ public class BetterUI extends JFrame implements UI {
 
 		public MoveAnimationTimerOperation(Board b, Position startPos, Position endPos) {
 			points = Pathfinding.findShortestPath(b, startPos, endPos);
-			uiboard.c[endPos.getRow()][endPos.getCol()].getPin().getPlayerID().remove(new Integer(currentPlayer));
-			uiboard.c[startPos.getRow()][startPos.getCol()].getPin().getPlayerID().add(new Integer(currentPlayer));
+			List<Integer> playerIDs = Collections
+					.synchronizedList(uiboard.c[endPos.getRow()][endPos.getCol()].getPin().getPlayerID());
+			synchronized (playerIDs) {
+				playerIDs.remove(new Integer(currentPlayer));
+				playerIDs.add(new Integer(currentPlayer));
+			}
 		}
 
 		@Override
@@ -551,9 +555,16 @@ public class BetterUI extends JFrame implements UI {
 				}
 				return;
 			}
-			uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID().remove(new Integer(currentPlayer));
+			List<Integer> playerIDs = Collections
+					.synchronizedList(uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID());
+			synchronized (playerIDs) {
+				playerIDs.remove(new Integer(currentPlayer));
+			}
 			i++;
-			uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID().add(new Integer(currentPlayer));
+			playerIDs = Collections.synchronizedList(uiboard.c[points[i][1]][points[i][0]].getPin().getPlayerID());
+			synchronized (playerIDs) {
+				playerIDs.add(new Integer(currentPlayer));
+			}
 			// Wird zum animieren der Spielfigur benoetigt
 			if (i != 0) { // verbessert den Uebergang vom Schieben zum Ziehen
 				uiboard.repaint();
