@@ -541,6 +541,10 @@ public class BetterUI extends JFrame implements UI {
 					.synchronizedList(uiboard.c[endPos.getRow()][endPos.getCol()].getPin().getPlayerID());
 			synchronized (playerIDs) {
 				playerIDs.remove(new Integer(currentPlayer));
+			}
+			playerIDs = Collections
+					.synchronizedList(uiboard.c[startPos.getRow()][startPos.getCol()].getPin().getPlayerID());
+			synchronized (playerIDs) {
 				playerIDs.add(new Integer(currentPlayer));
 			}
 		}
