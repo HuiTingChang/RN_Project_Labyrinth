@@ -52,14 +52,42 @@ public class Game extends Thread {
 	/**
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
-	public void init(int playerCount, String settingPath) {
-		Settings.reload(settingPath);
+	public void init(int playerCount) {
+		
 		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		// Socketinitialisierung aus dem Constructor in init verschoben. Sonst
 		// Errors wegen Thread.
 		// init wird von run (also vom Thread) aufgerufen, im Gegesatz zum
 		// Constructor
 		try {
+			
+			/*
+			TODO Prepare for SSL
+			SSLServer server = new SSLServer();
+
+			// Server needs some key material.  We'll use an OpenSSL/PKCS8 style key (possibly encrypted).
+			String certificateChain = "/path/to/this/server.crt";
+			String privateKey = "/path/to/this/server.key";
+			char[] password = "changeit".toCharArray();
+			KeyMaterial km = new KeyMaterial( certificateChain, privateKey, password ); 
+
+			server.setKeyMaterial( km );
+
+			// These settings have to do with how we'll treat client certificates that are presented
+			// to us.  If the client doesn't present any client certificate, then these are ignored.
+			server.setCheckHostname( false ); // default setting is "false" for SSLServer
+			server.setCheckExpiry( true );    // default setting is "true" for SSLServer
+			server.setCheckCRL( true );       // default setting is "true" for SSLServer
+
+			// This server trusts all client certificates presented (usually people won't present
+			// client certs, but if they do, we'll give them a socket at the very least).
+			server.addTrustMaterial( TrustMaterial.TRUST_ALL );
+			SSLServerSocket ss = (SSLServerSocket) server.createServerSocket( 7443 );
+			
+			*/
+			
+			
+			
 			serverSocket = new ServerSocket(de.fhaachen.mazenet.config.Settings.PORT);
 		} catch (IOException e) {
 			System.err.println(Messages.getString("Game.portUsed")); //$NON-NLS-1$
@@ -75,6 +103,7 @@ public class Game extends Thread {
 					// TODO Was wenn ein Spieler beim Login rausfliegt
 					Debug.print(Messages.getString("Game.waitingForPlayer") + " (" + i + "/" + playerCount //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 							+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
+					// TODO SSLSocket socket = (SSLSocket) ss.accept();
 					Socket mazeClient = serverSocket.accept();
 					Connection c = new Connection(mazeClient, this, i);
 					spieler.put(i, c.login(i));
@@ -247,6 +276,7 @@ public class Game extends Thread {
 	}
 
 	public static void main(String[] args) {
+		Settings.reload( "/de/fhaachen/mazenet/config/config.properties"); //$NON-NLS-1$
 		Locale.setDefault(Settings.LOCALE);
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
@@ -273,7 +303,7 @@ public class Game extends Thread {
 		Debug.print(Messages.getString("Game.runFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		Debug.print(Messages.getString("Game.startNewGame"), DebugLevel.DEFAULT); //$NON-NLS-1$
 		// TODO Configfile austauschbar machen
-		init(playerCount, "/de/fhaachen/mazenet/config/config.properties"); //$NON-NLS-1$
+		init(playerCount);
 		if (spieler.isEmpty()) {
 			return;
 		}
