@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,30 +106,7 @@ public class Game extends Thread {
 			spielBrett = new Board();
 			// Verteilen der Schatzkarten
 			ArrayList<TreasureType> treasureCardPile = new ArrayList<TreasureType>();
-			treasureCardPile.add(TreasureType.SYM_01);
-			treasureCardPile.add(TreasureType.SYM_02);
-			treasureCardPile.add(TreasureType.SYM_03);
-			treasureCardPile.add(TreasureType.SYM_04);
-			treasureCardPile.add(TreasureType.SYM_05);
-			treasureCardPile.add(TreasureType.SYM_06);
-			treasureCardPile.add(TreasureType.SYM_07);
-			treasureCardPile.add(TreasureType.SYM_08);
-			treasureCardPile.add(TreasureType.SYM_09);
-			treasureCardPile.add(TreasureType.SYM_10);
-			treasureCardPile.add(TreasureType.SYM_11);
-			treasureCardPile.add(TreasureType.SYM_12);
-			treasureCardPile.add(TreasureType.SYM_13);
-			treasureCardPile.add(TreasureType.SYM_14);
-			treasureCardPile.add(TreasureType.SYM_15);
-			treasureCardPile.add(TreasureType.SYM_16);
-			treasureCardPile.add(TreasureType.SYM_17);
-			treasureCardPile.add(TreasureType.SYM_18);
-			treasureCardPile.add(TreasureType.SYM_19);
-			treasureCardPile.add(TreasureType.SYM_20);
-			treasureCardPile.add(TreasureType.SYM_21);
-			treasureCardPile.add(TreasureType.SYM_22);
-			treasureCardPile.add(TreasureType.SYM_23);
-			treasureCardPile.add(TreasureType.SYM_24);
+			treasureCardPile.addAll(Arrays.asList(TreasureType.values()));
 			if (!Settings.TESTBOARD)
 				Collections.shuffle(treasureCardPile);
 			if (spieler.size() == 0) {
