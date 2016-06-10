@@ -11,7 +11,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -128,25 +128,23 @@ public class BetterUI extends JFrame implements UI {
 									topLeftX + pixelsPerField / 4, topLeftY + pixelsPerField / 4, pixelsPerField / 2,
 									pixelsPerField / 2, null);
 						}
-						// Zeichnen der SpielerPins
-						// TODO should be getPlayerIDs()
-						List<Integer> pins = Collections.synchronizedList(c[y][x].getPin().getPlayerID());
-						synchronized (pins) {
-							for (Integer playerID : pins) {
-								g.setColor(colorForPlayer(playerID));
-								g.fillOval(topLeftX + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) / 2),
-										topLeftY + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) % 2),
-										pixelsPerField / 4, pixelsPerField / 4);
+						// paint player pins
+						// TODO should be named getPlayerIDs()
+						List<Integer> pins = new ArrayList<>(c[y][x].getPin().getPlayerID());
+						for (Integer playerID : pins) {
+							g.setColor(colorForPlayer(playerID));
+							g.fillOval(topLeftX + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) / 2),
+									topLeftY + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) % 2),
+									pixelsPerField / 4, pixelsPerField / 4);
 
-								g.setColor(Color.WHITE);
-								g.drawOval(topLeftX + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) / 2),
-										topLeftY + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) % 2),
-										pixelsPerField / 4, pixelsPerField / 4);
-								centerStringInRect((Graphics2D) g, playerID.toString(),
-										topLeftX + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) / 2),
-										topLeftY + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) % 2),
-										pixelsPerField / 4, pixelsPerField / 4);
-							}
+							g.setColor(Color.WHITE);
+							g.drawOval(topLeftX + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) / 2),
+									topLeftY + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) % 2),
+									pixelsPerField / 4, pixelsPerField / 4);
+							centerStringInRect((Graphics2D) g, playerID.toString(),
+									topLeftX + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) / 2),
+									topLeftY + pixelsPerField / 4 + pixelsPerField / 4 * ((playerID - 1) % 2),
+									pixelsPerField / 4, pixelsPerField / 4);
 						}
 					} else {
 						System.out.println(String.format(Messages.getString("BetterUI.cardIsNull"), x, y)); //$NON-NLS-1$
