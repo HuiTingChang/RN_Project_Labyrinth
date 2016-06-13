@@ -58,10 +58,6 @@ public class BetterUI extends JFrame implements UI {
 	Timer animationTimer;
 	AnimationProperties animationProperties = null;
 	JSplitPane splitPane;
-	private JRadioButtonMenuItem MI4Spieler;
-	private JRadioButtonMenuItem MI3Spieler;
-	private JRadioButtonMenuItem MI2Spieler;
-	private JRadioButtonMenuItem MI1Spieler;
 	private JMenu MPlayerSettings;
 	private JMenuItem MIStart;
 	private JMenuItem MIStop;
@@ -69,6 +65,7 @@ public class BetterUI extends JFrame implements UI {
 	private JMenuBar jMenuBar1;
 	public GraphicalCardBuffered shiftCard;
 	private StreamToTextArea log;
+	private JRadioButtonMenuItem[] MIPlayerSelection;
 
 	private class UIBoard extends JPanel {
 		Board board;
@@ -309,52 +306,55 @@ public class BetterUI extends JFrame implements UI {
 				MPlayerSettings = new JMenu();
 				jMenuBar1.add(MPlayerSettings);
 				MPlayerSettings.setText(Messages.getString("BetterUI.playerCount")); //$NON-NLS-1$
+				MIPlayerSelection = new JRadioButtonMenuItem[4];
 				{
-					MI1Spieler = new JRadioButtonMenuItem();
-					MPlayerSettings.add(MI1Spieler);
-					MI1Spieler.setText(Messages.getString("BetterUI.OnePlayer")); //$NON-NLS-1$
-					MI1Spieler.setSelected(true);
-					MI1Spieler.addActionListener(new ActionListener() {
+					MIPlayerSelection[0] = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MIPlayerSelection[0]);
+					MIPlayerSelection[0].setText(Messages.getString("BetterUI.OnePlayer")); //$NON-NLS-1$
+					MIPlayerSelection[0].addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 1;
 						}
 					});
 				}
 				{
-					MI2Spieler = new JRadioButtonMenuItem();
-					MPlayerSettings.add(MI2Spieler);
-					MI2Spieler.setText(Messages.getString("BetterUI.TwoPlayer")); //$NON-NLS-1$
-					MI2Spieler.addActionListener(new ActionListener() {
+					MIPlayerSelection[1] = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MIPlayerSelection[1]);
+					MIPlayerSelection[1].setText(Messages.getString("BetterUI.TwoPlayer")); //$NON-NLS-1$
+					MIPlayerSelection[1].addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 2;
 						}
 					});
 				}
 				{
-					MI3Spieler = new JRadioButtonMenuItem();
-					MPlayerSettings.add(MI3Spieler);
-					MI3Spieler.setText(Messages.getString("BetterUI.ThreePlayer")); //$NON-NLS-1$
-					MI3Spieler.addActionListener(new ActionListener() {
+					MIPlayerSelection[2] = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MIPlayerSelection[2]);
+					MIPlayerSelection[2].setText(Messages.getString("BetterUI.ThreePlayer")); //$NON-NLS-1$
+					MIPlayerSelection[2].addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 3;
 						}
 					});
 				}
 				{
-					MI4Spieler = new JRadioButtonMenuItem();
-					MPlayerSettings.add(MI4Spieler);
-					MI4Spieler.setText(Messages.getString("BetterUI.FourPlayer")); //$NON-NLS-1$
-					MI4Spieler.addActionListener(new ActionListener() {
+					MIPlayerSelection[3] = new JRadioButtonMenuItem();
+					MPlayerSettings.add(MIPlayerSelection[3]);
+					MIPlayerSelection[3].setText(Messages.getString("BetterUI.FourPlayer")); //$NON-NLS-1$
+					MIPlayerSelection[3].addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							Settings.DEFAULT_PLAYERS = 4;
 						}
 					});
+					
 				}
 				ButtonGroup spielerAnz = new ButtonGroup();
-				spielerAnz.add(MI1Spieler);
-				spielerAnz.add(MI2Spieler);
-				spielerAnz.add(MI3Spieler);
-				spielerAnz.add(MI4Spieler);
+				for (JRadioButtonMenuItem item : MIPlayerSelection) {
+					spielerAnz.add(item);
+
+				}
+				MIPlayerSelection[Settings.DEFAULT_PLAYERS-1].setSelected(true);
+				
 
 			}
 		}
