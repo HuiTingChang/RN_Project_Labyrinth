@@ -113,9 +113,10 @@ public class Game extends Thread {
 				// werden
 				while (accepting && !availableIds.isEmpty()) {
 					try {
-						int i = availableIds.pop();
+						int id = availableIds.pop();
 						// TODO Was wenn ein Spieler beim Login rausfliegt
-						Debug.print(Messages.getString("Game.waitingForPlayer") + " (" + i + "/" + playerCount //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						Debug.print(Messages.getString("Game.waitingForPlayer") + " (" //$NON-NLS-1$ //$NON-NLS-2$
+								+ (playerCount - availableIds.size()) + "/" + playerCount //$NON-NLS-1$
 								+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
 						// TODO SSLSocket socket = (SSLSocket) ss.accept();
 						Socket mazeClient = serverSocket.accept();
@@ -124,8 +125,8 @@ public class Game extends Thread {
 							if (!ip.equals("127.0.0.1")) { //$NON-NLS-1$
 								connectedIPs.add(ip);
 							}
-							Connection c = new Connection(mazeClient, this, i);
-							spieler.put(i, c.login(i, availableIds));
+							Connection c = new Connection(mazeClient, this, id);
+							spieler.put(id, c.login(id, availableIds));
 						} else {
 							Debug.print(String.format(Messages.getString("Game.HostAlreadyConnected"), ip), //$NON-NLS-1$
 									DebugLevel.DEFAULT);
@@ -327,7 +328,7 @@ public class Game extends Thread {
 			return;
 		}
 		userinterface.init(spielBrett);
-		Integer currPlayer = 1;
+		Integer currPlayer = nextPlayer(0);
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		while (!somebodyWon()) {
 			Debug.print(String.format(Messages.getString("Game.playersTurn"), spieler.get(currPlayer).getName(), //$NON-NLS-1$
