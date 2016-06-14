@@ -1,21 +1,27 @@
 package de.fhaachen.mazenet.networking;
 
+import java.util.Stack;
+
 import de.fhaachen.mazenet.config.Settings;
 import de.fhaachen.mazenet.generated.ErrorType;
 import de.fhaachen.mazenet.generated.MazeCom;
 import de.fhaachen.mazenet.generated.MazeComType;
 import de.fhaachen.mazenet.server.Player;
+import de.fhaachen.mazenet.tools.Debug;
+import de.fhaachen.mazenet.tools.DebugLevel;
 
 public class LoginThread extends Thread {
 
 	private Connection connection;
 	private Player player;
 	private MazeComMessageFactory mazeComMessageFactory;
+	private Stack<Integer> availablePlayers;
 
-	public LoginThread(Connection connection, Player player) {
+	public LoginThread(Connection connection, Player player,Stack<Integer> availablePlayers) {
 		this.player = player;
 		this.connection = connection;
 		this.mazeComMessageFactory = new MazeComMessageFactory();
+		this.availablePlayers = availablePlayers;
 	}
 
 	private String cleanUpName(String name) {
@@ -39,6 +45,8 @@ public class LoginThread extends Thread {
 						.createLoginReplyMessage(this.player.getID()), false);
 				this.player.init(cleanUpName(loginMes.getLoginMessage()
 						.getName()));
+							
+				Debug.print(String.format(de.fhaachen.mazenet.networking.Messages.getString("LoginThread.successful"), player.getID(),player.getName()), DebugLevel.DEFAULT); //$NON-NLS-1$
 				return;// verlassen des Threads
 			}
 			// Sende Fehler
@@ -49,6 +57,9 @@ public class LoginThread extends Thread {
 			loginMes = this.connection.receiveMessage();
 		}
 		// Verlassen mit schwerem Fehlerfall
+		// ID wird wieder freigegeben
+		Debug.print(String.format(de.fhaachen.mazenet.networking.Messages.getString("LoginThread.failed"), player.getID()), DebugLevel.DEFAULT); //$NON-NLS-1$
+		availablePlayers.push(this.player.getID());
 		this.connection.disconnect(ErrorType.TOO_MANY_TRIES);
 	}
 }

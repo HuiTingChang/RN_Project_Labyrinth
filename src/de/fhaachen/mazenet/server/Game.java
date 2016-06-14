@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Stack;
 
 import de.fhaachen.mazenet.config.Settings;
 import de.fhaachen.mazenet.generated.ErrorType;
@@ -53,69 +54,88 @@ public class Game extends Thread {
 	 * Auf TCP Verbindungen warten und den Spielern die Verbindung ermoeglichen
 	 */
 	public void init(int playerCount) {
-		
+
 		Debug.print(Messages.getString("Game.initFkt"), DebugLevel.VERBOSE); //$NON-NLS-1$
 		// Socketinitialisierung aus dem Constructor in init verschoben. Sonst
 		// Errors wegen Thread.
 		// init wird von run (also vom Thread) aufgerufen, im Gegesatz zum
 		// Constructor
 		try {
-			
+
 			/*
-			TODO Prepare for SSL
-			SSLServer server = new SSLServer();
+			 * TODO Prepare for SSL SSLServer server = new SSLServer();
+			 * 
+			 * // Server needs some key material. We'll use an OpenSSL/PKCS8
+			 * style key (possibly encrypted). String certificateChain =
+			 * "/path/to/this/server.crt"; String privateKey =
+			 * "/path/to/this/server.key"; char[] password =
+			 * "changeit".toCharArray(); KeyMaterial km = new KeyMaterial(
+			 * certificateChain, privateKey, password );
+			 * 
+			 * server.setKeyMaterial( km );
+			 * 
+			 * // These settings have to do with how we'll treat client
+			 * certificates that are presented // to us. If the client doesn't
+			 * present any client certificate, then these are ignored.
+			 * server.setCheckHostname( false ); // default setting is "false"
+			 * for SSLServer server.setCheckExpiry( true ); // default setting
+			 * is "true" for SSLServer server.setCheckCRL( true ); // default
+			 * setting is "true" for SSLServer
+			 * 
+			 * // This server trusts all client certificates presented (usually
+			 * people won't present // client certs, but if they do, we'll give
+			 * them a socket at the very least). server.addTrustMaterial(
+			 * TrustMaterial.TRUST_ALL ); SSLServerSocket ss = (SSLServerSocket)
+			 * server.createServerSocket( 7443 );
+			 * 
+			 */
 
-			// Server needs some key material.  We'll use an OpenSSL/PKCS8 style key (possibly encrypted).
-			String certificateChain = "/path/to/this/server.crt";
-			String privateKey = "/path/to/this/server.key";
-			char[] password = "changeit".toCharArray();
-			KeyMaterial km = new KeyMaterial( certificateChain, privateKey, password ); 
-
-			server.setKeyMaterial( km );
-
-			// These settings have to do with how we'll treat client certificates that are presented
-			// to us.  If the client doesn't present any client certificate, then these are ignored.
-			server.setCheckHostname( false ); // default setting is "false" for SSLServer
-			server.setCheckExpiry( true );    // default setting is "true" for SSLServer
-			server.setCheckCRL( true );       // default setting is "true" for SSLServer
-
-			// This server trusts all client certificates presented (usually people won't present
-			// client certs, but if they do, we'll give them a socket at the very least).
-			server.addTrustMaterial( TrustMaterial.TRUST_ALL );
-			SSLServerSocket ss = (SSLServerSocket) server.createServerSocket( 7443 );
-			
-			*/
-			
-			
-			
 			serverSocket = new ServerSocket(de.fhaachen.mazenet.config.Settings.PORT);
 		} catch (IOException e) {
 			System.err.println(Messages.getString("Game.portUsed")); //$NON-NLS-1$
 		}
 		try {
-			int i = 1;
 			boolean accepting = true;
 			timeOutManager.startLoginTimeOut(this);
-			// FIXME: wenn sich kein Spieler verbindet, sollte ewig gewartet
-			// werden
-			while (accepting && i <= playerCount) {
-				try {
-					// TODO Was wenn ein Spieler beim Login rausfliegt
-					Debug.print(Messages.getString("Game.waitingForPlayer") + " (" + i + "/" + playerCount //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-							+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
-					// TODO SSLSocket socket = (SSLSocket) ss.accept();
-					Socket mazeClient = serverSocket.accept();
-					Connection c = new Connection(mazeClient, this, i);
-					spieler.put(i, c.login(i));
-				} catch (SocketException e) {
-					Debug.print(Messages.getString("Game.playerWaitingTimedOut"), //$NON-NLS-1$
-							DebugLevel.DEFAULT);
-				}
-				++i;
+			Stack<Integer> availableIds = new Stack<>();
+			List<String> connectedIPs = new ArrayList<>();
+
+			for (int i = 1; i <= playerCount; i++) {
+				availableIds.push(i);
 			}
+			if (!Settings.TESTBOARD)
+				Collections.shuffle(availableIds);
 			// Warten bis die Initialisierung durchgelaufen ist
 			boolean spielbereit = false;
 			while (!spielbereit) {
+
+				// FIXME: wenn sich kein Spieler verbindet, sollte ewig gewartet
+				// werden
+				while (accepting && !availableIds.isEmpty()) {
+					try {
+						int id = availableIds.pop();
+						// TODO Was wenn ein Spieler beim Login rausfliegt
+						Debug.print(Messages.getString("Game.waitingForPlayer") + " (" //$NON-NLS-1$ //$NON-NLS-2$
+								+ (playerCount - availableIds.size()) + "/" + playerCount //$NON-NLS-1$
+								+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
+						// TODO SSLSocket socket = (SSLSocket) ss.accept();
+						Socket mazeClient = serverSocket.accept();
+						String ip = mazeClient.getInetAddress().getHostAddress();
+						if (!connectedIPs.contains(ip)) {
+							if (!ip.equals("127.0.0.1")) { //$NON-NLS-1$
+								connectedIPs.add(ip);
+							}
+							Connection c = new Connection(mazeClient, this, id);
+							spieler.put(id, c.login(id, availableIds));
+						} else {
+							Debug.print(String.format(Messages.getString("Game.HostAlreadyConnected"), ip), //$NON-NLS-1$
+									DebugLevel.DEFAULT);
+						}
+					} catch (SocketException e) {
+						Debug.print(Messages.getString("Game.playerWaitingTimedOut"), //$NON-NLS-1$
+								DebugLevel.DEFAULT);
+					}
+				}
 				spielbereit = true;
 				for (Integer id : spieler.keySet()) {
 					Player p = spieler.get(id);
@@ -166,7 +186,7 @@ public class Game extends Thread {
 				return;
 			}
 			int anzCards = treasureCardPile.size() / spieler.size();
-			i = 0;
+			int i = 0;
 			for (Integer player : spieler.keySet()) {
 				ArrayList<TreasureType> cardsPerPlayer = new ArrayList<TreasureType>();
 				for (int j = i * anzCards; j < (i + 1) * anzCards; j++) {
@@ -276,7 +296,7 @@ public class Game extends Thread {
 	}
 
 	public static void main(String[] args) {
-		Settings.reload( "/de/fhaachen/mazenet/config/config.properties"); //$NON-NLS-1$
+		Settings.reload("/de/fhaachen/mazenet/config/config.properties"); //$NON-NLS-1$
 		Locale.setDefault(Settings.LOCALE);
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);
@@ -308,7 +328,7 @@ public class Game extends Thread {
 			return;
 		}
 		userinterface.init(spielBrett);
-		Integer currPlayer = 1;
+		Integer currPlayer = nextPlayer(0);
 		userinterface.updatePlayerStatistics(playerToList(), currPlayer);
 		while (!somebodyWon()) {
 			Debug.print(String.format(Messages.getString("Game.playersTurn"), spieler.get(currPlayer).getName(), //$NON-NLS-1$
