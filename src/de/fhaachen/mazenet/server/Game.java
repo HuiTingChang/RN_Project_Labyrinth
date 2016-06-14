@@ -103,7 +103,8 @@ public class Game extends Thread {
 			for (int i = 1; i <= playerCount; i++) {
 				availableIds.push(i);
 			}
-			Collections.shuffle(availableIds);
+			if (!Settings.TESTBOARD)
+				Collections.shuffle(availableIds);
 			// Warten bis die Initialisierung durchgelaufen ist
 			boolean spielbereit = false;
 			while (!spielbereit) {
@@ -118,15 +119,16 @@ public class Game extends Thread {
 								+ ")", DebugLevel.DEFAULT); //$NON-NLS-1$
 						// TODO SSLSocket socket = (SSLSocket) ss.accept();
 						Socket mazeClient = serverSocket.accept();
-						String ip=mazeClient.getInetAddress().getHostAddress();
-						if(!connectedIPs.contains(ip)){
-							if(!ip.equals("127.0.0.1")){ //$NON-NLS-1$
+						String ip = mazeClient.getInetAddress().getHostAddress();
+						if (!connectedIPs.contains(ip)) {
+							if (!ip.equals("127.0.0.1")) { //$NON-NLS-1$
 								connectedIPs.add(ip);
-							}							
+							}
 							Connection c = new Connection(mazeClient, this, i);
 							spieler.put(i, c.login(i, availableIds));
-						}else{
-							Debug.print(String.format(Messages.getString("Game.HostAlreadyConnected"), ip), DebugLevel.DEFAULT); //$NON-NLS-1$
+						} else {
+							Debug.print(String.format(Messages.getString("Game.HostAlreadyConnected"), ip), //$NON-NLS-1$
+									DebugLevel.DEFAULT);
 						}
 					} catch (SocketException e) {
 						Debug.print(Messages.getString("Game.playerWaitingTimedOut"), //$NON-NLS-1$

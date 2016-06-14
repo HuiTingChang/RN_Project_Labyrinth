@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.ButtonGroup;
@@ -189,9 +190,9 @@ public class BetterUI extends JFrame implements UI {
 
 	private class StatsPanel extends JPanel {
 		boolean initiated = false;
-		TreeMap<Integer, JLabel> statLabels = new TreeMap<Integer, JLabel>();
-		TreeMap<Integer, JLabel> currentPlayerLabels = new TreeMap<Integer, JLabel>();
-		TreeMap<Integer, JLabel> treasureImages = new TreeMap<Integer, JLabel>();
+		Map<Integer, JLabel> statLabels = new TreeMap<>();
+		Map<Integer, JLabel> currentPlayerLabels = new TreeMap<>();
+		Map<Integer, JLabel> treasureImages = new TreeMap<>();
 		private JScrollPane scrollPane;
 
 		public void update(List<Player> stats, int current) {
