@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import javax.xml.bind.UnmarshalException;
 
@@ -32,7 +33,6 @@ public class Connection {
 	private MazeComMessageFactory mazeComMessageFactory;
 	private TimeOutManager tom;
 	private Game currentGame;
-
 	/**
 	 * Speicherung des Sockets und oeffnen der Streams
 	 * 
@@ -105,9 +105,9 @@ public class Connection {
 	 * @param newId
 	 * @return Neuer Player, bei einem Fehler jedoch null
 	 */
-	public Player login(int newId) {
+	public Player login(int newId,Stack<Integer> availablePlayers) {
 		this.player = new Player(newId, this);
-		LoginThread lt = new LoginThread(this, this.player);
+		LoginThread lt = new LoginThread(this, this.player, availablePlayers);
 		lt.start();
 		return this.player;
 	}
