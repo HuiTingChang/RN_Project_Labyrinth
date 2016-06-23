@@ -295,8 +295,10 @@ public class Card extends CardType {
 			return CardShape.I;
 		} else if (anzop == 2 && indsum % 2 == 1) {
 			return CardShape.L;
-		} else {
+		} else if (anzop==3){
 			return CardShape.T;
+		} else {
+			return null;
 		}
 	}
 
