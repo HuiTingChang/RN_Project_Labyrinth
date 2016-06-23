@@ -260,6 +260,7 @@ public class Board extends BoardType {
 	}
 
 	public void setCard(int row, int col, Card c) {
+		//FIXME
 		// Muss ueberschrieben werden, daher zuerst entfernen und dann...
 		this.getRow().get(row).getCol().remove(col);
 		// ...hinzufuegen
