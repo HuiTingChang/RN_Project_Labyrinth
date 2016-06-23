@@ -28,7 +28,7 @@ public class Position extends PositionType {
 	 * Checkt, ob an dieser Stelle ein Schieben moeglich ist
 	 */
 	public boolean isLoosePosition() {
-		return ((row % 6 == 0 && col % 2 == 1) || (col % 6 == 0 && row % 2 == 1));
+		return ((row % 6 == 0 && col % 2 == 1) || (col % 6 == 0 && row % 2 == 1)) && (row < 6) && (col < 6)&& (row > 0) && (col >0);
 	}
 
 	public boolean isOppositePosition(PositionType otherPosition) {
