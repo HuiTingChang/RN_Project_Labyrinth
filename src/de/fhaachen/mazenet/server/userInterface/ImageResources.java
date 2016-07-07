@@ -30,6 +30,7 @@ public class ImageResources {
 		return img;
 	}
 
+	
 	public static void reset() {
 		images = new HashMap<String, Image>();
 	}
