@@ -1,4 +1,4 @@
-package de.fhaachen.mazenet.server.userInterface;
+package de.fhaachen.mazenet.server.userInterface.betterui;
 
 import java.io.IOException;
 import java.io.OutputStream;

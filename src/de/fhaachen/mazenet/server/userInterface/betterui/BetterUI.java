@@ -1,4 +1,4 @@
-package de.fhaachen.mazenet.server.userInterface;
+package de.fhaachen.mazenet.server.userInterface.betterui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -42,6 +42,9 @@ import de.fhaachen.mazenet.server.Card;
 import de.fhaachen.mazenet.server.Game;
 import de.fhaachen.mazenet.server.Player;
 import de.fhaachen.mazenet.server.Position;
+import de.fhaachen.mazenet.server.userInterface.ImageResources;
+import de.fhaachen.mazenet.server.userInterface.Messages;
+import de.fhaachen.mazenet.server.userInterface.UI;
 import de.fhaachen.mazenet.tools.Debug;
 import de.fhaachen.mazenet.tools.DebugLevel;
 

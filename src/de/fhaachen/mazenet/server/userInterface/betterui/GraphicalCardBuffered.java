@@ -1,4 +1,4 @@
-package de.fhaachen.mazenet.server.userInterface;
+package de.fhaachen.mazenet.server.userInterface.betterui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,6 +23,8 @@ import de.fhaachen.mazenet.generated.TreasureType;
 import de.fhaachen.mazenet.server.Card;
 import de.fhaachen.mazenet.server.Card.CardShape;
 import de.fhaachen.mazenet.server.Card.Orientation;
+import de.fhaachen.mazenet.server.userInterface.ImageResources;
+import de.fhaachen.mazenet.server.userInterface.Messages;
 import de.fhaachen.mazenet.tools.Debug;
 import de.fhaachen.mazenet.tools.DebugLevel;
 

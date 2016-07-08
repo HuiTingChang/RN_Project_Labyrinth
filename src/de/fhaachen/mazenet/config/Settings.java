@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 
-import de.fhaachen.mazenet.server.userInterface.BetterUI;
 import de.fhaachen.mazenet.server.userInterface.UI;
+import de.fhaachen.mazenet.server.userInterface.betterui.BetterUI;
 import de.fhaachen.mazenet.server.userInterface.mazeFX.MazeFX;
 import de.fhaachen.mazenet.tools.DebugLevel;
 
