@@ -122,7 +122,7 @@ public class Game extends Thread {
 						Socket mazeClient = serverSocket.accept();
 						String ip = mazeClient.getInetAddress().getHostAddress();
 						if (!connectedIPs.contains(ip)) {
-							if (!ip.equals("127.0.0.1") && !ip.equals("::1")) { //$NON-NLS-1$
+							if (!ip.equals("127.0.0.1") && !mazeClient.getInetAddress().isLoopbackAddress()) { //$NON-NLS-1$
 								connectedIPs.add(ip);
 							}
 							Connection c = new Connection(mazeClient, this, id);
