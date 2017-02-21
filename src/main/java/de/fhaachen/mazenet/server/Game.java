@@ -296,7 +296,7 @@ public class Game extends Thread {
 	}
 
 	public static void main(String[] args) {
-		Settings.reload("/de/fhaachen/mazenet/config/config.properties"); //$NON-NLS-1$
+		Settings.reload("/config.properties"); //$NON-NLS-1$
 		Locale.setDefault(Settings.LOCALE);
 		Game currentGame = new Game();
 		currentGame.parsArgs(args);

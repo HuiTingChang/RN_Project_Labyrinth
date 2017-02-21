@@ -29,7 +29,7 @@ public class Settings {
 	/**
 	 * Auf das angehaengte / achten
 	 */
-	public  static String IMAGEPATH = "/de/fhaachen/mazenet/server/userInterface/resources/"; //$NON-NLS-1$
+	public  static String IMAGEPATH = "/images/"; //$NON-NLS-1$
 	public  static Locale LOCALE = new Locale("de"); //$NON-NLS-1$
 	/**
 	 * Die Zeit in Milisekunden, nach der ein Logintimeout eintritt LOGINTIMEOUT
